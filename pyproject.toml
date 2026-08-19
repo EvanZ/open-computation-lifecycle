@@ -1,5 +1,5 @@
 [project]
-name = "oclp-protocol"
+name = "oclp"
 version = "0.1.0a0"
 description = "Reference SDK for the Open Computation Lifecycle Protocol"
 readme = "README.md"
@@ -38,4 +38,3 @@ target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
-
