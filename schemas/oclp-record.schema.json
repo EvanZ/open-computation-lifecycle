@@ -1,0 +1,502 @@
+{
+  "$defs": {
+    "Artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Annotations",
+          "type": "object"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "artifact",
+          "default": "artifact",
+          "title": "Kind",
+          "type": "string"
+        },
+        "locations": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Locations",
+          "type": "array"
+        },
+        "media_type": {
+          "minLength": 1,
+          "title": "Media Type",
+          "type": "string"
+        },
+        "oclp_version": {
+          "const": "0.1.0-draft",
+          "default": "0.1.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
+        },
+        "schema_uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Schema Uri"
+        },
+        "size": {
+          "minimum": 0,
+          "title": "Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "media_type",
+        "digest",
+        "size"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "ComputationDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Annotations",
+          "type": "object"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "implementation": {
+          "$ref": "#/$defs/Implementation"
+        },
+        "input_ports": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/PortDefinition"
+          },
+          "title": "Input Ports",
+          "type": "array"
+        },
+        "kind": {
+          "const": "definition",
+          "default": "definition",
+          "title": "Kind",
+          "type": "string"
+        },
+        "oclp_version": {
+          "const": "0.1.0-draft",
+          "default": "0.1.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
+        },
+        "output_ports": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/PortDefinition"
+          },
+          "title": "Output Ports",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "implementation"
+      ],
+      "title": "ComputationDefinition",
+      "type": "object"
+    },
+    "ContractReference": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ],
+      "title": "ContractReference",
+      "type": "object"
+    },
+    "Digest": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "value": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "Digest",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Annotations",
+          "type": "object"
+        },
+        "contract": {
+          "$ref": "#/$defs/ContractReference"
+        },
+        "details": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Details",
+          "type": "object"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "evidence",
+          "default": "evidence",
+          "title": "Kind",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "oclp_version": {
+          "const": "0.1.0-draft",
+          "default": "0.1.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "pass",
+            "fail",
+            "error"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "subject": {
+          "$ref": "#/$defs/RecordReference"
+        }
+      },
+      "required": [
+        "id",
+        "subject",
+        "contract",
+        "outcome",
+        "observed_at"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "Implementation": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "kind": {
+          "enum": [
+            "python-callable",
+            "container",
+            "command",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "locator"
+      ],
+      "title": "Implementation",
+      "type": "object"
+    },
+    "Invocation": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Annotations",
+          "type": "object"
+        },
+        "definition": {
+          "$ref": "#/$defs/RecordReference"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "inputs": {
+          "additionalProperties": {
+            "items": {
+              "$ref": "#/$defs/RecordReference"
+            },
+            "type": "array"
+          },
+          "title": "Inputs",
+          "type": "object"
+        },
+        "kind": {
+          "const": "invocation",
+          "default": "invocation",
+          "title": "Kind",
+          "type": "string"
+        },
+        "oclp_version": {
+          "const": "0.1.0-draft",
+          "default": "0.1.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
+        },
+        "parameters": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "requested_outputs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Requested Outputs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "definition"
+      ],
+      "title": "Invocation",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "LifecycleEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Annotations",
+          "type": "object"
+        },
+        "attempt_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attempt Id"
+        },
+        "data": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Data",
+          "type": "object"
+        },
+        "event_type": {
+          "minLength": 1,
+          "title": "Event Type",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "invocation": {
+          "$ref": "#/$defs/RecordReference"
+        },
+        "kind": {
+          "const": "event",
+          "default": "event",
+          "title": "Kind",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "oclp_version": {
+          "const": "0.1.0-draft",
+          "default": "0.1.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "invocation",
+        "event_type",
+        "occurred_at",
+        "sequence"
+      ],
+      "title": "LifecycleEvent",
+      "type": "object"
+    },
+    "PortDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "cardinality": {
+          "default": "one",
+          "enum": [
+            "one",
+            "many"
+          ],
+          "title": "Cardinality",
+          "type": "string"
+        },
+        "media_types": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Media Types",
+          "type": "array"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "PortDefinition",
+      "type": "object"
+    },
+    "RecordReference": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "RecordReference",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "discriminator": {
+    "mapping": {
+      "artifact": "#/$defs/Artifact",
+      "definition": "#/$defs/ComputationDefinition",
+      "event": "#/$defs/LifecycleEvent",
+      "evidence": "#/$defs/Evidence",
+      "invocation": "#/$defs/Invocation"
+    },
+    "propertyName": "kind"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Artifact"
+    },
+    {
+      "$ref": "#/$defs/ComputationDefinition"
+    },
+    {
+      "$ref": "#/$defs/Invocation"
+    },
+    {
+      "$ref": "#/$defs/Evidence"
+    },
+    {
+      "$ref": "#/$defs/LifecycleEvent"
+    }
+  ]
+}

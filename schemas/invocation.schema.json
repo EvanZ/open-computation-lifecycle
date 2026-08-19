@@ -1,0 +1,114 @@
+{
+  "$defs": {
+    "Digest": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "value": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "Digest",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "RecordReference": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "RecordReference",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "annotations": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Annotations",
+      "type": "object"
+    },
+    "definition": {
+      "$ref": "#/$defs/RecordReference"
+    },
+    "id": {
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    },
+    "inputs": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/RecordReference"
+        },
+        "type": "array"
+      },
+      "title": "Inputs",
+      "type": "object"
+    },
+    "kind": {
+      "const": "invocation",
+      "default": "invocation",
+      "title": "Kind",
+      "type": "string"
+    },
+    "oclp_version": {
+      "const": "0.1.0-draft",
+      "default": "0.1.0-draft",
+      "title": "Oclp Version",
+      "type": "string"
+    },
+    "parameters": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Parameters",
+      "type": "object"
+    },
+    "requested_outputs": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Requested Outputs",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "definition"
+  ],
+  "title": "Invocation",
+  "type": "object"
+}

@@ -1,0 +1,153 @@
+{
+  "$defs": {
+    "Digest": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "value": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "Digest",
+      "type": "object"
+    },
+    "Implementation": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "kind": {
+          "enum": [
+            "python-callable",
+            "container",
+            "command",
+            "other"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "locator"
+      ],
+      "title": "Implementation",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "PortDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "cardinality": {
+          "default": "one",
+          "enum": [
+            "one",
+            "many"
+          ],
+          "title": "Cardinality",
+          "type": "string"
+        },
+        "media_types": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Media Types",
+          "type": "array"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "PortDefinition",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "annotations": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Annotations",
+      "type": "object"
+    },
+    "id": {
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    },
+    "implementation": {
+      "$ref": "#/$defs/Implementation"
+    },
+    "input_ports": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/PortDefinition"
+      },
+      "title": "Input Ports",
+      "type": "array"
+    },
+    "kind": {
+      "const": "definition",
+      "default": "definition",
+      "title": "Kind",
+      "type": "string"
+    },
+    "oclp_version": {
+      "const": "0.1.0-draft",
+      "default": "0.1.0-draft",
+      "title": "Oclp Version",
+      "type": "string"
+    },
+    "output_ports": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/PortDefinition"
+      },
+      "title": "Output Ports",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "implementation"
+  ],
+  "title": "ComputationDefinition",
+  "type": "object"
+}

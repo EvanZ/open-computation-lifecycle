@@ -1,0 +1,18 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "artifact",
+  "id": "nba.raw.playbyplay.0022500001",
+  "annotations": {
+    "org.nba.season": "2025-26"
+  },
+  "media_type": "application/vnd.nba.playbyplay+json",
+  "digest": {
+    "algorithm": "sha256",
+    "value": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "size": 0,
+  "locations": [
+    "file:///data/raw/playbyplay/0022500001.json"
+  ]
+}
+
