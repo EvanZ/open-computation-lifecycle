@@ -16,6 +16,9 @@ nav = [
     {"Cross-language conformance" = "protocol/conformance.md"},
   ]},
   {"Examples" = "examples.md"},
+  {"Profiles" = [
+    {"Dataset snapshot" = "profiles/dataset-snapshot.md"},
+  ]},
   {"Reference SDK" = "sdk.md"},
 ]
 

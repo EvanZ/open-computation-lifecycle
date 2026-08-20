@@ -50,6 +50,9 @@ the executable interoperability contract for the draft.
 The [generic examples](examples/README.md) show individual records for document
 transformation, model inference, software builds, and data-quality checks.
 
+The optional [dataset-snapshot profile](docs/profiles/dataset-snapshot.md)
+defines a canonical manifest for large immutable logical dataset versions.
+
 ## Documentation
 
 The Zensical site provides a reader-oriented introduction to the protocol and

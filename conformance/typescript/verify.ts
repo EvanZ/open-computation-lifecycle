@@ -19,25 +19,38 @@ type Manifest = {
   lineage: Record<string, string>;
 };
 
+type ProfileManifest = {
+  valid: ManifestEntry[];
+  invalid: string[];
+};
+
 type OclpRecord = Record<string, any>;
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
 const fixtures = path.join(root, "tests/conformance");
+const datasetFixtures = path.join(root, "tests/profiles/dataset-snapshot");
 const require = createRequire(import.meta.url);
 const canonicalize = require("canonicalize") as (
   input: unknown,
 ) => string | undefined;
 const addFormats = require("ajv-formats") as (instance: Ajv2020) => void;
-const schema = JSON.parse(
+const coreSchema = JSON.parse(
   await readFile(path.join(root, "schemas/oclp-record.schema.json"), "utf8"),
 );
 const manifest = JSON.parse(
   await readFile(path.join(fixtures, "manifest.json"), "utf8"),
 ) as Manifest;
+const datasetSchema = JSON.parse(
+  await readFile(path.join(root, "profiles/dataset-snapshot.schema.json"), "utf8"),
+);
+const datasetManifest = JSON.parse(
+  await readFile(path.join(datasetFixtures, "manifest.json"), "utf8"),
+) as ProfileManifest;
 const ajv = new Ajv2020({ strict: false });
 addFormats(ajv);
-const validate = ajv.compile(schema);
+const validate = ajv.compile(coreSchema);
+const validateDatasetSnapshot = ajv.compile(datasetSchema);
 
 const records = new Map<string, OclpRecord>();
 for (const entry of manifest.valid) {
@@ -65,6 +78,34 @@ for (const fixturePath of manifest.invalid) {
   );
 }
 
+for (const entry of datasetManifest.valid) {
+  const snapshot = JSON.parse(
+    await readFile(path.join(datasetFixtures, entry.path), "utf8"),
+  ) as OclpRecord;
+  assert.equal(
+    validateDatasetSnapshot(snapshot),
+    true,
+    validateDatasetSnapshot.errors?.map(String).join("\n"),
+  );
+  assert.equal(datasetSnapshotRulesHold(snapshot), true, entry.path);
+  const canonical = canonicalize(snapshot);
+  assert.notEqual(canonical, undefined);
+  assert.equal(canonical, entry.canonical_json, entry.path);
+  const digest = createHash("sha256").update(canonical).digest("hex");
+  assert.equal(`sha256:${digest}`, entry.digest, entry.path);
+}
+
+for (const fixturePath of datasetManifest.invalid) {
+  const snapshot = JSON.parse(
+    await readFile(path.join(datasetFixtures, fixturePath), "utf8"),
+  ) as OclpRecord;
+  assert.equal(
+    validateDatasetSnapshot(snapshot) && datasetSnapshotRulesHold(snapshot),
+    false,
+    `${fixturePath} unexpectedly validated`,
+  );
+}
+
 const invocation = records.get(manifest.lineage.invocation_id)!;
 assert.equal(invocation.definition?.id, manifest.lineage.definition_id);
 assert.equal(invocation.inputs?.source?.[0]?.id, manifest.lineage.input_artifact_id);
@@ -77,7 +118,11 @@ assert.equal(
   manifest.lineage.invocation_id,
 );
 
-console.log(`Verified ${manifest.valid.length} valid and ${manifest.invalid.length} invalid OCLP fixtures.`);
+console.log(
+  `Verified ${manifest.valid.length} valid and ${manifest.invalid.length} invalid ` +
+    `OCLP fixtures; ${datasetManifest.valid.length} valid and ` +
+    `${datasetManifest.invalid.length} invalid dataset-snapshot fixtures.`,
+);
 
 function semanticRulesHold(record: OclpRecord): boolean {
   if (record.kind === "definition") {
@@ -103,4 +148,23 @@ function semanticRulesHold(record: OclpRecord): boolean {
   }
 
   return true;
+}
+
+function datasetSnapshotRulesHold(snapshot: OclpRecord): boolean {
+  const partitions = snapshot.partitions ?? [];
+  const names = partitions.map((partition: { name: string }) => partition.name);
+  if (names.length !== new Set(names).size) {
+    return false;
+  }
+  if (names.join("\0") !== [...names].sort().join("\0")) {
+    return false;
+  }
+  if (
+    partitions.some(
+      (partition: { artifact?: { digest?: unknown } }) => !partition.artifact?.digest,
+    )
+  ) {
+    return false;
+  }
+  return !snapshot.parent || Boolean(snapshot.parent.digest);
 }

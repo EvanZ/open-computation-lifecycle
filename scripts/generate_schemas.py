@@ -14,9 +14,11 @@ from oclp.models import (
     Invocation,
     LifecycleEvent,
 )
+from oclp.profiles import DatasetSnapshotManifest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = ROOT / "schemas"
+PROFILE_DIR = ROOT / "profiles"
 MODELS = {
     "artifact": Artifact,
     "artifact-set": ArtifactSet,
@@ -27,8 +29,7 @@ MODELS = {
 }
 
 
-def write_schema(name: str, schema: dict[str, object]) -> None:
-    path = SCHEMA_DIR / f"{name}.schema.json"
+def write_schema(path: Path, schema: dict[str, object]) -> None:
     schema = {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         **schema,
@@ -39,8 +40,16 @@ def write_schema(name: str, schema: dict[str, object]) -> None:
 def main() -> None:
     SCHEMA_DIR.mkdir(exist_ok=True)
     for name, model in MODELS.items():
-        write_schema(name, model.model_json_schema())
-    write_schema("oclp-record", OCLP_RECORD_ADAPTER.json_schema())
+        write_schema(SCHEMA_DIR / f"{name}.schema.json", model.model_json_schema())
+    write_schema(
+        SCHEMA_DIR / "oclp-record.schema.json",
+        OCLP_RECORD_ADAPTER.json_schema(),
+    )
+    PROFILE_DIR.mkdir(exist_ok=True)
+    write_schema(
+        PROFILE_DIR / "dataset-snapshot.schema.json",
+        DatasetSnapshotManifest.model_json_schema(),
+    )
 
 
 if __name__ == "__main__":

@@ -6,15 +6,14 @@ import hashlib
 
 import rfc8785
 
-from oclp.models import CoreRecord, Digest
+from oclp.models import Digest, OclpModel
 
 
-def canonical_json_bytes(record: CoreRecord) -> bytes:
-    """Serialize a record using the JSON Canonicalization Scheme."""
+def canonical_json_bytes(record: OclpModel) -> bytes:
+    """Serialize an OCLP record or profile value using JCS."""
     payload = record.model_dump(mode="json", exclude_none=True)
     return rfc8785.dumps(payload)
 
 
-def record_digest(record: CoreRecord) -> Digest:
+def record_digest(record: OclpModel) -> Digest:
     return Digest(value=hashlib.sha256(canonical_json_bytes(record)).hexdigest())
-

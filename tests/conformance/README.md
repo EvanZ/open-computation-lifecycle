@@ -40,3 +40,6 @@ npm run verify
 Add a fixture only when the draft specification defines its expected behavior.
 Update the specification, schemas, vectors, and every verifier together when a
 protocol change is intentional.
+
+Optional profiles keep their independent vectors under `tests/profiles/`. The
+TypeScript verifier exercises the dataset-snapshot profile alongside Core.
