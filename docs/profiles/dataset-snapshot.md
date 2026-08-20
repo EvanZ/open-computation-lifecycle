@@ -111,7 +111,20 @@ portable integrity.
 }
 ```
 
-## 7. Conformance
+## 7. Design rationale (non-normative)
+
+This section explains the profile's design choices. It does not alter the
+normative requirements above.
+
+| Decision | Rationale and consequence |
+| --- | --- |
+| The manifest is carried by an ordinary Artifact. | Core already provides content addressing, retrieval hints, and lineage for immutable bytes. A separate snapshot record kind would duplicate those facilities and make profile content less portable. |
+| A manifest identifies a version; `dataset_id` identifies the logical dataset. | Teams need a durable name for a continuing dataset and a distinct identity for each immutable version. Treating a table name or bucket prefix as the version would make mutable storage layout part of the identity. |
+| Partitions reference exact Artifact records. | A partition can be verified, retrieved, and reused independently. The manifest remains compact for large datasets, and unchanged partitions retain their identity across snapshots. |
+| Partition names are unique and sorted. | Unique names make membership unambiguous; a fixed order prevents two semantically identical partition lists from producing different canonical manifest bytes merely because a producer enumerated storage differently. |
+| Large services are represented through bounded immutable metadata, not a whole-service hash. | A petabyte-scale lake or live warehouse often cannot be read atomically to calculate a portable byte hash. Immutable exports, table manifests, and partition Artifacts provide a practical integrity boundary while provider-specific snapshot IDs remain useful annotations. |
+
+## 8. Conformance
 
 A conforming profile producer MUST emit a manifest that validates against the
 published dataset-snapshot JSON Schema and satisfies this specification. A
