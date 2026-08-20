@@ -39,7 +39,19 @@ reference must include the Artifact record digest. The optional implementation
 digest remains a runtime fingerprint; OCLP does not require a runtime to fetch,
 execute, or verify a code Artifact.
 
-### 3.2 ArtifactSet
+### 3.2 Invocation
+
+An Invocation binds one Definition to exact input artifacts and parameters. It
+is the durable identity of a requested application of a computation, not an
+individual execution attempt.
+
+### 3.3 Artifact
+
+An Artifact describes immutable content using a media type, byte size, and
+content digest. Locations are replaceable retrieval hints and do not determine
+artifact identity.
+
+### 3.4 ArtifactSet
 
 An ArtifactSet is an immutable, named collection of exact Artifact references.
 Each member carries a unique name, an optional semantic role, and a required
@@ -47,18 +59,6 @@ flag. A member reference must include the referenced Artifact's record digest,
 so the collection binds specific content rather than a mutable name. An
 ArtifactSet is logical: it does not imply a particular archive, directory, or
 retrieval layout, and it does not introduce nested sets in draft 0.1.
-
-### 3.3 Invocation
-
-An Invocation binds one Definition to exact input artifacts and parameters. It
-is the durable identity of a requested application of a computation, not an
-individual execution attempt.
-
-### 3.4 Artifact
-
-An Artifact describes immutable content using a media type, byte size, and
-content digest. Locations are replaceable retrieval hints and do not determine
-artifact identity.
 
 ### 3.5 Evidence
 
