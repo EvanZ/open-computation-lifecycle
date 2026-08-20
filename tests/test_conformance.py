@@ -55,3 +55,9 @@ def test_site_specification_mirrors_the_canonical_specification() -> None:
     assert (ROOT / "docs/protocol/specification.md").read_text() == (
         ROOT / "spec/oclp-core.md"
     ).read_text()
+
+
+def test_site_dataset_snapshot_specification_mirrors_the_canonical_specification() -> None:
+    assert (ROOT / "docs/profiles/dataset-snapshot.md").read_text() == (
+        ROOT / "spec/dataset-snapshot.md"
+    ).read_text()

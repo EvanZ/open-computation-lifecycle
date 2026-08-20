@@ -50,7 +50,7 @@ the executable interoperability contract for the draft.
 The [generic examples](examples/README.md) show individual records for document
 transformation, model inference, software builds, and data-quality checks.
 
-The optional [dataset-snapshot profile](docs/profiles/dataset-snapshot.md)
+The optional [dataset-snapshot profile](spec/dataset-snapshot.md)
 defines a canonical manifest for large immutable logical dataset versions.
 
 ## Documentation
