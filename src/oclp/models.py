@@ -47,6 +47,13 @@ class Implementation(OclpModel):
     kind: Literal["python-callable", "container", "command", "other"]
     locator: str = Field(min_length=1)
     digest: Digest | None = None
+    artifact: RecordReference | None = None
+
+    @model_validator(mode="after")
+    def artifact_reference_is_content_bound(self) -> Implementation:
+        if self.artifact is not None and self.artifact.digest is None:
+            raise ValueError("implementation artifacts must include a record digest")
+        return self
 
 
 class ContractReference(OclpModel):

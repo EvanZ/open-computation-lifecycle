@@ -12,9 +12,10 @@ For a produced file or dataset, a consumer should be able to answer:
 
 1. Which immutable input artifacts were used?
 2. Which computation definition and implementation were selected?
-3. What exact parameters were bound?
-4. Which execution attempt produced the durable facts?
-5. What evidence was recorded about the result?
+3. Which exact code or runtime package was bound, when the producer records it?
+4. What exact parameters were bound?
+5. Which execution attempt produced the durable facts?
+6. What evidence was recorded about the result?
 
 ## What it intentionally leaves out
 

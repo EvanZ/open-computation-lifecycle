@@ -24,6 +24,17 @@
     "Implementation": {
       "additionalProperties": false,
       "properties": {
+        "artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "digest": {
           "anyOf": [
             {
@@ -94,6 +105,32 @@
         "name"
       ],
       "title": "PortDefinition",
+      "type": "object"
+    },
+    "RecordReference": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "RecordReference",
       "type": "object"
     }
   },

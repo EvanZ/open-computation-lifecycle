@@ -23,6 +23,10 @@ An ArtifactSet member has a unique name, optional role, required flag, and an
 Artifact reference with a record digest. It is a logical collection, not a
 prescribed archive or directory layout.
 
+An Implementation may also carry an exact Artifact reference for its code or
+runtime package. This does not create a special code record type: source
+bundles, wheels, and container manifests are ordinary Artifacts.
+
 ## Extensions
 
 Top-level fields are strict in draft 0.1. Producers place experimental or

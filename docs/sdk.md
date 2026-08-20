@@ -23,3 +23,7 @@ uv run --group docs zensical serve
 
 The `oclp validate path/to/record.json` command validates a serialized record
 and prints its digest.
+
+An `Implementation` can optionally reference an ordinary, content-bound
+`Artifact` for its source bundle, wheel, or container manifest. OCLP does not
+define a separate code-artifact type.

@@ -13,8 +13,8 @@
     },
     {
       "path": "valid/definition.json",
-      "canonical_json": "{\"annotations\":{},\"id\":\"urn:example:definition:uppercase\",\"implementation\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"},\"kind\":\"other\",\"locator\":\"example:uppercase\"},\"input_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"source\",\"required\":true}],\"kind\":\"definition\",\"oclp_version\":\"0.1.0-draft\",\"output_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"result\",\"required\":true}]}",
-      "digest": "sha256:5a5a9415984cc3cb66d41dbf423e91d0f9fea8b5bf446b744f6623b0730e25ce"
+      "canonical_json": "{\"annotations\":{},\"id\":\"urn:example:definition:uppercase\",\"implementation\":{\"artifact\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d\"},\"id\":\"urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"},\"kind\":\"other\",\"locator\":\"example:uppercase\"},\"input_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"source\",\"required\":true}],\"kind\":\"definition\",\"oclp_version\":\"0.1.0-draft\",\"output_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"result\",\"required\":true}]}",
+      "digest": "sha256:0faa260f2ab085d1a52661100ce256cf6e6808776c25ed01da6e26bd80fea334"
     },
     {
       "path": "valid/invocation.json",
@@ -37,6 +37,7 @@
     "invalid/artifact-invalid-digest.json",
     "invalid/evidence-invalid-outcome.json",
     "invalid/definition-duplicate-port.json",
+    "invalid/definition-unbound-implementation-artifact.json",
     "invalid/artifact-set-duplicate-member.json",
     "invalid/artifact-set-unbound-member.json"
   ],

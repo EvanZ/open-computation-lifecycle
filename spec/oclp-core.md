@@ -33,6 +33,12 @@ descriptive; runtimes decide whether and how they support it.
 Port names must be unique within the input direction and within the output
 direction.
 
+An implementation may reference one exact Artifact representing its code or
+runtime package, such as a source bundle, wheel, or container manifest. This
+reference must include the Artifact record digest. The optional implementation
+digest remains a runtime fingerprint; OCLP does not require a runtime to fetch,
+execute, or verify a code Artifact.
+
 ### 3.2 ArtifactSet
 
 An ArtifactSet is an immutable, named collection of exact Artifact references.
@@ -84,6 +90,7 @@ Lineage is derived from explicit bindings rather than a separate mutable graph:
 
 ```text
 Artifact -> consumed by Invocation -> produces Artifact
+Artifact -> may bind a Definition implementation
 ArtifactSet -> names exact Artifacts in a logical collection
 Definition -> instantiated by Invocation
 Evidence -> checks Definition, Invocation, Artifact, ArtifactSet, or Event

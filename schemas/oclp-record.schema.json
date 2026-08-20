@@ -316,6 +316,17 @@
     "Implementation": {
       "additionalProperties": false,
       "properties": {
+        "artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "digest": {
           "anyOf": [
             {

@@ -1,0 +1,15 @@
+{
+  "annotations": {},
+  "id": "urn:example:definition:unbound-implementation-artifact",
+  "implementation": {
+    "artifact": {
+      "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "kind": "other",
+    "locator": "example:uppercase"
+  },
+  "input_ports": [],
+  "kind": "definition",
+  "oclp_version": "0.1.0-draft",
+  "output_ports": []
+}

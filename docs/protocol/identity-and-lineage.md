@@ -14,6 +14,7 @@ Lineage is derived from immutable references:
 
 ```text
 raw Artifact -> Invocation input binding -> processed Artifact
+code Artifact -> Definition implementation binding
 ArtifactSet  -> named, content-bound Artifact members
 Definition   -> Invocation definition binding
 Evidence     -> Invocation, Artifact, ArtifactSet, Definition, or Event

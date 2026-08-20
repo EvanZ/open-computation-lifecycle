@@ -87,6 +87,9 @@ function semanticRulesHold(record: OclpRecord): boolean {
         return false;
       }
     }
+    if (record.implementation?.artifact && !record.implementation.artifact.digest) {
+      return false;
+    }
   }
 
   if (record.kind === "artifact_set") {
