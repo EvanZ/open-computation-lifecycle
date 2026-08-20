@@ -10,7 +10,6 @@ nav = [
   {"Protocol" = [
     {"Overview" = "protocol/overview.md"},
     {"Specification (normative)" = "protocol/specification.md"},
-    {"Core records" = "protocol/records.md"},
     {"Identity and lineage" = "protocol/identity-and-lineage.md"},
     {"Publication and conformance" = "protocol/publication-and-conformance.md"},
     {"Cross-language conformance" = "protocol/conformance.md"},
