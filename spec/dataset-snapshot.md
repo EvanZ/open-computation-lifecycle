@@ -15,12 +15,27 @@ same meaning as in the [OCLP Core Specification](https://evanz.github.io/open-co
 values, JSON rules, canonicalization, and extension rules apply unless this
 profile says otherwise.
 
-## 2. Transport and identity
+## 2. Profile declaration
+
+| Declaration | Value |
+| --- | --- |
+| Profile ID | `dataset-snapshot` |
+| Profile version | `0.1.0-draft` |
+| Core compatibility | OCLP Core `0.1.0-draft` |
+| Dependencies | None |
+| Extension surface | Canonical Artifact content: a dataset-snapshot manifest |
+| Required Artifact media type | `application/vnd.oclp.dataset-snapshot-manifest+json` |
+| Required Artifact schema URI | `urn:oclp:profile:dataset-snapshot:0.1.0-draft` |
+| Conformance package | This specification, the published JSON Schema, and the dataset-snapshot valid/invalid vectors |
+
+This declaration satisfies the [Core profile framework](https://evanz.github.io/open-computation-lifecycle/protocol/specification/#extensions-and-profiles).
+
+## 3. Transport and identity
 
 A profile manifest is canonical JSON carried as an ordinary core Artifact. The
 producer MUST set that Artifact's `media_type` to
-`application/vnd.oclp.dataset-snapshot-manifest+json` and SHOULD set its
-`schema_uri` to a stable identifier for this profile version. The Artifact's
+`application/vnd.oclp.dataset-snapshot-manifest+json` and MUST set its
+`schema_uri` to `urn:oclp:profile:dataset-snapshot:0.1.0-draft`. The Artifact's
 SHA-256 is the immutable identity of the snapshot manifest. Its `dataset_id`
 is a stable logical dataset name, not the version identity.
 
@@ -28,7 +43,7 @@ Each partition points to an exact Artifact record. This makes a snapshot a
 small, portable graph of immutable metadata and content references rather than
 a hash over a potentially enormous live database or data lake.
 
-## 3. Manifest fields
+## 4. Manifest fields
 
 The manifest is a closed JSON object. Its canonical form is JCS canonical JSON
 after applying the defaults below.
@@ -43,7 +58,7 @@ after applying the defaults below.
 | `parent` | optional; RecordReference | Earlier snapshot-manifest Artifact for incremental lineage. If present, its record digest is REQUIRED. The parent need not have the same partition layout. |
 | `annotations` | default; object | Empty object by default. Namespaced, producer-defined JSON metadata such as snapshot timestamps, warehouse version IDs, or retention policy. |
 
-### 3.1 DatasetSnapshotPartition
+### 4.1 DatasetSnapshotPartition
 
 Each value in `partitions` is a closed object:
 
@@ -53,7 +68,7 @@ Each value in `partitions` is a closed object:
 | `artifact` | required; RecordReference | The Artifact containing this partition's immutable bytes. Its record digest is REQUIRED, so a partition cannot silently resolve to a different Artifact record. |
 | `values` | default; object | Empty object by default. Producer-defined JSON partition values, such as `{ "date": "2026-08-19" }`. They aid discovery but do not change the referenced Artifact's identity. |
 
-## 4. Rules for storage systems
+## 5. Rules for storage systems
 
 A mutable table name, bucket prefix, `latest` pointer, or database Time Travel
 identifier is a retrieval or operational hint, never snapshot identity. Put such
@@ -67,7 +82,7 @@ as an Artifact digest. A profile consumer can still use annotations to locate a
 provider-specific snapshot while relying on the bound Artifact graph for
 portable integrity.
 
-## 5. Example
+## 6. Example
 
 ```json
 {
@@ -96,7 +111,7 @@ portable integrity.
 }
 ```
 
-## 6. Conformance
+## 7. Conformance
 
 A conforming profile producer MUST emit a manifest that validates against the
 published dataset-snapshot JSON Schema and satisfies this specification. A

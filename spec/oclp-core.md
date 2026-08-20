@@ -257,10 +257,65 @@ canonical protocol truth and MUST be rebuildable from immutable records.
 ## 6. Extensions and profiles
 
 Unknown top-level fields are invalid. Producers SHOULD put experimental,
-namespaced extension data under `annotations`. A profile defines the content of
-an Artifact without changing this core record vocabulary. For example, the
-dataset-snapshot profile defines a portable manifest whose canonical bytes are
-then described by an ordinary Artifact.
+namespaced extension data under `annotations`. A profile is a versioned,
+optional layer of normative specifications that composes with this Core. It
+adds a bounded interoperability contract for one concern—such as dataset
+snapshots or agent execution—without changing the Core record vocabulary.
+
+### 6.1 Profile declaration
+
+A published profile specification MUST declare all of the following:
+
+| Declaration | Requirement |
+| --- | --- |
+| Profile ID | A non-empty stable identifier, unique within the profile publisher's namespace. It is the value carried in any profile-defined `oclp_profile` field. |
+| Profile version | A non-empty version identifier. A profile version is independent of the OCLP Core version. |
+| Core compatibility | The OCLP Core version or versions for which the profile is defined. |
+| Dependencies | The exact profile IDs and compatible versions on which it depends, or an explicit declaration that it has none. |
+| Extension surfaces | The Core locations whose content it defines: an Artifact's bytes, a named Event `data` payload, or namespaced keys within an existing JSON extension object. |
+| Conformance package | A normative profile specification, published schema or schemas where applicable, and valid/invalid vectors with canonical bytes and digests whenever the profile defines canonical JSON. |
+
+The normative profile specification is authoritative. Schemas, vectors, and SDK
+bindings are derived conformance artifacts.
+
+### 6.2 Profile surfaces
+
+A profile MAY define one or more of these surfaces:
+
+1. **Artifact content.** It defines an Artifact payload format and MUST declare
+   the required `media_type`. It SHOULD declare the required `schema_uri`.
+   The profile MUST state whether the Artifact digest hashes the payload bytes,
+   a canonical manifest, or another bounded immutable representation.
+2. **Event convention.** It defines one or more `event_type` values and the
+   schema and semantics of their `data` objects. It MUST state whether event
+   ordering, attempt binding, or referenced Artifacts are required.
+3. **Extension-object convention.** It defines namespaced keys and value shapes
+   within `annotations`, `parameters`, `details`, or `data`. It MUST NOT
+   assign meaning to an unnamespaced key outside a profile-owned object.
+
+A profile MUST NOT add arbitrary top-level fields to a Core record, weaken a
+Core invariant, redefine a Core field, or require a consumer that does not
+claim that profile to implement its domain behavior.
+
+### 6.3 Composition
+
+Profiles compose by explicit dependency, not by implicit convention. A profile
+that relies on another profile MUST declare its dependency and the compatible
+version or versions. A producer MAY apply independent profiles to the same
+computation graph when their declared surfaces do not conflict. A consumer
+claims support for a profile only when it implements that profile's
+conformance package and all declared dependencies.
+
+Core-only consumers MAY retain, index, and traverse profile-bearing records
+without understanding profile semantics. They MUST continue to enforce Core
+validation and integrity rules. A profile consumer MUST reject a record or
+payload that claims the profile but violates its declared schema or semantic
+rules.
+
+The dataset-snapshot profile is the first profile under this framework: it
+defines canonical Artifact content. Future profiles may standardize agent,
+model-service, and MCP event conventions without making those concepts Core
+requirements.
 
 ## 7. Conformance
 
