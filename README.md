@@ -55,6 +55,8 @@ transformation, model inference, software builds, and data-quality checks.
 The Zensical site provides a reader-oriented introduction to the protocol and
 reference SDK:
 
+<https://evanz.github.io/open-computation-lifecycle/>
+
 ```bash
 uv sync --group docs
 uv run --group docs zensical serve
