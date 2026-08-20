@@ -10,6 +10,7 @@ common uses:
 | Model inference | [`model-inference-invocation.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/model-inference-invocation.json) | Exact model/data bindings and inference parameters. |
 | Software build | [`software-build-definition.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/software-build-definition.json) | A command implementation with typed input and output ports. |
 | Data quality | [`data-quality-evidence.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/data-quality-evidence.json) | A named contract evaluated against a dataset artifact. |
+| Dataset snapshot profile | [Profile specification](profiles/dataset-snapshot.md) | A profile-defined manifest carried by an ordinary Artifact. |
 
 Validate an example locally:
 
@@ -164,6 +165,69 @@ Evidence records a named contract result against an immutable dataset Artifact.
   }
 }
 ```
+
+## Dataset snapshot profile
+
+A profile composes a bounded semantic layer with the Core. Here,
+`dataset-snapshot` defines the manifest payload; Core still provides the
+content-addressed Artifact used to publish that payload. The profile's
+declaration specifies its ID, version, required media type and schema URI, and
+its independent conformance vectors.
+
+This is the profile-defined manifest payload, not a Core record:
+
+```json
+{
+  "oclp_profile": "dataset-snapshot",
+  "oclp_profile_version": "0.1.0-draft",
+  "dataset_id": "urn:example:dataset:customer-export",
+  "data_format": "application/vnd.apache.parquet",
+  "partitions": [
+    {
+      "name": "date=2026-08-19/part-00000.parquet",
+      "artifact": {
+        "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "digest": {
+          "algorithm": "sha256",
+          "value": "2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"
+        }
+      },
+      "values": {
+        "date": "2026-08-19"
+      }
+    }
+  ],
+  "annotations": {
+    "example.org/producer": "partition-writer"
+  }
+}
+```
+
+The following ordinary Artifact carries the complete canonical manifest. Its
+`digest` and `size` describe the manifest bytes; each partition's own
+Artifact remains separately identified.
+
+```json
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "artifact",
+  "id": "urn:example:artifact:customer-export:2026-08-19",
+  "annotations": {
+    "example.org/purpose": "dataset-snapshot-manifest"
+  },
+  "media_type": "application/vnd.oclp.dataset-snapshot-manifest+json",
+  "digest": {
+    "algorithm": "sha256",
+    "value": "6bb1dafb86cedcc3e2a7ab7836165d4363f3f9f59f48f481308f929c7b6ccb44"
+  },
+  "size": 523,
+  "schema_uri": "urn:oclp:profile:dataset-snapshot:0.1.0-draft"
+}
+```
+
+See the [dataset-snapshot profile specification](profiles/dataset-snapshot.md)
+for its normative rules and the [profile framework](protocol/specification.md)
+for how profiles compose with Core.
 
 Examples deliberately focus on one record kind. For a complete, connected
 lineage across the core record kinds, see the
