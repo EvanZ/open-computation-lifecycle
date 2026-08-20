@@ -1,0 +1,31 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "invocation",
+  "id": "urn:example:invocation:fraud-score-batch-2026-08-19",
+  "annotations": {
+    "example.org/purpose": "batch-inference"
+  },
+  "definition": {
+    "id": "urn:example:definition:fraud-score-v4"
+  },
+  "parameters": {
+    "decision_threshold": 0.82,
+    "explanation": true
+  },
+  "inputs": {
+    "transactions": [
+      {
+        "id": "urn:sha256:09a43e5f3ceaaea12f36a22ff8fe264a4f9fe6dbf44ff73d337e8b2bfeadff07"
+      }
+    ],
+    "model": [
+      {
+        "id": "urn:sha256:44ecef9ea7b8db964eb9da498d4574fdc079ebf050252c6e0e14ca4a89d4a1cd"
+      }
+    ]
+  },
+  "requested_outputs": [
+    "scores",
+    "explanations"
+  ]
+}

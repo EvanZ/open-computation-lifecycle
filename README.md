@@ -30,8 +30,32 @@ data-processing framework.
 uv sync --group dev
 uv run pytest
 uv run python scripts/generate_schemas.py
-uv run oclp validate examples/raw-response-artifact.json
+uv run oclp validate examples/document-transformation-artifact.json
+```
+
+Run the independent TypeScript conformance verifier with:
+
+```bash
+cd conformance/typescript
+npm ci
+npm run typecheck
+npm run verify
 ```
 
 The current draft is in [`spec/oclp-core.md`](spec/oclp-core.md).
 
+The language-neutral [conformance vectors](tests/conformance/README.md) define
+the executable interoperability contract for the draft.
+
+The [generic examples](examples/README.md) show individual records for document
+transformation, model inference, software builds, and data-quality checks.
+
+## Documentation
+
+The Zensical site provides a reader-oriented introduction to the protocol and
+reference SDK:
+
+```bash
+uv sync --group docs
+uv run --group docs zensical serve
+```

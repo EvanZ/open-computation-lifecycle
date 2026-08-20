@@ -1,0 +1,133 @@
+{
+  "$defs": {
+    "ArtifactSetMember": {
+      "additionalProperties": false,
+      "description": "One immutable Artifact assigned a stable name and semantic role.",
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/RecordReference"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Role"
+        }
+      },
+      "required": [
+        "name",
+        "artifact"
+      ],
+      "title": "ArtifactSetMember",
+      "type": "object"
+    },
+    "Digest": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "value": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "Digest",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "RecordReference": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "RecordReference",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "An immutable, named collection of exact Artifact references.",
+  "properties": {
+    "annotations": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Annotations",
+      "type": "object"
+    },
+    "id": {
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    },
+    "kind": {
+      "const": "artifact_set",
+      "default": "artifact_set",
+      "title": "Kind",
+      "type": "string"
+    },
+    "members": {
+      "items": {
+        "$ref": "#/$defs/ArtifactSetMember"
+      },
+      "minItems": 1,
+      "title": "Members",
+      "type": "array"
+    },
+    "oclp_version": {
+      "const": "0.1.0-draft",
+      "default": "0.1.0-draft",
+      "title": "Oclp Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "members"
+  ],
+  "title": "ArtifactSet",
+  "type": "object"
+}

@@ -1,0 +1,14 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "evidence",
+  "id": "evidence.invalid-outcome",
+  "subject": {
+    "id": "subject.example"
+  },
+  "contract": {
+    "id": "contract.example",
+    "version": "1"
+  },
+  "outcome": "warning",
+  "observed_at": "2026-08-19T20:00:00Z"
+}

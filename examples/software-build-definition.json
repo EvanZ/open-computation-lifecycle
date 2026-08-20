@@ -1,0 +1,44 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "definition",
+  "id": "urn:example:definition:service-container-build",
+  "annotations": {
+    "example.org/purpose": "software-build"
+  },
+  "implementation": {
+    "kind": "command",
+    "locator": "buildctl build --frontend dockerfile.v0",
+    "digest": {
+      "algorithm": "sha256",
+      "value": "87b6c72b5098c78187360864246f421850073e95f934ce17873b4f080d30bb28"
+    }
+  },
+  "input_ports": [
+    {
+      "name": "source",
+      "cardinality": "one",
+      "required": true,
+      "media_types": [
+        "application/vnd.git.bundle"
+      ]
+    },
+    {
+      "name": "lockfile",
+      "cardinality": "one",
+      "required": true,
+      "media_types": [
+        "application/json"
+      ]
+    }
+  ],
+  "output_ports": [
+    {
+      "name": "container-image",
+      "cardinality": "one",
+      "required": true,
+      "media_types": [
+        "application/vnd.oci.image.manifest.v1+json"
+      ]
+    }
+  ]
+}

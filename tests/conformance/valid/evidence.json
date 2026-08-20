@@ -1,0 +1,19 @@
+{
+  "annotations": {},
+  "contract": {
+    "id": "urn:example:contract:uppercase",
+    "version": "1"
+  },
+  "details": {
+    "changed": true,
+    "input_characters": 5
+  },
+  "id": "urn:example:evidence:uppercase-hello",
+  "kind": "evidence",
+  "observed_at": "2026-08-19T20:00:00Z",
+  "oclp_version": "0.1.0-draft",
+  "outcome": "pass",
+  "subject": {
+    "id": "urn:example:invocation:uppercase-hello"
+  }
+}

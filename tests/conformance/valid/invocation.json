@@ -1,0 +1,22 @@
+{
+  "annotations": {},
+  "definition": {
+    "id": "urn:example:definition:uppercase"
+  },
+  "id": "urn:example:invocation:uppercase-hello",
+  "inputs": {
+    "source": [
+      {
+        "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ]
+  },
+  "kind": "invocation",
+  "oclp_version": "0.1.0-draft",
+  "parameters": {
+    "locale": "en-US"
+  },
+  "requested_outputs": [
+    "result"
+  ]
+}

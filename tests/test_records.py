@@ -33,3 +33,8 @@ def test_invalid_conformance_fixtures_are_rejected() -> None:
     for path in (FIXTURES / "invalid").glob("*.json"):
         with pytest.raises(ValidationError):
             parse_record(json.loads(path.read_text()))
+
+
+def test_generic_examples_are_accepted() -> None:
+    for path in (Path(__file__).parents[1] / "examples").glob("*.json"):
+        parse_record(json.loads(path.read_text()))

@@ -3,6 +3,7 @@
 from oclp.canonical import canonical_json_bytes, record_digest
 from oclp.models import (
     Artifact,
+    ArtifactSet,
     ComputationDefinition,
     Evidence,
     Invocation,
@@ -12,6 +13,7 @@ from oclp.validation import parse_record
 
 __all__ = [
     "Artifact",
+    "ArtifactSet",
     "ComputationDefinition",
     "Evidence",
     "Invocation",
@@ -22,4 +24,3 @@ __all__ = [
 ]
 
 __version__ = "0.1.0a0"
-

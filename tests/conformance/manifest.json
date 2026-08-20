@@ -1,0 +1,50 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "valid": [
+    {
+      "path": "valid/artifact.json",
+      "canonical_json": "{\"annotations\":{\"example.org/source\":\"fixture\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"id\":\"urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"kind\":\"artifact\",\"locations\":[\"https://example.org/input.txt\"],\"media_type\":\"text/plain\",\"oclp_version\":\"0.1.0-draft\",\"size\":5}",
+      "digest": "sha256:2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"
+    },
+    {
+      "path": "valid/artifact-set.json",
+      "canonical_json": "{\"annotations\":{\"example.org/purpose\":\"release-package\"},\"id\":\"urn:example:artifact-set:release\",\"kind\":\"artifact_set\",\"members\":[{\"artifact\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d\"},\"id\":\"urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"name\":\"source-document\",\"required\":true,\"role\":\"source-document\"}],\"oclp_version\":\"0.1.0-draft\"}",
+      "digest": "sha256:2ff303b10b8ec16c7452c9dc750b3a24ea5f53123b7b69018e9ac1a4d29e3b13"
+    },
+    {
+      "path": "valid/definition.json",
+      "canonical_json": "{\"annotations\":{},\"id\":\"urn:example:definition:uppercase\",\"implementation\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"},\"kind\":\"other\",\"locator\":\"example:uppercase\"},\"input_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"source\",\"required\":true}],\"kind\":\"definition\",\"oclp_version\":\"0.1.0-draft\",\"output_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"result\",\"required\":true}]}",
+      "digest": "sha256:5a5a9415984cc3cb66d41dbf423e91d0f9fea8b5bf446b744f6623b0730e25ce"
+    },
+    {
+      "path": "valid/invocation.json",
+      "canonical_json": "{\"annotations\":{},\"definition\":{\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-hello\",\"inputs\":{\"source\":[{\"id\":\"urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"parameters\":{\"locale\":\"en-US\"},\"requested_outputs\":[\"result\"]}",
+      "digest": "sha256:f02190e7efe5745150d85139c959547c4b6a3d07dee4419aa782bbb5855dfc3e"
+    },
+    {
+      "path": "valid/evidence.json",
+      "canonical_json": "{\"annotations\":{},\"contract\":{\"id\":\"urn:example:contract:uppercase\",\"version\":\"1\"},\"details\":{\"changed\":true,\"input_characters\":5},\"id\":\"urn:example:evidence:uppercase-hello\",\"kind\":\"evidence\",\"observed_at\":\"2026-08-19T20:00:00Z\",\"oclp_version\":\"0.1.0-draft\",\"outcome\":\"pass\",\"subject\":{\"id\":\"urn:example:invocation:uppercase-hello\"}}",
+      "digest": "sha256:f2f77ea3d73f8a5745d7b569b58d0327ab34c96eceed22f7470b392c9e3cc1ec"
+    },
+    {
+      "path": "valid/event.json",
+      "canonical_json": "{\"annotations\":{},\"attempt_id\":\"attempt-1\",\"data\":{\"worker\":\"fixture\"},\"event_type\":\"attempt-started\",\"id\":\"urn:example:event:uppercase-hello:0\",\"invocation\":{\"id\":\"urn:example:invocation:uppercase-hello\"},\"kind\":\"event\",\"occurred_at\":\"2026-08-19T20:00:01Z\",\"oclp_version\":\"0.1.0-draft\",\"sequence\":0}",
+      "digest": "sha256:b3aaa26c181437c8ea1d9ddfe0a88dc21060daacb92cfc44a50d8fa592848de6"
+    }
+  ],
+  "invalid": [
+    "invalid/artifact-extra-field.json",
+    "invalid/artifact-invalid-digest.json",
+    "invalid/evidence-invalid-outcome.json",
+    "invalid/definition-duplicate-port.json",
+    "invalid/artifact-set-duplicate-member.json",
+    "invalid/artifact-set-unbound-member.json"
+  ],
+  "lineage": {
+    "definition_id": "urn:example:definition:uppercase",
+    "invocation_id": "urn:example:invocation:uppercase-hello",
+    "input_artifact_id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "evidence_id": "urn:example:evidence:uppercase-hello",
+    "event_id": "urn:example:event:uppercase-hello:0"
+  }
+}

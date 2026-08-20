@@ -1,0 +1,17 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "definition",
+  "id": "definition.invalid-duplicate-port",
+  "implementation": {
+    "kind": "other",
+    "locator": "example:duplicate-port"
+  },
+  "input_ports": [
+    {
+      "name": "source"
+    },
+    {
+      "name": "source"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+[project]
+site_name = "Open Computation Lifecycle Protocol"
+site_description = "A vendor-neutral protocol for durable computation metadata."
+site_url = "https://evanz.github.io/open-computation-lifecycle/"
+repo_url = "https://github.com/EvanZ/open-computation-lifecycle"
+docs_dir = "docs"
+site_dir = "site"
+nav = [
+  {"Home" = "index.md"},
+  {"Protocol" = [
+    {"Specification (normative)" = "protocol/specification.md"},
+    {"Overview" = "protocol/overview.md"},
+    {"Core records" = "protocol/records.md"},
+    {"Identity and lineage" = "protocol/identity-and-lineage.md"},
+    {"Publication and conformance" = "protocol/publication-and-conformance.md"},
+    {"Cross-language conformance" = "protocol/conformance.md"},
+  ]},
+  {"Examples" = "examples.md"},
+  {"Reference SDK" = "sdk.md"},
+]
+
+[project.theme]
+variant = "modern"
+features = ["navigation.path", "navigation.sections", "navigation.top", "toc.follow"]

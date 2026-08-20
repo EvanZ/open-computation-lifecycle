@@ -1,0 +1,15 @@
+{
+  "annotations": {},
+  "id": "urn:example:artifact-set:unbound",
+  "kind": "artifact_set",
+  "members": [
+    {
+      "artifact": {
+        "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "name": "release.json",
+      "required": true
+    }
+  ],
+  "oclp_version": "0.1.0-draft"
+}

@@ -70,6 +70,88 @@
       "title": "Artifact",
       "type": "object"
     },
+    "ArtifactSet": {
+      "additionalProperties": false,
+      "description": "An immutable, named collection of exact Artifact references.",
+      "properties": {
+        "annotations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Annotations",
+          "type": "object"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "artifact_set",
+          "default": "artifact_set",
+          "title": "Kind",
+          "type": "string"
+        },
+        "members": {
+          "items": {
+            "$ref": "#/$defs/ArtifactSetMember"
+          },
+          "minItems": 1,
+          "title": "Members",
+          "type": "array"
+        },
+        "oclp_version": {
+          "const": "0.1.0-draft",
+          "default": "0.1.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "members"
+      ],
+      "title": "ArtifactSet",
+      "type": "object"
+    },
+    "ArtifactSetMember": {
+      "additionalProperties": false,
+      "description": "One immutable Artifact assigned a stable name and semantic role.",
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/RecordReference"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Role"
+        }
+      },
+      "required": [
+        "name",
+        "artifact"
+      ],
+      "title": "ArtifactSetMember",
+      "type": "object"
+    },
     "ComputationDefinition": {
       "additionalProperties": false,
       "properties": {
@@ -475,6 +557,7 @@
   "discriminator": {
     "mapping": {
       "artifact": "#/$defs/Artifact",
+      "artifact_set": "#/$defs/ArtifactSet",
       "definition": "#/$defs/ComputationDefinition",
       "event": "#/$defs/LifecycleEvent",
       "evidence": "#/$defs/Evidence",
@@ -485,6 +568,9 @@
   "oneOf": [
     {
       "$ref": "#/$defs/Artifact"
+    },
+    {
+      "$ref": "#/$defs/ArtifactSet"
     },
     {
       "$ref": "#/$defs/ComputationDefinition"

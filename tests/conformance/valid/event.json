@@ -1,0 +1,16 @@
+{
+  "annotations": {},
+  "attempt_id": "attempt-1",
+  "data": {
+    "worker": "fixture"
+  },
+  "event_type": "attempt-started",
+  "id": "urn:example:event:uppercase-hello:0",
+  "invocation": {
+    "id": "urn:example:invocation:uppercase-hello"
+  },
+  "kind": "event",
+  "occurred_at": "2026-08-19T20:00:01Z",
+  "oclp_version": "0.1.0-draft",
+  "sequence": 0
+}

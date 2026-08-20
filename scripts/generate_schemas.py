@@ -8,6 +8,7 @@ from pathlib import Path
 from oclp.models import (
     OCLP_RECORD_ADAPTER,
     Artifact,
+    ArtifactSet,
     ComputationDefinition,
     Evidence,
     Invocation,
@@ -18,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = ROOT / "schemas"
 MODELS = {
     "artifact": Artifact,
+    "artifact-set": ArtifactSet,
     "definition": ComputationDefinition,
     "invocation": Invocation,
     "evidence": Evidence,

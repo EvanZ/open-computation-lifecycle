@@ -1,0 +1,17 @@
+{
+  "annotations": {
+    "example.org/source": "fixture"
+  },
+  "digest": {
+    "algorithm": "sha256",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "kind": "artifact",
+  "locations": [
+    "https://example.org/input.txt"
+  ],
+  "media_type": "text/plain",
+  "oclp_version": "0.1.0-draft",
+  "size": 5
+}

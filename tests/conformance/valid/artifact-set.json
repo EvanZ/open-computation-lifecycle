@@ -1,0 +1,22 @@
+{
+  "annotations": {
+    "example.org/purpose": "release-package"
+  },
+  "id": "urn:example:artifact-set:release",
+  "kind": "artifact_set",
+  "members": [
+    {
+      "artifact": {
+        "digest": {
+          "algorithm": "sha256",
+          "value": "2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"
+        },
+        "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "name": "source-document",
+      "required": true,
+      "role": "source-document"
+    }
+  ],
+  "oclp_version": "0.1.0-draft"
+}

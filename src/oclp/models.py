@@ -69,6 +69,35 @@ class Artifact(CoreRecord):
     schema_uri: str | None = None
 
 
+class ArtifactSetMember(OclpModel):
+    """One immutable Artifact assigned a stable name and semantic role."""
+
+    name: str = Field(min_length=1)
+    artifact: RecordReference
+    role: str | None = Field(default=None, min_length=1)
+    required: bool = True
+
+    @model_validator(mode="after")
+    def artifact_reference_is_content_bound(self) -> ArtifactSetMember:
+        if self.artifact.digest is None:
+            raise ValueError("artifact set members must include an artifact digest")
+        return self
+
+
+class ArtifactSet(CoreRecord):
+    """An immutable, named collection of exact Artifact references."""
+
+    kind: Literal["artifact_set"] = "artifact_set"
+    members: tuple[ArtifactSetMember, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def member_names_are_unique(self) -> ArtifactSet:
+        names = [member.name for member in self.members]
+        if len(names) != len(set(names)):
+            raise ValueError("artifact set member names must be unique")
+        return self
+
+
 class ComputationDefinition(CoreRecord):
     kind: Literal["definition"] = "definition"
     implementation: Implementation
@@ -112,9 +141,13 @@ class LifecycleEvent(CoreRecord):
 
 
 OclpRecord = Annotated[
-    Artifact | ComputationDefinition | Invocation | Evidence | LifecycleEvent,
+    Artifact
+    | ArtifactSet
+    | ComputationDefinition
+    | Invocation
+    | Evidence
+    | LifecycleEvent,
     Field(discriminator="kind"),
 ]
 
 OCLP_RECORD_ADAPTER = TypeAdapter(OclpRecord)
-

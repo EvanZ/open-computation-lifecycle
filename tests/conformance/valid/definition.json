@@ -1,0 +1,34 @@
+{
+  "annotations": {},
+  "id": "urn:example:definition:uppercase",
+  "implementation": {
+    "digest": {
+      "algorithm": "sha256",
+      "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "kind": "other",
+    "locator": "example:uppercase"
+  },
+  "input_ports": [
+    {
+      "cardinality": "one",
+      "media_types": [
+        "text/plain"
+      ],
+      "name": "source",
+      "required": true
+    }
+  ],
+  "kind": "definition",
+  "oclp_version": "0.1.0-draft",
+  "output_ports": [
+    {
+      "cardinality": "one",
+      "media_types": [
+        "text/plain"
+      ],
+      "name": "result",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "evidence",
+  "id": "urn:example:evidence:customer-export-null-check",
+  "annotations": {
+    "example.org/purpose": "data-quality"
+  },
+  "subject": {
+    "id": "urn:sha256:5fb7c21a9cb66c2fb03f129afe1b0e2ee6d6495e1f4703570f792f20403fdd7d"
+  },
+  "contract": {
+    "id": "urn:example:contract:required-customer-identifiers",
+    "version": "2"
+  },
+  "outcome": "pass",
+  "observed_at": "2026-08-19T20:00:00Z",
+  "details": {
+    "columns_checked": [
+      "customer_id",
+      "email"
+    ],
+    "null_rows": 0,
+    "rows_checked": 125000
+  }
+}
