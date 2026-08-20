@@ -23,7 +23,27 @@ defined here. SDKs, including the Python package in this repository, are
 implementations of this specification and MUST NOT define additional protocol
 meaning.
 
-## 2. JSON and canonical form
+## 2. Design rationale (non-normative)
+
+This section explains the consequential design choices in this draft. It does
+not alter the normative requirements in the preceding sections.
+
+| Decision | Rationale and consequence |
+| --- | --- |
+| Logical IDs and content digests are separate. | A stable name supports discovery, references, and a continuing business concept; a digest binds the exact bytes or record revision. Conflating them makes either mutable names unsafe or immutable content impossible to refer to conveniently. |
+| Artifact content identity uses SHA-256; record identity uses JCS canonical bytes. | Content and metadata change independently. A file can remain identical while its retrieval locations change; conversely, a record's annotations or bindings can change without changing its described payload. RFC 8785 gives implementations in different languages one reproducible record-byte representation. |
+| Core objects are closed and extension data is bounded. | Permissive top-level fields make independently produced records ambiguous and difficult to validate. Namespaced extension objects retain local flexibility while keeping the portable core legible. |
+| A Definition, Invocation, and attempt are distinct. | A reusable computation is not a request to run it, and a request is not one scheduler attempt. Preserving those three concepts lets retries, migrations, and multiple execution systems report facts without overwriting lineage. |
+| Code and runtime packages are ordinary Artifacts. | Source bundles, wheels, and container manifests have the same immutable-byte and retrieval concerns as data. Reusing Artifact avoids a special code-object hierarchy while allowing an Implementation to bind exact source when available. |
+| ArtifactSet is logical and non-nested in draft 0.1. | Releases need a durable named collection, but archive formats, directory layouts, and recursive collection semantics are storage concerns. A flat, digest-bound member list is simple to traverse and can be composed by publishing another explicit set or profile later. |
+| Profiles compose rather than extend Core records. | Datasets, agents, model services, and MCP tools need richer domain semantics, but not every OCLP consumer should implement them. Explicit profile declarations and dependencies make those layers interoperable without turning Core into a domain framework. |
+
+These choices favor durable auditability and cross-language traversal over
+implicit runtime behavior. The dogfood implementations and conformance corpus
+are expected to reveal where their costs outweigh their benefits before 1.0.
+
+
+## 3. JSON and canonical form
 
 Records use the I-JSON data model. Strings are JSON strings; arrays are ordered;
 objects have string keys; integer values have no fractional component. Values in
@@ -49,7 +69,7 @@ All record and value-object objects are closed: fields not defined by this
 specification are invalid. Use `annotations` for extension data until a
 profile or later draft defines a field.
 
-## 3. Shared values and core envelope
+## 4. Shared values and core envelope
 
 ### 3.1 Digest
 
@@ -128,7 +148,7 @@ A ContractReference identifies a rule set evaluated by Evidence.
 | `id` | required; string | Non-empty contract identifier. |
 | `version` | required; string | Non-empty contract version. A version makes an Evidence result interpretable after a rule changes. |
 
-## 4. Core records
+## 5. Core records
 
 ### 4.1 Artifact (`kind: "artifact"`)
 
@@ -229,7 +249,7 @@ document their event types and their `data` shape.
 | `attempt_id` | optional; string | Producer-defined execution-attempt identifier. Omit it for a fact about the Invocation as a whole. |
 | `data` | default; object | Empty object by default. JSON event payload. For an output-publication event, it SHOULD name the published Artifact references. |
 
-## 5. Lineage and publication invariants
+## 6. Lineage and publication invariants
 
 Lineage is derived from explicit bindings, not from a separate mutable graph:
 
@@ -254,7 +274,7 @@ Draft 0.1 establishes these invariants:
 Implementations MAY build indexes for traversal, but those indexes are not
 canonical protocol truth and MUST be rebuildable from immutable records.
 
-## 6. Extensions and profiles
+## 7. Extensions and profiles
 
 Unknown top-level fields are invalid. Producers SHOULD put experimental,
 namespaced extension data under `annotations`. A profile is a versioned,
@@ -262,7 +282,7 @@ optional layer of normative specifications that composes with this Core. It
 adds a bounded interoperability contract for one concern—such as dataset
 snapshots or agent execution—without changing the Core record vocabulary.
 
-### 6.1 Profile declaration
+### 7.1 Profile declaration
 
 A published profile specification MUST declare all of the following:
 
@@ -278,7 +298,7 @@ A published profile specification MUST declare all of the following:
 The normative profile specification is authoritative. Schemas, vectors, and SDK
 bindings are derived conformance artifacts.
 
-### 6.2 Profile surfaces
+### 7.2 Profile surfaces
 
 A profile MAY define one or more of these surfaces:
 
@@ -297,7 +317,7 @@ A profile MUST NOT add arbitrary top-level fields to a Core record, weaken a
 Core invariant, redefine a Core field, or require a consumer that does not
 claim that profile to implement its domain behavior.
 
-### 6.3 Composition
+### 7.3 Composition
 
 Profiles compose by explicit dependency, not by implicit convention. A profile
 that relies on another profile MUST declare its dependency and the compatible
@@ -316,25 +336,6 @@ The dataset-snapshot profile is the first profile under this framework: it
 defines canonical Artifact content. Future profiles may standardize agent,
 model-service, and MCP event conventions without making those concepts Core
 requirements.
-
-## 7. Design rationale (non-normative)
-
-This section explains the consequential design choices in this draft. It does
-not alter the normative requirements in the preceding sections.
-
-| Decision | Rationale and consequence |
-| --- | --- |
-| Logical IDs and content digests are separate. | A stable name supports discovery, references, and a continuing business concept; a digest binds the exact bytes or record revision. Conflating them makes either mutable names unsafe or immutable content impossible to refer to conveniently. |
-| Artifact content identity uses SHA-256; record identity uses JCS canonical bytes. | Content and metadata change independently. A file can remain identical while its retrieval locations change; conversely, a record's annotations or bindings can change without changing its described payload. RFC 8785 gives implementations in different languages one reproducible record-byte representation. |
-| Core objects are closed and extension data is bounded. | Permissive top-level fields make independently produced records ambiguous and difficult to validate. Namespaced extension objects retain local flexibility while keeping the portable core legible. |
-| A Definition, Invocation, and attempt are distinct. | A reusable computation is not a request to run it, and a request is not one scheduler attempt. Preserving those three concepts lets retries, migrations, and multiple execution systems report facts without overwriting lineage. |
-| Code and runtime packages are ordinary Artifacts. | Source bundles, wheels, and container manifests have the same immutable-byte and retrieval concerns as data. Reusing Artifact avoids a special code-object hierarchy while allowing an Implementation to bind exact source when available. |
-| ArtifactSet is logical and non-nested in draft 0.1. | Releases need a durable named collection, but archive formats, directory layouts, and recursive collection semantics are storage concerns. A flat, digest-bound member list is simple to traverse and can be composed by publishing another explicit set or profile later. |
-| Profiles compose rather than extend Core records. | Datasets, agents, model services, and MCP tools need richer domain semantics, but not every OCLP consumer should implement them. Explicit profile declarations and dependencies make those layers interoperable without turning Core into a domain framework. |
-
-These choices favor durable auditability and cross-language traversal over
-implicit runtime behavior. The dogfood implementations and conformance corpus
-are expected to reveal where their costs outweigh their benefits before 1.0.
 
 ## 8. Conformance
 

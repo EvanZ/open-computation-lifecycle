@@ -15,7 +15,21 @@ same meaning as in the [OCLP Core Specification](https://evanz.github.io/open-co
 values, JSON rules, canonicalization, and extension rules apply unless this
 profile says otherwise.
 
-## 2. Profile declaration
+## 2. Design rationale (non-normative)
+
+This section explains the profile's design choices. It does not alter the
+normative requirements above.
+
+| Decision | Rationale and consequence |
+| --- | --- |
+| The manifest is carried by an ordinary Artifact. | Core already provides content addressing, retrieval hints, and lineage for immutable bytes. A separate snapshot record kind would duplicate those facilities and make profile content less portable. |
+| A manifest identifies a version; `dataset_id` identifies the logical dataset. | Teams need a durable name for a continuing dataset and a distinct identity for each immutable version. Treating a table name or bucket prefix as the version would make mutable storage layout part of the identity. |
+| Partitions reference exact Artifact records. | A partition can be verified, retrieved, and reused independently. The manifest remains compact for large datasets, and unchanged partitions retain their identity across snapshots. |
+| Partition names are unique and sorted. | Unique names make membership unambiguous; a fixed order prevents two semantically identical partition lists from producing different canonical manifest bytes merely because a producer enumerated storage differently. |
+| Large services are represented through bounded immutable metadata, not a whole-service hash. | A petabyte-scale lake or live warehouse often cannot be read atomically to calculate a portable byte hash. Immutable exports, table manifests, and partition Artifacts provide a practical integrity boundary while provider-specific snapshot IDs remain useful annotations. |
+
+
+## 3. Profile declaration
 
 | Declaration | Value |
 | --- | --- |
@@ -30,7 +44,7 @@ profile says otherwise.
 
 This declaration satisfies the [Core profile framework](https://evanz.github.io/open-computation-lifecycle/protocol/specification/#extensions-and-profiles).
 
-## 3. Transport and identity
+## 4. Transport and identity
 
 A profile manifest is canonical JSON carried as an ordinary core Artifact. The
 producer MUST set that Artifact's `media_type` to
@@ -43,7 +57,7 @@ Each partition points to an exact Artifact record. This makes a snapshot a
 small, portable graph of immutable metadata and content references rather than
 a hash over a potentially enormous live database or data lake.
 
-## 4. Manifest fields
+## 5. Manifest fields
 
 The manifest is a closed JSON object. Its canonical form is JCS canonical JSON
 after applying the defaults below.
@@ -58,7 +72,7 @@ after applying the defaults below.
 | `parent` | optional; RecordReference | Earlier snapshot-manifest Artifact for incremental lineage. If present, its record digest is REQUIRED. The parent need not have the same partition layout. |
 | `annotations` | default; object | Empty object by default. Namespaced, producer-defined JSON metadata such as snapshot timestamps, warehouse version IDs, or retention policy. |
 
-### 4.1 DatasetSnapshotPartition
+### 5.1 DatasetSnapshotPartition
 
 Each value in `partitions` is a closed object:
 
@@ -68,7 +82,7 @@ Each value in `partitions` is a closed object:
 | `artifact` | required; RecordReference | The Artifact containing this partition's immutable bytes. Its record digest is REQUIRED, so a partition cannot silently resolve to a different Artifact record. |
 | `values` | default; object | Empty object by default. Producer-defined JSON partition values, such as `{ "date": "2026-08-19" }`. They aid discovery but do not change the referenced Artifact's identity. |
 
-## 5. Rules for storage systems
+## 6. Rules for storage systems
 
 A mutable table name, bucket prefix, `latest` pointer, or database Time Travel
 identifier is a retrieval or operational hint, never snapshot identity. Put such
@@ -82,7 +96,7 @@ as an Artifact digest. A profile consumer can still use annotations to locate a
 provider-specific snapshot while relying on the bound Artifact graph for
 portable integrity.
 
-## 6. Example
+## 7. Example
 
 ```json
 {
@@ -110,19 +124,6 @@ portable integrity.
   }
 }
 ```
-
-## 7. Design rationale (non-normative)
-
-This section explains the profile's design choices. It does not alter the
-normative requirements above.
-
-| Decision | Rationale and consequence |
-| --- | --- |
-| The manifest is carried by an ordinary Artifact. | Core already provides content addressing, retrieval hints, and lineage for immutable bytes. A separate snapshot record kind would duplicate those facilities and make profile content less portable. |
-| A manifest identifies a version; `dataset_id` identifies the logical dataset. | Teams need a durable name for a continuing dataset and a distinct identity for each immutable version. Treating a table name or bucket prefix as the version would make mutable storage layout part of the identity. |
-| Partitions reference exact Artifact records. | A partition can be verified, retrieved, and reused independently. The manifest remains compact for large datasets, and unchanged partitions retain their identity across snapshots. |
-| Partition names are unique and sorted. | Unique names make membership unambiguous; a fixed order prevents two semantically identical partition lists from producing different canonical manifest bytes merely because a producer enumerated storage differently. |
-| Large services are represented through bounded immutable metadata, not a whole-service hash. | A petabyte-scale lake or live warehouse often cannot be read atomically to calculate a portable byte hash. Immutable exports, table manifests, and partition Artifacts provide a practical integrity boundary while provider-specific snapshot IDs remain useful annotations. |
 
 ## 8. Conformance
 
