@@ -27,3 +27,17 @@ and prints its digest.
 An `Implementation` can optionally reference an ordinary, content-bound
 `Artifact` for its source bundle, wheel, or container manifest. OCLP does not
 define a separate code-artifact type.
+
+## Optional DuckDB catalog
+
+Install the optional DuckDB dependency when a local resolver and lineage index
+is useful:
+
+```bash
+uv add 'oclp[duckdb]'
+```
+
+`DuckdbCatalog` stores canonical OCLP records by record digest, resolves exact
+`RecordReference` values, and indexes mutable location hints by Artifact
+content digest. It is a reference implementation of the Core record-resolution
+contract, not a storage requirement or blob server.

@@ -98,7 +98,27 @@ Individual fields below state when `digest` is mandatory. A consumer that
 resolves a reference with a digest MUST treat a resolved record whose canonical
 digest differs as an integrity failure.
 
-### 3.3 Core record envelope
+### 3.3 Record resolution
+
+Core records are portable descriptions, not a storage API. An implementation
+MAY provide a record resolver, registry, bundle reader, or other lookup service
+for `RecordReference` values. Such a service does not change record meaning.
+
+A resolver receiving a reference with a `digest` MUST resolve the exact
+canonical record whose digest equals that value, verify the digest after parsing
+and canonicalizing, and reject a record whose `id` differs from the reference.
+A resolver receiving an ID-only reference MUST reject an absent or ambiguous
+match; it MUST NOT silently select an arbitrary revision. A resolver MAY expose
+an explicit producer-defined revision-selection operation separately from Core
+reference resolution.
+
+Resolving an Artifact record is distinct from retrieving its content bytes. A
+resolver MAY maintain current storage-location hints indexed by an Artifact's
+content digest, but those hints are implementation metadata rather than Core
+record fields. A consumer that retrieves bytes MUST verify the bytes against the
+Artifact content digest before treating them as the bound Artifact.
+
+### 3.4 Core record envelope
 
 Every core record has this envelope. The record-specific table adds its fields.
 
@@ -112,7 +132,7 @@ Every core record has this envelope. The record-specific table adds its fields.
 Logical identity and content identity are deliberately separate: a stable ID
 supports references and discovery; a digest binds an exact immutable version.
 
-### 3.4 PortDefinition
+### 3.5 PortDefinition
 
 A PortDefinition declares an input or output interface of a Definition.
 
@@ -123,7 +143,7 @@ A PortDefinition declares an input or output interface of a Definition.
 | `required` | default; boolean | Default `true`. It distinguishes an optional interface port from a port that must be bound for a successful invocation. |
 | `media_types` | default; array of strings | Empty array by default. Acceptable media types, if the Definition declares them. Empty means no media-type restriction is declared by the core record. |
 
-### 3.5 Implementation
+### 3.6 Implementation
 
 An Implementation tells a consumer what executable realization a Definition
 selects. It is descriptive: the protocol does not require a consumer to fetch
@@ -140,7 +160,7 @@ or execute it.
 runtime-defined fingerprint; the latter makes source or package bytes available
 as an ordinary, independently describable Artifact.
 
-### 3.6 ContractReference
+### 3.7 ContractReference
 
 A ContractReference identifies a rule set evaluated by Evidence.
 
