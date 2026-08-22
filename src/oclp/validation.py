@@ -55,7 +55,7 @@ def validate_derivation_graph(records: Iterable[OclpRecord]) -> None:
                     label=f"Invocation {record.id} input {port!r}",
                 )
                 adjacency[input_digest].add(invocation_digest)
-        for port, references in record.outputs.items():
+        for port, references in (record.outputs or {}).items():
             for reference in references:
                 output_digest = _require_reference(
                     reference,

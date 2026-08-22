@@ -6,8 +6,8 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from oclp import Artifact, canonical_json_bytes, parse_record, record_digest
-from oclp.models import Digest
+from oclp import Artifact, Invocation, canonical_json_bytes, parse_record, record_digest
+from oclp.models import Digest, RecordReference
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -22,6 +22,15 @@ def test_canonical_serialization_is_stable() -> None:
 
     assert canonical_json_bytes(artifact) == canonical_json_bytes(artifact)
     assert str(record_digest(artifact)).startswith("sha256:")
+
+
+def test_legacy_invocation_omits_absent_outputs_from_canonical_json() -> None:
+    invocation = Invocation(
+        id="invocation.example",
+        definition=RecordReference(id="definition.example"),
+    )
+
+    assert b'"outputs"' not in canonical_json_bytes(invocation)
 
 
 def test_valid_conformance_fixtures_are_accepted() -> None:

@@ -215,7 +215,7 @@ MUST NOT replace its identity.
 | `definition` | required; RecordReference | Definition being requested. A digest MAY bind a particular definition revision and is strongly recommended when reproducibility matters. |
 | `parameters` | default; object | Empty object by default. Producer-defined JSON parameter values. The Definition or a referenced contract gives them domain meaning. |
 | `inputs` | default; object of arrays of RecordReference | Empty object by default. Keys are declared input-port names; each value is an ordered list of references bound at invocation time. Artifact references SHOULD include a digest for reproducibility. |
-| `outputs` | default; object of arrays of RecordReference | Empty object by default. Keys are declared output-port names; each value is an ordered list of direct Artifact results. Every output reference MUST include a record digest. A producer MUST bind every durable direct result it publishes for the Invocation. |
+| `outputs` | optional; object of arrays of RecordReference | Keys are declared output-port names; each value is an ordered list of direct Artifact results. Every output reference MUST include a record digest. A producer MUST bind every durable direct result it publishes for the Invocation. When absent, it is omitted from canonical JSON so legacy Invocation record digests remain stable. |
 | `requested_outputs` | default; array of strings | Empty array by default. Names of outputs requested by the caller. It records intent, not proof of publication. |
 
 `outputs` is the durable derivation binding; it is distinct from

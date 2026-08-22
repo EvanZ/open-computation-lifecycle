@@ -90,14 +90,22 @@
       "type": "string"
     },
     "outputs": {
-      "additionalProperties": {
-        "items": {
-          "$ref": "#/$defs/RecordReference"
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "items": {
+              "$ref": "#/$defs/RecordReference"
+            },
+            "type": "array"
+          },
+          "type": "object"
         },
-        "type": "array"
-      },
-      "title": "Outputs",
-      "type": "object"
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Outputs"
     },
     "parameters": {
       "additionalProperties": {
