@@ -1,18 +1,37 @@
 {
   "annotations": {},
   "definition": {
+    "digest": {
+      "algorithm": "sha256",
+      "value": "0faa260f2ab085d1a52661100ce256cf6e6808776c25ed01da6e26bd80fea334"
+    },
     "id": "urn:example:definition:uppercase"
   },
   "id": "urn:example:invocation:uppercase-hello",
   "inputs": {
     "source": [
       {
+        "digest": {
+          "algorithm": "sha256",
+          "value": "2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"
+        },
         "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       }
     ]
   },
   "kind": "invocation",
   "oclp_version": "0.1.0-draft",
+  "outputs": {
+    "result": [
+      {
+        "digest": {
+          "algorithm": "sha256",
+          "value": "7d91f71aa1e973ed43d13d1343bf5e802e50d319ec337a9d6a6d80d2dda609df"
+        },
+        "id": "urn:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
+    ]
+  },
   "parameters": {
     "locale": "en-US"
   },

@@ -34,6 +34,7 @@ not alter the normative requirements in the preceding sections.
 | Artifact content identity uses SHA-256; record identity uses JCS canonical bytes. | Content and metadata change independently. A file can remain identical while its retrieval locations change; conversely, a record's annotations or bindings can change without changing its described payload. RFC 8785 gives implementations in different languages one reproducible record-byte representation. |
 | Core objects are closed and extension data is bounded. | Permissive top-level fields make independently produced records ambiguous and difficult to validate. Namespaced extension objects retain local flexibility while keeping the portable core legible. |
 | A Definition, Invocation, and attempt are distinct. | A reusable computation is not a request to run it, and a request is not one scheduler attempt. Preserving those three concepts lets retries, migrations, and multiple execution systems report facts without overwriting lineage. |
+| Derivation is a DAG, while references and audit facts are not. | Scheduling, cache invalidation, and human lineage views need a topological order. Input and output bindings therefore form an acyclic Artifact-to-Invocation graph; Events, Evidence, annotations, and collections remain flexible overlays rather than hidden derivation edges. |
 | Code and runtime packages are ordinary Artifacts. | Source bundles, wheels, and container manifests have the same immutable-byte and retrieval concerns as data. Reusing Artifact avoids a special code-object hierarchy while allowing an Implementation to bind exact source when available. |
 | ArtifactSet is logical and non-nested in draft 0.1. | Releases need a durable named collection, but archive formats, directory layouts, and recursive collection semantics are storage concerns. A flat, digest-bound member list is simple to traverse and can be composed by publishing another explicit set or profile later. |
 | Profiles compose rather than extend Core records. | Datasets, agents, model services, and MCP tools need richer domain semantics, but not every OCLP consumer should implement them. Explicit profile declarations and dependencies make those layers interoperable without turning Core into a domain framework. |
@@ -117,7 +118,7 @@ A PortDefinition declares an input or output interface of a Definition.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
-| `name` | required; string | Non-empty port name used as the key in an Invocation's `inputs`. |
+| `name` | required; string | Non-empty port name used as the key in an Invocation's `inputs` or `outputs`. |
 | `cardinality` | default; string | `"one"` or `"many"`; default `"one"`. It declares whether the application interface expects one or multiple values. |
 | `required` | default; boolean | Default `true`. It distinguishes an optional interface port from a port that must be bound for a successful invocation. |
 | `media_types` | default; array of strings | Empty array by default. Acceptable media types, if the Definition declares them. Empty means no media-type restriction is declared by the core record. |
@@ -205,8 +206,8 @@ interface; draft 0.1 does not require a runtime to enforce every declaration.
 
 ### 4.4 Invocation (`kind: "invocation"`)
 
-An Invocation is the durable request to apply one Definition with parameter
-values and input bindings. Multiple execution attempts, retries, or schedulers
+An Invocation is the durable application of one Definition with parameter,
+input, and output bindings. Multiple execution attempts, retries, or schedulers
 MUST NOT replace its identity.
 
 | Field | Input status and JSON type | Constraints and rationale |
@@ -214,11 +215,13 @@ MUST NOT replace its identity.
 | `definition` | required; RecordReference | Definition being requested. A digest MAY bind a particular definition revision and is strongly recommended when reproducibility matters. |
 | `parameters` | default; object | Empty object by default. Producer-defined JSON parameter values. The Definition or a referenced contract gives them domain meaning. |
 | `inputs` | default; object of arrays of RecordReference | Empty object by default. Keys are declared input-port names; each value is an ordered list of references bound at invocation time. Artifact references SHOULD include a digest for reproducibility. |
+| `outputs` | default; object of arrays of RecordReference | Empty object by default. Keys are declared output-port names; each value is an ordered list of direct Artifact results. Every output reference MUST include a record digest. A producer MUST bind every durable direct result it publishes for the Invocation. |
 | `requested_outputs` | default; array of strings | Empty array by default. Names of outputs requested by the caller. It records intent, not proof of publication. |
 
-An Invocation does not directly contain output Artifacts in this draft. A
-lifecycle Event records publication, preserving the distinction between a
-request and observed execution facts.
+`outputs` is the durable derivation binding; it is distinct from
+`requested_outputs`, which records caller intent. A lifecycle Event MAY repeat
+output references to record an operational publication fact, but Event `data`
+MUST NOT be the only derivation binding for a published Artifact.
 
 ### 4.5 Evidence (`kind: "evidence"`)
 
@@ -251,25 +254,29 @@ document their event types and their `data` shape.
 
 ## 6. Lineage and publication invariants
 
-Lineage is derived from explicit bindings, not from a separate mutable graph:
+Lineage is derived from explicit bindings, not from a separate mutable graph.
+The **derivation graph** contains only Artifact and Invocation nodes:
 
 ```text
 Artifact -> consumed by Invocation -> produces Artifact
-Artifact -> may bind a Definition implementation
-ArtifactSet -> names exact Artifacts in a logical collection
-Definition -> instantiated by Invocation
-Evidence -> checks Definition, Invocation, Artifact, ArtifactSet, or Event
-Event -> records the lifecycle of an Invocation or attempt
 ```
+
+The Definition binding, implementation Artifact, ArtifactSet membership,
+Evidence, Events, profile content, annotations, and arbitrary Event `data` are
+**reference or audit overlays**, not derivation edges. They MAY be traversed by
+consumers, but do not participate in derivation-DAG validation.
 
 Draft 0.1 establishes these invariants:
 
 1. Published Artifacts and ArtifactSets are immutable.
 2. Invocation input bindings do not change after execution begins.
-3. Attempts do not replace Invocation identity.
-4. Completion MUST NOT precede publication of required outputs and evidence.
-5. Mutable names such as `latest` or `current` are retrieval references, never artifact identities.
-6. Replaying an already accepted event MUST be idempotent.
+3. Invocation output bindings do not change after publication.
+4. In a resolved record collection, every Invocation Definition, input, and output reference used for derivation MUST include a record digest and resolve to the stated record ID. Inputs and outputs MUST resolve to Artifacts.
+5. The derivation graph MUST be acyclic. A consumer validating a resolved record collection MUST reject a missing binding, a wrong-kind binding, or a cycle.
+6. Attempts do not replace Invocation identity.
+7. Completion MUST NOT precede publication of required outputs and evidence.
+8. Mutable names such as `latest` or `current` are retrieval references, never artifact identities.
+9. Replaying an already accepted event MUST be idempotent.
 
 Implementations MAY build indexes for traversal, but those indexes are not
 canonical protocol truth and MUST be rebuildable from immutable records.

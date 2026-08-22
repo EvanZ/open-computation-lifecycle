@@ -10,19 +10,25 @@ from oclp.models import (
     Invocation,
     LifecycleEvent,
 )
-from oclp.validation import parse_record
+from oclp.validation import (
+    DerivationValidationError,
+    parse_record,
+    validate_derivation_graph,
+)
 
 __all__ = [
     "Artifact",
     "ArtifactSet",
     "ArtifactSetMember",
     "ComputationDefinition",
+    "DerivationValidationError",
     "Evidence",
     "Invocation",
     "LifecycleEvent",
     "canonical_json_bytes",
     "parse_record",
     "record_digest",
+    "validate_derivation_graph",
 ]
 
 __version__ = "0.1.0a0"

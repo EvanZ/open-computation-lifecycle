@@ -1,0 +1,14 @@
+{
+  "id": "urn:example:invocation:unbound-output",
+  "kind": "invocation",
+  "definition": {
+    "id": "urn:example:definition:transform"
+  },
+  "outputs": {
+    "result": [
+      {
+        "id": "urn:example:artifact:result"
+      }
+    ]
+  }
+}

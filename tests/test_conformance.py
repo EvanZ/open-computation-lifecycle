@@ -8,7 +8,12 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from oclp import canonical_json_bytes, parse_record, record_digest
+from oclp import (
+    canonical_json_bytes,
+    parse_record,
+    record_digest,
+    validate_derivation_graph,
+)
 
 CONFORMANCE = Path(__file__).parent / "conformance"
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,17 +41,20 @@ def test_invalid_conformance_vectors_are_rejected() -> None:
 
 def test_conformance_lineage_vector_has_explicit_bindings() -> None:
     manifest = _manifest()
+    parsed_records = [
+        parse_record(json.loads((CONFORMANCE / entry["path"]).read_text()))
+        for entry in manifest["valid"]
+    ]
     records = {
         record.id: record.model_dump(mode="json")
-        for entry in manifest["valid"]
-        for record in [
-            parse_record(json.loads((CONFORMANCE / entry["path"]).read_text()))
-        ]
+        for record in parsed_records
     }
+    validate_derivation_graph(parsed_records)
     lineage = manifest["lineage"]
     invocation = records[lineage["invocation_id"]]
     assert invocation["definition"]["id"] == lineage["definition_id"]
     assert invocation["inputs"]["source"][0]["id"] == lineage["input_artifact_id"]
+    assert invocation["outputs"]["result"][0]["id"] == lineage["output_artifact_id"]
     assert records[lineage["evidence_id"]]["subject"]["id"] == lineage["invocation_id"]
     assert records[lineage["event_id"]]["invocation"]["id"] == lineage["invocation_id"]
 
@@ -57,7 +65,8 @@ def test_site_specification_mirrors_the_canonical_specification() -> None:
     ).read_text()
 
 
-def test_site_dataset_snapshot_specification_mirrors_the_canonical_specification() -> None:
+def test_site_dataset_snapshot_specification_mirrors_the_canonical_specification(
+) -> None:
     assert (ROOT / "docs/profiles/dataset-snapshot.md").read_text() == (
         ROOT / "spec/dataset-snapshot.md"
     ).read_text()

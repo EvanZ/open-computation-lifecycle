@@ -89,6 +89,16 @@
       "title": "Oclp Version",
       "type": "string"
     },
+    "outputs": {
+      "additionalProperties": {
+        "items": {
+          "$ref": "#/$defs/RecordReference"
+        },
+        "type": "array"
+      },
+      "title": "Outputs",
+      "type": "object"
+    },
     "parameters": {
       "additionalProperties": {
         "$ref": "#/$defs/JsonValue"

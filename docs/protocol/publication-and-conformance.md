@@ -7,6 +7,8 @@ begins.
 ## Required invariants
 
 - Published artifacts are immutable.
+- Direct durable outputs are bound on the Invocation, not inferred only from Event data.
+- Resolved Artifact-to-Invocation derivation bindings form an acyclic graph.
 - Attempts do not replace invocation identity.
 - Required outputs and evidence are published before completion.
 - Mutable labels such as `latest` are references, not artifact identities.

@@ -17,9 +17,14 @@
       "digest": "sha256:0faa260f2ab085d1a52661100ce256cf6e6808776c25ed01da6e26bd80fea334"
     },
     {
+      "path": "valid/result-artifact.json",
+      "canonical_json": "{\"annotations\":{\"example.org/source\":\"fixture-result\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"},\"id\":\"urn:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"kind\":\"artifact\",\"locations\":[\"https://example.org/result.txt\"],\"media_type\":\"text/plain\",\"oclp_version\":\"0.1.0-draft\",\"size\":5}",
+      "digest": "sha256:7d91f71aa1e973ed43d13d1343bf5e802e50d319ec337a9d6a6d80d2dda609df"
+    },
+    {
       "path": "valid/invocation.json",
-      "canonical_json": "{\"annotations\":{},\"definition\":{\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-hello\",\"inputs\":{\"source\":[{\"id\":\"urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"parameters\":{\"locale\":\"en-US\"},\"requested_outputs\":[\"result\"]}",
-      "digest": "sha256:f02190e7efe5745150d85139c959547c4b6a3d07dee4419aa782bbb5855dfc3e"
+      "canonical_json": "{\"annotations\":{},\"definition\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"0faa260f2ab085d1a52661100ce256cf6e6808776c25ed01da6e26bd80fea334\"},\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-hello\",\"inputs\":{\"source\":[{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d\"},\"id\":\"urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"outputs\":{\"result\":[{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"7d91f71aa1e973ed43d13d1343bf5e802e50d319ec337a9d6a6d80d2dda609df\"},\"id\":\"urn:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"}]},\"parameters\":{\"locale\":\"en-US\"},\"requested_outputs\":[\"result\"]}",
+      "digest": "sha256:4338b24a245bc4a5fad3f284af1f4e4d58cd7213f0e0b0aba7309e55e0f993d3"
     },
     {
       "path": "valid/evidence.json",
@@ -39,12 +44,14 @@
     "invalid/definition-duplicate-port.json",
     "invalid/definition-unbound-implementation-artifact.json",
     "invalid/artifact-set-duplicate-member.json",
-    "invalid/artifact-set-unbound-member.json"
+    "invalid/artifact-set-unbound-member.json",
+    "invalid/invocation-unbound-output.json"
   ],
   "lineage": {
     "definition_id": "urn:example:definition:uppercase",
     "invocation_id": "urn:example:invocation:uppercase-hello",
     "input_artifact_id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "output_artifact_id": "urn:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
     "evidence_id": "urn:example:evidence:uppercase-hello",
     "event_id": "urn:example:event:uppercase-hello:0"
   }

@@ -10,7 +10,7 @@ digest for the same record.
 
 ## Traversal
 
-Lineage is derived from immutable references:
+The default derivation view is an acyclic graph derived from immutable bindings:
 
 ```text
 raw Artifact -> Invocation input binding -> processed Artifact
@@ -20,6 +20,13 @@ Definition   -> Invocation definition binding
 Evidence     -> Invocation, Artifact, ArtifactSet, Definition, or Event
 Event        -> Invocation or attempt
 ```
+
+Only the `Artifact -> Invocation -> Artifact` path participates in DAG
+validation. Definition implementation bindings, ArtifactSet membership,
+Evidence, and Events are useful reference and audit overlays, but do not alter
+the computation order. An Invocation's `outputs` is the authoritative durable
+publication binding; an Event may report that publication but does not replace
+it.
 
 Indexes may make this traversal fast, but they are not protocol truth and must
 be rebuildable from the records themselves.

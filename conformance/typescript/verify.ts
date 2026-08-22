@@ -53,6 +53,7 @@ const validate = ajv.compile(coreSchema);
 const validateDatasetSnapshot = ajv.compile(datasetSchema);
 
 const records = new Map<string, OclpRecord>();
+const recordsByDigest = new Map<string, OclpRecord>();
 for (const entry of manifest.valid) {
   const record = JSON.parse(
     await readFile(path.join(fixtures, entry.path), "utf8"),
@@ -65,7 +66,10 @@ for (const entry of manifest.valid) {
   const digest = createHash("sha256").update(canonical).digest("hex");
   assert.equal(`sha256:${digest}`, entry.digest, entry.path);
   records.set(String(record.id), record);
+  recordsByDigest.set(entry.digest.replace(/^sha256:/, ""), record);
 }
+
+assert.equal(derivationGraphRulesHold(recordsByDigest), true);
 
 for (const fixturePath of manifest.invalid) {
   const record = JSON.parse(
@@ -109,6 +113,7 @@ for (const fixturePath of datasetManifest.invalid) {
 const invocation = records.get(manifest.lineage.invocation_id)!;
 assert.equal(invocation.definition?.id, manifest.lineage.definition_id);
 assert.equal(invocation.inputs?.source?.[0]?.id, manifest.lineage.input_artifact_id);
+assert.equal(invocation.outputs?.result?.[0]?.id, manifest.lineage.output_artifact_id);
 assert.equal(
   records.get(manifest.lineage.evidence_id)?.subject?.id,
   manifest.lineage.invocation_id,
@@ -147,7 +152,76 @@ function semanticRulesHold(record: OclpRecord): boolean {
     }
   }
 
+  if (record.kind === "invocation") {
+    if (
+      Object.values(record.outputs ?? {}).some((references: unknown) =>
+        !(references as Array<{ digest?: unknown }>).every(
+          (reference) => Boolean(reference.digest),
+        ),
+      )
+    ) {
+      return false;
+    }
+  }
+
   return true;
+}
+
+function derivationGraphRulesHold(recordsByDigest: Map<string, OclpRecord>): boolean {
+  const adjacency = new Map<string, Set<string>>();
+
+  const resolve = (
+    reference: { id?: unknown; digest?: { value?: unknown } },
+    expectedKind: string,
+  ): string | undefined => {
+    const digest = reference.digest?.value;
+    if (typeof digest !== "string") return undefined;
+    const target = recordsByDigest.get(digest);
+    if (!target || target.kind !== expectedKind || target.id !== reference.id) {
+      return undefined;
+    }
+    return digest;
+  };
+
+  for (const [invocationDigest, record] of recordsByDigest) {
+    if (record.kind !== "invocation") continue;
+    if (!resolve(record.definition ?? {}, "definition")) return false;
+    for (const references of Object.values(record.inputs ?? {})) {
+      for (const reference of references as Array<{ id?: unknown; digest?: { value?: unknown } }>) {
+        const inputDigest = resolve(reference, "artifact");
+        if (!inputDigest) return false;
+        addEdge(adjacency, inputDigest, invocationDigest);
+      }
+    }
+    for (const references of Object.values(record.outputs ?? {})) {
+      for (const reference of references as Array<{ id?: unknown; digest?: { value?: unknown } }>) {
+        const outputDigest = resolve(reference, "artifact");
+        if (!outputDigest) return false;
+        addEdge(adjacency, invocationDigest, outputDigest);
+      }
+    }
+  }
+
+  const visiting = new Set<string>();
+  const visited = new Set<string>();
+  const visit = (node: string): boolean => {
+    if (visiting.has(node)) return false;
+    if (visited.has(node)) return true;
+    visiting.add(node);
+    for (const neighbor of adjacency.get(node) ?? []) {
+      if (!visit(neighbor)) return false;
+    }
+    visiting.delete(node);
+    visited.add(node);
+    return true;
+  };
+  return [...adjacency.keys()].every(visit);
+}
+
+function addEdge(adjacency: Map<string, Set<string>>, source: string, target: string): void {
+  const targets = adjacency.get(source) ?? new Set<string>();
+  targets.add(target);
+  adjacency.set(source, targets);
 }
 
 function datasetSnapshotRulesHold(snapshot: OclpRecord): boolean {

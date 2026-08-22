@@ -125,7 +125,15 @@ class Invocation(CoreRecord):
     definition: RecordReference
     parameters: dict[str, JsonValue] = Field(default_factory=dict)
     inputs: dict[str, tuple[RecordReference, ...]] = Field(default_factory=dict)
+    outputs: dict[str, tuple[RecordReference, ...]] = Field(default_factory=dict)
     requested_outputs: tuple[str, ...] = ()
+
+    @model_validator(mode="after")
+    def output_references_are_content_bound(self) -> Invocation:
+        for references in self.outputs.values():
+            if any(reference.digest is None for reference in references):
+                raise ValueError("invocation outputs must include record digests")
+        return self
 
 
 class Evidence(CoreRecord):
