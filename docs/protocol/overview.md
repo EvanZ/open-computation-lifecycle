@@ -21,8 +21,9 @@ OCLP's six record kinds form a compact vocabulary:
 | Event | Records an ordered lifecycle fact about an invocation or attempt. |
 
 References use logical IDs and can carry record digests to bind an exact record.
-An implementation can also bind an ordinary Artifact for its source bundle,
-wheel, or container manifest—there is no separate code-record kind.
+An implementation can directly record a Git repository, immutable commit, and
+source path. It can also bind an ordinary Artifact for a wheel, container
+manifest, or intentional source archive—there is no separate code-record kind.
 
 ## What OCLP answers
 

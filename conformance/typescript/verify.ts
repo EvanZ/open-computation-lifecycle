@@ -130,6 +130,16 @@ console.log(
 );
 
 function semanticRulesHold(record: OclpRecord): boolean {
+  if (record.kind === "artifact") {
+    const digest = record.digest;
+    if (
+      digest &&
+      record.id === `urn:${digest.algorithm ?? "sha256"}:${digest.value}`
+    ) {
+      return false;
+    }
+  }
+
   if (record.kind === "definition") {
     for (const ports of [record.input_ports ?? [], record.output_ports ?? []]) {
       const names = ports.map((port: { name: string }) => port.name);

@@ -35,7 +35,7 @@ not alter the normative requirements in the preceding sections.
 | Core objects are closed and extension data is bounded. | Permissive top-level fields make independently produced records ambiguous and difficult to validate. Namespaced extension objects retain local flexibility while keeping the portable core legible. |
 | A Definition, Invocation, and attempt are distinct. | A reusable computation is not a request to run it, and a request is not one scheduler attempt. Preserving those three concepts lets retries, migrations, and multiple execution systems report facts without overwriting lineage. |
 | Derivation is a DAG, while references and audit facts are not. | Scheduling, cache invalidation, and human lineage views need a topological order. Input and output bindings therefore form an acyclic Artifact-to-Invocation graph; Events, Evidence, annotations, and collections remain flexible overlays rather than hidden derivation edges. |
-| Code and runtime packages are ordinary Artifacts. | Source bundles, wheels, and container manifests have the same immutable-byte and retrieval concerns as data. Reusing Artifact avoids a special code-object hierarchy while allowing an Implementation to bind exact source when available. |
+| Git source provenance lives on the Implementation; code and runtime packages remain ordinary Artifacts. | A repository and immutable commit are the useful source identity for version-controlled code. Producers do not need to infer a transitive import closure. When exact distributed bytes matter, wheels and container manifests can still be bound as Artifacts. |
 | ArtifactSet is logical and non-nested in draft 0.1. | Releases need a durable named collection, but archive formats, directory layouts, and recursive collection semantics are storage concerns. A flat, digest-bound member list is simple to traverse and can be composed by publishing another explicit set or profile later. |
 | Profiles compose rather than extend Core records. | Datasets, agents, model services, and MCP tools need richer domain semantics, but not every OCLP consumer should implement them. Explicit profile declarations and dependencies make those layers interoperable without turning Core into a domain framework. |
 
@@ -153,17 +153,30 @@ or execute it.
 | --- | --- | --- |
 | `kind` | required; string | `"python-callable"`, `"container"`, `"command"`, or `"other"`. It makes the locator interpretable without prescribing one runtime. |
 | `locator` | required; string | Non-empty runtime-specific location, such as an import target, image name, or command identifier. It is not itself immutable. |
+| `source` | optional; GitSource | Immutable Git provenance for the selected implementation. It identifies source history; it is not an inferred dependency closure or a package/runtime environment. |
 | `digest` | optional; Digest | A runtime fingerprint, such as an image digest or implementation hash. Its exact semantics are declared by the producer. A producer MUST omit it when it would merely restate the linked Artifact's content digest. |
 | `artifact` | optional; RecordReference | An Artifact representing code or a runtime package, such as a source bundle, wheel, or container manifest. If present, its record digest is REQUIRED. |
 
-`digest` and `artifact` serve complementary purposes only when they identify
-different things: the former is a runtime-defined fingerprint, while the latter
-makes source or package bytes available as an ordinary, independently
-describable Artifact. If the runtime fingerprint is simply the linked
-Artifact's content digest, producers MUST omit `digest`; consumers resolve the
-Artifact record to obtain that content identity. The `RecordReference.digest`
-inside `artifact` still binds the exact Artifact *record*, which is distinct
-from the Artifact's payload-content digest.
+`source`, `digest`, and `artifact` identify distinct concerns. `source`
+identifies the reviewed source revision; `digest` is a producer-defined runtime
+fingerprint; and `artifact` makes package or runtime bytes available as an
+ordinary, independently describable Artifact. Producers MUST NOT represent an
+ad-hoc selected-file hash as a source bundle merely to approximate dependency
+closure. If the runtime fingerprint is simply the linked Artifact's content
+digest, producers MUST omit `digest`; consumers resolve the Artifact record to
+obtain that content identity. The `RecordReference.digest` inside `artifact`
+still binds the exact Artifact *record*, which is distinct from the Artifact's
+payload-content digest.
+
+#### GitSource
+
+| Field | Input status and JSON type | Constraints and rationale |
+| --- | --- | --- |
+| `kind` | default; string | MUST be `"git"`. The discriminator leaves room for future source systems without treating a branch name as immutable provenance. |
+| `repository` | required; string | Non-empty canonical repository location or identifier selected by the producer. |
+| `commit` | required; string | A complete, lowercase hexadecimal Git object ID: 40 characters for SHA-1 repositories or 64 characters for SHA-256 repositories. A branch, tag, or abbreviated hash is invalid. |
+| `path` | default; string | Repository-relative source or build-context path. Default `"."`. |
+| `dirty` | default; boolean | Default `false`. If `true`, `commit` identifies only the committed base and MUST NOT be presented as the exact executed tree. A producer MAY bind a patch or snapshot as `artifact` when it needs to preserve that overlay. |
 
 ### 3.7 ContractReference
 
@@ -225,12 +238,14 @@ it is not an execution or an attempt.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
-| `implementation` | required; Implementation | The selected executable realization and optional immutable code binding. |
+| `implementation` | required; Implementation | The selected executable realization, optional Git source revision, and optional immutable package/runtime binding. |
 | `input_ports` | default; array of PortDefinition | Empty array by default. Declared input interface. Names MUST be unique within this direction. |
 | `output_ports` | default; array of PortDefinition | Empty array by default. Declared output interface. Names MUST be unique within this direction. |
 
 The same port name MAY appear once among inputs and once among outputs because
-the directions are separate namespaces. Port declarations express the intended
+the directions are separate namespaces. A Definition's logical ID names the
+computation across revisions; its record digest binds the particular
+implementation and Git source revision. Port declarations express the intended
 interface; draft 0.1 does not require a runtime to enforce every declaration.
 
 ### 4.4 Invocation (`kind: "invocation"`)

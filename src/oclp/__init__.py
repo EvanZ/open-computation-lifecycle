@@ -7,6 +7,7 @@ from oclp.models import (
     ArtifactSetMember,
     ComputationDefinition,
     Evidence,
+    GitSource,
     Invocation,
     LifecycleEvent,
 )
@@ -23,6 +24,7 @@ __all__ = [
     "ComputationDefinition",
     "DerivationValidationError",
     "Evidence",
+    "GitSource",
     "Invocation",
     "LifecycleEvent",
     "canonical_json_bytes",

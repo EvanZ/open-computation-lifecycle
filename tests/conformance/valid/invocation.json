@@ -3,7 +3,7 @@
   "definition": {
     "digest": {
       "algorithm": "sha256",
-      "value": "6ef1817bfa6744814b8b3c260e0f3913a602d390926a387e64c82af487b8f034"
+      "value": "6875f158a47c67e8e97de2181ef79203dc639505399deef5fe336b4aa2055346"
     },
     "id": "urn:example:definition:uppercase"
   },

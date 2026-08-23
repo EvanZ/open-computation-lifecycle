@@ -43,11 +43,22 @@ class PortDefinition(OclpModel):
     media_types: tuple[str, ...] = ()
 
 
+class GitSource(OclpModel):
+    """An immutable Git source revision selected by an implementation."""
+
+    kind: Literal["git"] = "git"
+    repository: str = Field(min_length=1)
+    commit: str = Field(pattern=r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
+    path: str = Field(default=".", min_length=1)
+    dirty: bool = False
+
+
 class Implementation(OclpModel):
     kind: Literal["python-callable", "container", "command", "other"]
     locator: str = Field(min_length=1)
     digest: Digest | None = None
     artifact: RecordReference | None = None
+    source: GitSource | None = None
 
     @model_validator(mode="after")
     def artifact_reference_is_content_bound(self) -> Implementation:

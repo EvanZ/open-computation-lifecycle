@@ -21,6 +21,45 @@
       "title": "Digest",
       "type": "object"
     },
+    "GitSource": {
+      "additionalProperties": false,
+      "description": "An immutable Git source revision selected by an implementation.",
+      "properties": {
+        "commit": {
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$",
+          "title": "Commit",
+          "type": "string"
+        },
+        "dirty": {
+          "default": false,
+          "title": "Dirty",
+          "type": "boolean"
+        },
+        "kind": {
+          "const": "git",
+          "default": "git",
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "default": ".",
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "repository": {
+          "minLength": 1,
+          "title": "Repository",
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "commit"
+      ],
+      "title": "GitSource",
+      "type": "object"
+    },
     "Implementation": {
       "additionalProperties": false,
       "properties": {
@@ -60,6 +99,17 @@
           "minLength": 1,
           "title": "Locator",
           "type": "string"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GitSource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [

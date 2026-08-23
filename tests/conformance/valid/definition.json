@@ -2,19 +2,19 @@
   "annotations": {},
   "id": "urn:example:definition:uppercase",
   "implementation": {
-    "artifact": {
-      "digest": {
-        "algorithm": "sha256",
-        "value": "cd3e37d882123021bdc06767d4f4459d37b7cad67c1f1fd19986d38d59f3dc61"
-      },
-      "id": "urn:example:artifact:source-document"
-    },
     "digest": {
       "algorithm": "sha256",
       "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
     },
     "kind": "other",
-    "locator": "example:uppercase"
+    "locator": "example:uppercase",
+    "source": {
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "dirty": false,
+      "kind": "git",
+      "path": "src/example",
+      "repository": "https://github.com/example/uppercase.git"
+    }
   },
   "input_ports": [
     {

@@ -85,7 +85,8 @@ outputs requested for an inference run.
 ## Software build
 
 A Definition describes an executable build implementation and its typed ports,
-without selecting a scheduler or build service.
+including the reviewed Git revision that supplies the build context, without
+selecting a scheduler or build service.
 
 ```json
 {
@@ -98,6 +99,13 @@ without selecting a scheduler or build service.
   "implementation": {
     "kind": "command",
     "locator": "buildctl build --frontend dockerfile.v0",
+    "source": {
+      "kind": "git",
+      "repository": "https://github.com/example/service.git",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "path": ".",
+      "dirty": false
+    },
     "digest": {
       "algorithm": "sha256",
       "value": "87b6c72b5098c78187360864246f421850073e95f934ce17873b4f080d30bb28"
