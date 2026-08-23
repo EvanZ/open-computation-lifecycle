@@ -153,12 +153,17 @@ or execute it.
 | --- | --- | --- |
 | `kind` | required; string | `"python-callable"`, `"container"`, `"command"`, or `"other"`. It makes the locator interpretable without prescribing one runtime. |
 | `locator` | required; string | Non-empty runtime-specific location, such as an import target, image name, or command identifier. It is not itself immutable. |
-| `digest` | optional; Digest | A runtime fingerprint, such as an image digest or implementation hash. Its exact semantics are declared by the producer. |
+| `digest` | optional; Digest | A runtime fingerprint, such as an image digest or implementation hash. Its exact semantics are declared by the producer. A producer MUST omit it when it would merely restate the linked Artifact's content digest. |
 | `artifact` | optional; RecordReference | An Artifact representing code or a runtime package, such as a source bundle, wheel, or container manifest. If present, its record digest is REQUIRED. |
 
-`digest` and `artifact` serve complementary purposes: the former is a
-runtime-defined fingerprint; the latter makes source or package bytes available
-as an ordinary, independently describable Artifact.
+`digest` and `artifact` serve complementary purposes only when they identify
+different things: the former is a runtime-defined fingerprint, while the latter
+makes source or package bytes available as an ordinary, independently
+describable Artifact. If the runtime fingerprint is simply the linked
+Artifact's content digest, producers MUST omit `digest`; consumers resolve the
+Artifact record to obtain that content identity. The `RecordReference.digest`
+inside `artifact` still binds the exact Artifact *record*, which is distinct
+from the Artifact's payload-content digest.
 
 ### 3.7 ContractReference
 

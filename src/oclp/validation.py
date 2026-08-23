@@ -13,7 +13,7 @@ from oclp.models import OCLP_RECORD_ADAPTER, OclpRecord, RecordReference
 
 
 class DerivationValidationError(ValueError):
-    """A resolved OCLP derivation graph is incomplete or cyclic."""
+    """A resolved OCLP record set violates a derivation or implementation rule."""
 
 
 def parse_record(value: Any) -> OclpRecord:
@@ -36,6 +36,25 @@ def validate_derivation_graph(records: Iterable[OclpRecord]) -> None:
 
     by_digest = {record_digest(record).value: record for record in records}
     adjacency: dict[str, set[str]] = defaultdict(set)
+
+    for record in by_digest.values():
+        if record.kind != "definition" or record.implementation.artifact is None:
+            continue
+        artifact_digest = _require_reference(
+            record.implementation.artifact,
+            by_digest,
+            expected_kind="artifact",
+            label=f"Definition {record.id} implementation artifact",
+        )
+        artifact = by_digest[artifact_digest]
+        if (
+            record.implementation.digest is not None
+            and artifact.digest == record.implementation.digest
+        ):
+            raise DerivationValidationError(
+                f"Definition {record.id} must omit implementation.digest when it "
+                "duplicates its implementation Artifact content digest"
+            )
 
     for invocation_digest, record in by_digest.items():
         if record.kind != "invocation":

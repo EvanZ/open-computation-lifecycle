@@ -42,6 +42,24 @@ def test_invocation_outputs_must_be_content_bound() -> None:
         )
 
 
+def test_derivation_validator_rejects_redundant_implementation_digest() -> None:
+    source = _artifact("source", "a")
+    definition = ComputationDefinition(
+        id="urn:example:definition:transform",
+        implementation=Implementation(
+            kind="other",
+            locator="example:transform",
+            digest=source.digest,
+            artifact=_reference(source),
+        ),
+    )
+
+    with pytest.raises(
+        DerivationValidationError, match="must omit implementation.digest"
+    ):
+        validate_derivation_graph((source, definition))
+
+
 def test_derivation_validator_rejects_unresolved_inputs() -> None:
     definition = ComputationDefinition(
         id="urn:example:definition:transform",

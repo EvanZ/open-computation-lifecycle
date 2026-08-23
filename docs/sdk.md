@@ -26,7 +26,9 @@ and prints its digest.
 
 An `Implementation` can optionally reference an ordinary, content-bound
 `Artifact` for its source bundle, wheel, or container manifest. OCLP does not
-define a separate code-artifact type.
+define a separate code-artifact type. When that Artifact already supplies the
+implementation's content digest, producers omit `Implementation.digest`; that
+optional field is reserved for a distinct runtime fingerprint.
 
 ## Optional DuckDB catalog
 
