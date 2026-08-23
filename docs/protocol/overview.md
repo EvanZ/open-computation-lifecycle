@@ -21,9 +21,10 @@ OCLP's six record kinds form a compact vocabulary:
 | Event | Records an ordered lifecycle fact about an invocation or attempt. |
 
 References use logical IDs and can carry record digests to bind an exact record.
-An implementation can directly record a Git repository, immutable commit, and
-source path. It can also bind an ordinary Artifact for a wheel, container
-manifest, or intentional source archive—there is no separate code-record kind.
+Every implementation declares its source basis: a Git repository and immutable
+commit, an Artifact, a versioned service, or an explicit opaque reason. A
+machine-specific worktree and dirty state are attempt Event context, not
+Definition data.
 
 ## What OCLP answers
 

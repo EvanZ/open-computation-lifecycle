@@ -103,8 +103,7 @@ selecting a scheduler or build service.
       "kind": "git",
       "repository": "https://github.com/example/service.git",
       "commit": "0123456789abcdef0123456789abcdef01234567",
-      "path": ".",
-      "dirty": false
+      "path": "."
     },
     "digest": {
       "algorithm": "sha256",

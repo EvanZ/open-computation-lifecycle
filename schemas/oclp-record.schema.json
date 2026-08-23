@@ -152,6 +152,26 @@
       "title": "ArtifactSetMember",
       "type": "object"
     },
+    "ArtifactSource": {
+      "additionalProperties": false,
+      "description": "An immutable Artifact selected as an implementation's source basis.",
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/RecordReference"
+        },
+        "kind": {
+          "const": "artifact",
+          "default": "artifact",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact"
+      ],
+      "title": "ArtifactSource",
+      "type": "object"
+    },
     "ComputationDefinition": {
       "additionalProperties": false,
       "properties": {
@@ -313,9 +333,28 @@
       "title": "Evidence",
       "type": "object"
     },
-    "GitSource": {
+    "ExecutionContext": {
       "additionalProperties": false,
-      "description": "An immutable Git source revision selected by an implementation.",
+      "description": "Execution-local context attached to a lifecycle observation.",
+      "properties": {
+        "git_checkout": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GitCheckout"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "ExecutionContext",
+      "type": "object"
+    },
+    "GitCheckout": {
+      "additionalProperties": false,
+      "description": "The local Git worktree observed for one execution attempt.",
       "properties": {
         "commit": {
           "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$",
@@ -326,6 +365,34 @@
           "default": false,
           "title": "Dirty",
           "type": "boolean"
+        },
+        "kind": {
+          "const": "git",
+          "default": "git",
+          "title": "Kind",
+          "type": "string"
+        },
+        "worktree": {
+          "minLength": 1,
+          "title": "Worktree",
+          "type": "string"
+        }
+      },
+      "required": [
+        "worktree",
+        "commit"
+      ],
+      "title": "GitCheckout",
+      "type": "object"
+    },
+    "GitSource": {
+      "additionalProperties": false,
+      "description": "An immutable Git source revision selected by an implementation.",
+      "properties": {
+        "commit": {
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$",
+          "title": "Commit",
+          "type": "string"
         },
         "kind": {
           "const": "git",
@@ -393,20 +460,36 @@
           "type": "string"
         },
         "source": {
-          "anyOf": [
+          "discriminator": {
+            "mapping": {
+              "artifact": "#/$defs/ArtifactSource",
+              "git": "#/$defs/GitSource",
+              "opaque": "#/$defs/OpaqueSource",
+              "service": "#/$defs/ServiceSource"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
             {
               "$ref": "#/$defs/GitSource"
             },
             {
-              "type": "null"
+              "$ref": "#/$defs/ArtifactSource"
+            },
+            {
+              "$ref": "#/$defs/ServiceSource"
+            },
+            {
+              "$ref": "#/$defs/OpaqueSource"
             }
           ],
-          "default": null
+          "title": "Source"
         }
       },
       "required": [
         "kind",
-        "locator"
+        "locator",
+        "source"
       ],
       "title": "Implementation",
       "type": "object"
@@ -527,6 +610,17 @@
           "title": "Event Type",
           "type": "string"
         },
+        "execution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExecutionContext"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "id": {
           "minLength": 1,
           "title": "Id",
@@ -566,6 +660,28 @@
         "sequence"
       ],
       "title": "LifecycleEvent",
+      "type": "object"
+    },
+    "OpaqueSource": {
+      "additionalProperties": false,
+      "description": "An explicitly unavailable implementation source basis.",
+      "properties": {
+        "kind": {
+          "const": "opaque",
+          "default": "opaque",
+          "title": "Kind",
+          "type": "string"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "title": "OpaqueSource",
       "type": "object"
     },
     "PortDefinition": {
@@ -629,6 +745,34 @@
         "id"
       ],
       "title": "RecordReference",
+      "type": "object"
+    },
+    "ServiceSource": {
+      "additionalProperties": false,
+      "description": "A versioned external service selected as an implementation's source basis.",
+      "properties": {
+        "kind": {
+          "const": "service",
+          "default": "service",
+          "title": "Kind",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "locator",
+        "version"
+      ],
+      "title": "ServiceSource",
       "type": "object"
     }
   },

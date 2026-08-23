@@ -35,7 +35,7 @@ not alter the normative requirements in the preceding sections.
 | Core objects are closed and extension data is bounded. | Permissive top-level fields make independently produced records ambiguous and difficult to validate. Namespaced extension objects retain local flexibility while keeping the portable core legible. |
 | A Definition, Invocation, and attempt are distinct. | A reusable computation is not a request to run it, and a request is not one scheduler attempt. Preserving those three concepts lets retries, migrations, and multiple execution systems report facts without overwriting lineage. |
 | Derivation is a DAG, while references and audit facts are not. | Scheduling, cache invalidation, and human lineage views need a topological order. Input and output bindings therefore form an acyclic Artifact-to-Invocation graph; Events, Evidence, annotations, and collections remain flexible overlays rather than hidden derivation edges. |
-| Git source provenance lives on the Implementation; code and runtime packages remain ordinary Artifacts. | A repository and immutable commit are the useful source identity for version-controlled code. Producers do not need to infer a transitive import closure. When exact distributed bytes matter, wheels and container manifests can still be bound as Artifacts. |
+| Every Implementation declares an explicit source basis; execution-local checkout facts live on Events. | Consumers must be able to distinguish Git source, a bound package Artifact, a versioned service, and unavailable provenance. A Definition remains portable across machines; a local worktree and dirty state describe one execution attempt. |
 | ArtifactSet is logical and non-nested in draft 0.1. | Releases need a durable named collection, but archive formats, directory layouts, and recursive collection semantics are storage concerns. A flat, digest-bound member list is simple to traverse and can be composed by publishing another explicit set or profile later. |
 | Profiles compose rather than extend Core records. | Datasets, agents, model services, and MCP tools need richer domain semantics, but not every OCLP consumer should implement them. Explicit profile declarations and dependencies make those layers interoperable without turning Core into a domain framework. |
 
@@ -153,15 +153,15 @@ or execute it.
 | --- | --- | --- |
 | `kind` | required; string | `"python-callable"`, `"container"`, `"command"`, or `"other"`. It makes the locator interpretable without prescribing one runtime. |
 | `locator` | required; string | Non-empty runtime-specific location, such as an import target, image name, or command identifier. It is not itself immutable. |
-| `source` | optional; GitSource | Immutable Git provenance for the selected implementation. It identifies source history; it is not an inferred dependency closure or a package/runtime environment. |
+| `source` | required; ImplementationSource | The declared basis for this implementation. It is a discriminated `GitSource`, `ArtifactSource`, `ServiceSource`, or `OpaqueSource`; it MUST NOT be omitted. |
 | `digest` | optional; Digest | A runtime fingerprint, such as an image digest or implementation hash. Its exact semantics are declared by the producer. A producer MUST omit it when it would merely restate the linked Artifact's content digest. |
 | `artifact` | optional; RecordReference | An Artifact representing code or a runtime package, such as a source bundle, wheel, or container manifest. If present, its record digest is REQUIRED. |
 
 `source`, `digest`, and `artifact` identify distinct concerns. `source`
-identifies the reviewed source revision; `digest` is a producer-defined runtime
-fingerprint; and `artifact` makes package or runtime bytes available as an
-ordinary, independently describable Artifact. Producers MUST NOT represent an
-ad-hoc selected-file hash as a source bundle merely to approximate dependency
+declares where the implementation comes from; `digest` is a producer-defined
+runtime fingerprint; and `artifact` can make separately selected package or
+runtime bytes available as an ordinary Artifact. Producers MUST NOT represent
+an ad-hoc selected-file hash as a source bundle merely to approximate dependency
 closure. If the runtime fingerprint is simply the linked Artifact's content
 digest, producers MUST omit `digest`; consumers resolve the Artifact record to
 obtain that content identity. The `RecordReference.digest` inside `artifact`
@@ -172,11 +172,36 @@ payload-content digest.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
-| `kind` | default; string | MUST be `"git"`. The discriminator leaves room for future source systems without treating a branch name as immutable provenance. |
+| `kind` | default; string | MUST be `"git"`. |
 | `repository` | required; string | Non-empty canonical repository location or identifier selected by the producer. |
 | `commit` | required; string | A complete, lowercase hexadecimal Git object ID: 40 characters for SHA-1 repositories or 64 characters for SHA-256 repositories. A branch, tag, or abbreviated hash is invalid. |
 | `path` | default; string | Repository-relative source or build-context path. Default `"."`. |
-| `dirty` | default; boolean | Default `false`. If `true`, `commit` identifies only the committed base and MUST NOT be presented as the exact executed tree. A producer MAY bind a patch or snapshot as `artifact` when it needs to preserve that overlay. |
+`repository` identifies the canonical source project, not an execution-local
+checkout path or merely a configured remote name. A Git commit describes the
+reviewed source revision. It does not claim to identify every runtime
+dependency or the checkout used by one execution attempt.
+
+#### ArtifactSource
+
+| Field | Input status and JSON type | Constraints and rationale |
+| --- | --- | --- |
+| `kind` | default; string | MUST be `"artifact"`. |
+| `artifact` | required; RecordReference | An Artifact such as a wheel, container manifest, or intentional source archive. Its record digest is REQUIRED. |
+
+#### ServiceSource
+
+| Field | Input status and JSON type | Constraints and rationale |
+| --- | --- | --- |
+| `kind` | default; string | MUST be `"service"`. |
+| `locator` | required; string | Non-empty service identity or endpoint selected by the producer. |
+| `version` | required; string | Non-empty provider or deployment version. |
+
+#### OpaqueSource
+
+| Field | Input status and JSON type | Constraints and rationale |
+| --- | --- | --- |
+| `kind` | default; string | MUST be `"opaque"`. |
+| `reason` | required; string | Non-empty explanation for why a stronger source basis is unavailable. It makes the provenance limitation explicit. |
 
 ### 3.7 ContractReference
 
@@ -238,14 +263,14 @@ it is not an execution or an attempt.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
-| `implementation` | required; Implementation | The selected executable realization, optional Git source revision, and optional immutable package/runtime binding. |
+| `implementation` | required; Implementation | The selected executable realization, required source basis, and optional immutable package/runtime binding. |
 | `input_ports` | default; array of PortDefinition | Empty array by default. Declared input interface. Names MUST be unique within this direction. |
 | `output_ports` | default; array of PortDefinition | Empty array by default. Declared output interface. Names MUST be unique within this direction. |
 
 The same port name MAY appear once among inputs and once among outputs because
 the directions are separate namespaces. A Definition's logical ID names the
 computation across revisions; its record digest binds the particular
-implementation and Git source revision. Port declarations express the intended
+implementation and source basis. Port declarations express the intended
 interface; draft 0.1 does not require a runtime to enforce every declaration.
 
 ### 4.4 Invocation (`kind: "invocation"`)
@@ -294,7 +319,14 @@ document their event types and their `data` shape.
 | `occurred_at` | required; string, `date-time` | Time the event fact occurred. Use an RFC 3339 timestamp with an offset for portable interchange. |
 | `sequence` | required; integer | Non-negative sequence number. Events for one Invocation are ordered by this value; producers MUST NOT give two distinct events for an Invocation the same sequence. |
 | `attempt_id` | optional; string | Producer-defined execution-attempt identifier. Omit it for a fact about the Invocation as a whole. |
+| `execution` | optional; ExecutionContext | Execution-local observations. A producer SHOULD attach the checkout observed for an attempt to its attempt-started Event rather than put machine-specific facts in the Definition. |
 | `data` | default; object | Empty object by default. JSON event payload. For an output-publication event, it SHOULD name the published Artifact references. |
+
+`ExecutionContext.git_checkout`, when present, records a Git `worktree`, full
+observed `commit`, and `dirty` state. The worktree is a local URI or locator and
+MAY be omitted when it would disclose sensitive machine layout. It is distinct
+from `GitSource.repository`: the former says where this attempt ran; the latter
+names the portable source project selected by the Definition.
 
 ## 6. Lineage and publication invariants
 

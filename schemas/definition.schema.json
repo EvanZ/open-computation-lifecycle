@@ -1,5 +1,25 @@
 {
   "$defs": {
+    "ArtifactSource": {
+      "additionalProperties": false,
+      "description": "An immutable Artifact selected as an implementation's source basis.",
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/RecordReference"
+        },
+        "kind": {
+          "const": "artifact",
+          "default": "artifact",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact"
+      ],
+      "title": "ArtifactSource",
+      "type": "object"
+    },
     "Digest": {
       "additionalProperties": false,
       "properties": {
@@ -29,11 +49,6 @@
           "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$",
           "title": "Commit",
           "type": "string"
-        },
-        "dirty": {
-          "default": false,
-          "title": "Dirty",
-          "type": "boolean"
         },
         "kind": {
           "const": "git",
@@ -101,25 +116,63 @@
           "type": "string"
         },
         "source": {
-          "anyOf": [
+          "discriminator": {
+            "mapping": {
+              "artifact": "#/$defs/ArtifactSource",
+              "git": "#/$defs/GitSource",
+              "opaque": "#/$defs/OpaqueSource",
+              "service": "#/$defs/ServiceSource"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
             {
               "$ref": "#/$defs/GitSource"
             },
             {
-              "type": "null"
+              "$ref": "#/$defs/ArtifactSource"
+            },
+            {
+              "$ref": "#/$defs/ServiceSource"
+            },
+            {
+              "$ref": "#/$defs/OpaqueSource"
             }
           ],
-          "default": null
+          "title": "Source"
         }
       },
       "required": [
         "kind",
-        "locator"
+        "locator",
+        "source"
       ],
       "title": "Implementation",
       "type": "object"
     },
     "JsonValue": {},
+    "OpaqueSource": {
+      "additionalProperties": false,
+      "description": "An explicitly unavailable implementation source basis.",
+      "properties": {
+        "kind": {
+          "const": "opaque",
+          "default": "opaque",
+          "title": "Kind",
+          "type": "string"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "title": "OpaqueSource",
+      "type": "object"
+    },
     "PortDefinition": {
       "additionalProperties": false,
       "properties": {
@@ -181,6 +234,34 @@
         "id"
       ],
       "title": "RecordReference",
+      "type": "object"
+    },
+    "ServiceSource": {
+      "additionalProperties": false,
+      "description": "A versioned external service selected as an implementation's source basis.",
+      "properties": {
+        "kind": {
+          "const": "service",
+          "default": "service",
+          "title": "Kind",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "locator",
+        "version"
+      ],
+      "title": "ServiceSource",
       "type": "object"
     }
   },

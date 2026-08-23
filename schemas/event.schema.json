@@ -21,6 +21,58 @@
       "title": "Digest",
       "type": "object"
     },
+    "ExecutionContext": {
+      "additionalProperties": false,
+      "description": "Execution-local context attached to a lifecycle observation.",
+      "properties": {
+        "git_checkout": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GitCheckout"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "ExecutionContext",
+      "type": "object"
+    },
+    "GitCheckout": {
+      "additionalProperties": false,
+      "description": "The local Git worktree observed for one execution attempt.",
+      "properties": {
+        "commit": {
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$",
+          "title": "Commit",
+          "type": "string"
+        },
+        "dirty": {
+          "default": false,
+          "title": "Dirty",
+          "type": "boolean"
+        },
+        "kind": {
+          "const": "git",
+          "default": "git",
+          "title": "Kind",
+          "type": "string"
+        },
+        "worktree": {
+          "minLength": 1,
+          "title": "Worktree",
+          "type": "string"
+        }
+      },
+      "required": [
+        "worktree",
+        "commit"
+      ],
+      "title": "GitCheckout",
+      "type": "object"
+    },
     "JsonValue": {},
     "RecordReference": {
       "additionalProperties": false,
@@ -82,6 +134,17 @@
       "minLength": 1,
       "title": "Event Type",
       "type": "string"
+    },
+    "execution": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExecutionContext"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "id": {
       "minLength": 1,

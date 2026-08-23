@@ -21,7 +21,11 @@ def test_resolved_input_and_output_bindings_form_a_valid_dag() -> None:
     result = _artifact("result", "b")
     definition = ComputationDefinition(
         id="urn:example:definition:transform",
-        implementation=Implementation(kind="other", locator="example:transform"),
+        implementation=Implementation(
+            kind="other",
+            locator="example:transform",
+            source={"kind": "opaque", "reason": "test fixture"},
+        ),
     )
     invocation = Invocation(
         id="urn:example:invocation:transform",
@@ -51,6 +55,7 @@ def test_derivation_validator_rejects_redundant_implementation_digest() -> None:
             locator="example:transform",
             digest=source.digest,
             artifact=_reference(source),
+            source={"kind": "opaque", "reason": "test fixture"},
         ),
     )
 
@@ -63,7 +68,11 @@ def test_derivation_validator_rejects_redundant_implementation_digest() -> None:
 def test_derivation_validator_rejects_unresolved_inputs() -> None:
     definition = ComputationDefinition(
         id="urn:example:definition:transform",
-        implementation=Implementation(kind="other", locator="example:transform"),
+        implementation=Implementation(
+            kind="other",
+            locator="example:transform",
+            source={"kind": "opaque", "reason": "test fixture"},
+        ),
     )
     invocation = Invocation(
         id="urn:example:invocation:transform",
@@ -86,7 +95,11 @@ def test_derivation_validator_rejects_a_cycle() -> None:
     source = _artifact("source", "a")
     definition = ComputationDefinition(
         id="urn:example:definition:identity",
-        implementation=Implementation(kind="other", locator="example:identity"),
+        implementation=Implementation(
+            kind="other",
+            locator="example:identity",
+            source={"kind": "opaque", "reason": "test fixture"},
+        ),
     )
     invocation = Invocation(
         id="urn:example:invocation:identity",

@@ -10,7 +10,6 @@
     "locator": "example:uppercase",
     "source": {
       "commit": "0123456789abcdef0123456789abcdef01234567",
-      "dirty": false,
       "kind": "git",
       "path": "src/example",
       "repository": "https://github.com/example/uppercase.git"

@@ -150,6 +150,12 @@ function semanticRulesHold(record: OclpRecord): boolean {
     if (record.implementation?.artifact && !record.implementation.artifact.digest) {
       return false;
     }
+    if (
+      record.implementation?.source?.kind === "artifact" &&
+      !record.implementation.source.artifact?.digest
+    ) {
+      return false;
+    }
   }
 
   if (record.kind === "artifact_set") {

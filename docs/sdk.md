@@ -24,11 +24,12 @@ uv run --group docs zensical serve
 The `oclp validate path/to/record.json` command validates a serialized record
 and prints its digest.
 
-For Git-backed code, an `Implementation` can record its repository, immutable
-commit, and source path directly in `source`. It can independently reference
-an ordinary, content-bound `Artifact` for a wheel, container manifest, or an
-intentional source archive. OCLP does not infer an import closure or define a
-separate code-artifact type. When an Artifact already supplies the
+Every `Implementation` declares a source basis: Git repository and immutable
+commit, a content-bound Artifact, a versioned service, or an explicit opaque
+reason. It can independently reference an Artifact for a wheel, container
+manifest, or intentional source archive. OCLP does not infer an import closure
+or define a separate code-artifact type. Machine-specific worktree paths and
+dirty state belong on an attempt Event. When an Artifact already supplies the
 implementation's content digest, producers omit `Implementation.digest`; that
 optional field is reserved for a distinct runtime fingerprint.
 

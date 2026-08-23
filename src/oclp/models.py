@@ -50,7 +50,40 @@ class GitSource(OclpModel):
     repository: str = Field(min_length=1)
     commit: str = Field(pattern=r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
     path: str = Field(default=".", min_length=1)
-    dirty: bool = False
+
+
+class ArtifactSource(OclpModel):
+    """An immutable Artifact selected as an implementation's source basis."""
+
+    kind: Literal["artifact"] = "artifact"
+    artifact: RecordReference
+
+    @model_validator(mode="after")
+    def artifact_reference_is_content_bound(self) -> ArtifactSource:
+        if self.artifact.digest is None:
+            raise ValueError("artifact sources must include a record digest")
+        return self
+
+
+class ServiceSource(OclpModel):
+    """A versioned external service selected as an implementation's source basis."""
+
+    kind: Literal["service"] = "service"
+    locator: str = Field(min_length=1)
+    version: str = Field(min_length=1)
+
+
+class OpaqueSource(OclpModel):
+    """An explicitly unavailable implementation source basis."""
+
+    kind: Literal["opaque"] = "opaque"
+    reason: str = Field(min_length=1)
+
+
+ImplementationSource = Annotated[
+    GitSource | ArtifactSource | ServiceSource | OpaqueSource,
+    Field(discriminator="kind"),
+]
 
 
 class Implementation(OclpModel):
@@ -58,7 +91,7 @@ class Implementation(OclpModel):
     locator: str = Field(min_length=1)
     digest: Digest | None = None
     artifact: RecordReference | None = None
-    source: GitSource | None = None
+    source: ImplementationSource
 
     @model_validator(mode="after")
     def artifact_reference_is_content_bound(self) -> Implementation:
@@ -164,6 +197,21 @@ class Evidence(CoreRecord):
     details: dict[str, JsonValue] = Field(default_factory=dict)
 
 
+class GitCheckout(OclpModel):
+    """The local Git worktree observed for one execution attempt."""
+
+    kind: Literal["git"] = "git"
+    worktree: str = Field(min_length=1)
+    commit: str = Field(pattern=r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
+    dirty: bool = False
+
+
+class ExecutionContext(OclpModel):
+    """Execution-local context attached to a lifecycle observation."""
+
+    git_checkout: GitCheckout | None = None
+
+
 class LifecycleEvent(CoreRecord):
     kind: Literal["event"] = "event"
     invocation: RecordReference
@@ -171,6 +219,7 @@ class LifecycleEvent(CoreRecord):
     occurred_at: datetime
     sequence: int = Field(ge=0)
     attempt_id: str | None = None
+    execution: ExecutionContext | None = None
     data: dict[str, JsonValue] = Field(default_factory=dict)
 
 
