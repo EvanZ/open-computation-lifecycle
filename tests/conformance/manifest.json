@@ -27,6 +27,11 @@
       "digest": "sha256:7df9e895c1d45aca50050ea30fcda39411c64fff9c886d3988f9f6a7cb75bb87"
     },
     {
+      "path": "valid/child-invocation.json",
+      "canonical_json": "{\"annotations\":{},\"definition\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"fcd8409b400ac9a5c6ac01432d05d4d4aebea24280f429f49f287f9e8a095e01\"},\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-hello-child\",\"inputs\":{},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"parameters\":{\"chunk\":1},\"parent_invocation\":{\"id\":\"urn:example:invocation:uppercase-hello\"},\"requested_outputs\":[]}",
+      "digest": "sha256:b47f16d7be94a8d8bdfd626b383ce766ac58581f07b3b478cd92429b6a41dfb5"
+    },
+    {
       "path": "valid/evidence.json",
       "canonical_json": "{\"annotations\":{},\"contract\":{\"id\":\"urn:example:contract:uppercase\",\"version\":\"1\"},\"details\":{\"changed\":true,\"input_characters\":5},\"id\":\"urn:example:evidence:uppercase-hello\",\"kind\":\"evidence\",\"observed_at\":\"2026-08-19T20:00:00Z\",\"oclp_version\":\"0.1.0-draft\",\"outcome\":\"pass\",\"subject\":{\"id\":\"urn:example:invocation:uppercase-hello\"}}",
       "digest": "sha256:f2f77ea3d73f8a5745d7b569b58d0327ab34c96eceed22f7470b392c9e3cc1ec"

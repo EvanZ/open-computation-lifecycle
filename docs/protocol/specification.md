@@ -35,6 +35,7 @@ not alter the normative requirements in the preceding sections.
 | Core objects are closed and extension data is bounded. | Permissive top-level fields make independently produced records ambiguous and difficult to validate. Namespaced extension objects retain local flexibility while keeping the portable core legible. |
 | A Definition, Invocation, and attempt are distinct. | A reusable computation is not a request to run it, and a request is not one scheduler attempt. Preserving those three concepts lets retries, migrations, and multiple execution systems report facts without overwriting lineage. |
 | Derivation is a DAG, while references and audit facts are not. | Scheduling, cache invalidation, and human lineage views need a topological order. Input and output bindings therefore form an acyclic Artifact-to-Invocation graph; Events, Evidence, annotations, and collections remain flexible overlays rather than hidden derivation edges. |
+| Invocation parentage is explicit and separate from derivation. | A parent flow can orchestrate child Invocations without claiming their outputs as its own. The execution hierarchy supports scheduler and human views while leaving the Artifact-to-Invocation derivation DAG acyclic. |
 | Every Implementation declares an explicit source basis; execution-local checkout facts live on Events. | Consumers must be able to distinguish Git source, a bound package Artifact, a versioned service, and unavailable provenance. A Definition remains portable across machines; a local worktree and dirty state describe one execution attempt. |
 | ArtifactSet is logical and non-nested in draft 0.1. | Releases need a durable named collection, but archive formats, directory layouts, and recursive collection semantics are storage concerns. A flat, digest-bound member list is simple to traverse and can be composed by publishing another explicit set or profile later. |
 | Profiles compose rather than extend Core records. | Datasets, agents, model services, and MCP tools need richer domain semantics, but not every OCLP consumer should implement them. Explicit profile declarations and dependencies make those layers interoperable without turning Core into a domain framework. |
@@ -282,6 +283,7 @@ MUST NOT replace its identity.
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
 | `definition` | required; RecordReference | Definition being requested. A digest MAY bind a particular definition revision and is strongly recommended when reproducibility matters. |
+| `parent_invocation` | optional; RecordReference | The Invocation that directly orchestrated this Invocation. It is an execution-hierarchy relationship, not an input, output, or derivation edge. It MUST resolve to an Invocation when the surrounding record collection is resolved. A digest MAY bind one exact parent revision; an ID-only reference is allowed when content-bound parent/child records would otherwise form an immutable reference cycle. Consumers MUST reject an absent or ambiguous ID-only parent during resolution. |
 | `parameters` | default; object | Empty object by default. Producer-defined JSON parameter values. The Definition or a referenced contract gives them domain meaning. |
 | `inputs` | default; object of arrays of RecordReference | Empty object by default. Keys are declared input-port names; each value is an ordered list of references bound at invocation time. Artifact references SHOULD include a digest for reproducibility. |
 | `outputs` | optional; object of arrays of RecordReference | Keys are declared output-port names; each value is an ordered list of direct Artifact results. Every output reference MUST include a record digest. A producer MUST bind every durable direct result it publishes for the Invocation. When absent, it is omitted from canonical JSON so legacy Invocation record digests remain stable. |
@@ -291,6 +293,13 @@ MUST NOT replace its identity.
 `requested_outputs`, which records caller intent. A lifecycle Event MAY repeat
 output references to record an operational publication fact, but Event `data`
 MUST NOT be the only derivation binding for a published Artifact.
+
+`parent_invocation` forms an optional execution hierarchy. A child has at most
+one direct parent; a parent may have many children. A resolved hierarchy MUST
+be acyclic. Parentage MUST NOT be interpreted as a data-production claim or be
+included in derivation-DAG validation. This permits a parent to publish a
+manifest Artifact whose content binds exact child records while each child uses
+the parent's stable logical ID as an ID-only parent reference.
 
 ### 4.5 Evidence (`kind: "evidence"`)
 
@@ -337,8 +346,8 @@ The **derivation graph** contains only Artifact and Invocation nodes:
 Artifact -> consumed by Invocation -> produces Artifact
 ```
 
-The Definition binding, implementation Artifact, ArtifactSet membership,
-Evidence, Events, profile content, annotations, and arbitrary Event `data` are
+The Definition binding, implementation Artifact, Invocation parentage,
+ArtifactSet membership, Evidence, Events, profile content, annotations, and arbitrary Event `data` are
 **reference or audit overlays**, not derivation edges. They MAY be traversed by
 consumers, but do not participate in derivation-DAG validation.
 
@@ -353,6 +362,9 @@ Draft 0.1 establishes these invariants:
 7. Completion MUST NOT precede publication of required outputs and evidence.
 8. Mutable names such as `latest` or `current` are retrieval references, never artifact identities.
 9. Replaying an already accepted event MUST be idempotent.
+10. In a resolved Invocation hierarchy, every `parent_invocation` MUST resolve
+    to an Invocation and the hierarchy MUST be acyclic. It is validated
+    independently from the derivation graph.
 
 Implementations MAY build indexes for traversal, but those indexes are not
 canonical protocol truth and MUST be rebuildable from immutable records.

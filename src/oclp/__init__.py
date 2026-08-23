@@ -18,8 +18,10 @@ from oclp.models import (
 )
 from oclp.validation import (
     DerivationValidationError,
+    OrchestrationValidationError,
     parse_record,
     validate_derivation_graph,
+    validate_invocation_hierarchy,
 )
 
 __all__ = [
@@ -35,12 +37,14 @@ __all__ = [
     "GitSource",
     "Invocation",
     "LifecycleEvent",
+    "OrchestrationValidationError",
     "OpaqueSource",
     "ServiceSource",
     "canonical_json_bytes",
     "parse_record",
     "record_digest",
     "validate_derivation_graph",
+    "validate_invocation_hierarchy",
 ]
 
 __version__ = "0.1.0a0"

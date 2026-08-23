@@ -10,8 +10,10 @@ from oclp import (
     ComputationDefinition,
     DerivationValidationError,
     Invocation,
+    OrchestrationValidationError,
     record_digest,
     validate_derivation_graph,
+    validate_invocation_hierarchy,
 )
 from oclp.models import Digest, Implementation, RecordReference
 
@@ -110,6 +112,52 @@ def test_derivation_validator_rejects_a_cycle() -> None:
 
     with pytest.raises(DerivationValidationError, match="contains a cycle"):
         validate_derivation_graph((source, definition, invocation))
+
+
+def test_invocation_hierarchy_resolves_an_id_only_parent() -> None:
+    definition = ComputationDefinition(
+        id="urn:example:definition:flow",
+        implementation=Implementation(
+            kind="other",
+            locator="example:flow",
+            source={"kind": "opaque", "reason": "test fixture"},
+        ),
+    )
+    parent = Invocation(
+        id="urn:example:invocation:parent-run",
+        definition=_reference(definition),
+    )
+    child = Invocation(
+        id="urn:example:invocation:child-task",
+        definition=_reference(definition),
+        parent_invocation=RecordReference(id=parent.id),
+    )
+
+    validate_invocation_hierarchy((definition, parent, child))
+
+
+def test_invocation_hierarchy_rejects_a_cycle() -> None:
+    definition = ComputationDefinition(
+        id="urn:example:definition:flow",
+        implementation=Implementation(
+            kind="other",
+            locator="example:flow",
+            source={"kind": "opaque", "reason": "test fixture"},
+        ),
+    )
+    first = Invocation(
+        id="urn:example:invocation:first",
+        definition=_reference(definition),
+        parent_invocation=RecordReference(id="urn:example:invocation:second"),
+    )
+    second = Invocation(
+        id="urn:example:invocation:second",
+        definition=_reference(definition),
+        parent_invocation=RecordReference(id=first.id),
+    )
+
+    with pytest.raises(OrchestrationValidationError, match="contains a cycle"):
+        validate_invocation_hierarchy((definition, first, second))
 
 
 def _artifact(name: str, digest_character: str) -> Artifact:

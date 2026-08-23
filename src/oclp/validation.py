@@ -16,6 +16,10 @@ class DerivationValidationError(ValueError):
     """A resolved OCLP record set violates a derivation or implementation rule."""
 
 
+class OrchestrationValidationError(ValueError):
+    """A resolved OCLP record set violates the Invocation hierarchy contract."""
+
+
 def parse_record(value: Any) -> OclpRecord:
     return OCLP_RECORD_ADAPTER.validate_python(value)
 
@@ -87,6 +91,36 @@ def validate_derivation_graph(records: Iterable[OclpRecord]) -> None:
     _raise_on_cycle(adjacency)
 
 
+def validate_invocation_hierarchy(records: Iterable[OclpRecord]) -> None:
+    """Validate resolved parent-child Invocation relationships independently.
+
+    A parent reference is an execution relationship, not a data-derivation
+    binding. ID-only references are deliberately supported so a parent may
+    publish an output manifest that content-binds child Invocations without an
+    immutable record-digest cycle.
+    """
+
+    by_digest = {record_digest(record).value: record for record in records}
+    invocations_by_id: dict[str, list[tuple[str, OclpRecord]]] = defaultdict(list)
+    for digest, record in by_digest.items():
+        if record.kind == "invocation":
+            invocations_by_id[record.id].append((digest, record))
+
+    adjacency: dict[str, set[str]] = defaultdict(set)
+    for child_digest, record in by_digest.items():
+        if record.kind != "invocation" or record.parent_invocation is None:
+            continue
+        parent_digest = _resolve_invocation_parent(
+            record.parent_invocation,
+            by_digest,
+            invocations_by_id,
+            label=f"Invocation {record.id} parent_invocation",
+        )
+        adjacency[parent_digest].add(child_digest)
+
+    _raise_on_orchestration_cycle(adjacency)
+
+
 def _require_reference(
     reference: RecordReference,
     records: dict[str, OclpRecord],
@@ -123,6 +157,62 @@ def _raise_on_cycle(adjacency: dict[str, set[str]]) -> None:
         visiting.add(node)
         for neighbor in adjacency.get(node, ()):
             visit(neighbor)
+        visiting.remove(node)
+        visited.add(node)
+
+    for node in tuple(adjacency):
+        visit(node)
+
+
+def _resolve_invocation_parent(
+    reference: RecordReference,
+    by_digest: dict[str, OclpRecord],
+    invocations_by_id: dict[str, list[tuple[str, OclpRecord]]],
+    *,
+    label: str,
+) -> str:
+    if reference.digest is not None:
+        target = by_digest.get(reference.digest.value)
+        if target is None:
+            raise OrchestrationValidationError(
+                f"{label} does not resolve in this record set"
+            )
+        if target.kind != "invocation":
+            raise OrchestrationValidationError(
+                f"{label} must resolve to an invocation, got {target.kind}"
+            )
+        if target.id != reference.id:
+            raise OrchestrationValidationError(
+                f"{label} ID does not match its resolved record"
+            )
+        return reference.digest.value
+
+    matches = invocations_by_id.get(reference.id, [])
+    if not matches:
+        raise OrchestrationValidationError(
+            f"{label} does not resolve in this record set"
+        )
+    if len(matches) != 1:
+        raise OrchestrationValidationError(
+            f"{label} is ambiguous without a record digest"
+        )
+    return matches[0][0]
+
+
+def _raise_on_orchestration_cycle(adjacency: dict[str, set[str]]) -> None:
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(node: str) -> None:
+        if node in visiting:
+            raise OrchestrationValidationError(
+                "invocation hierarchy contains a cycle"
+            )
+        if node in visited:
+            return
+        visiting.add(node)
+        for child in adjacency.get(node, ()):
+            visit(child)
         visiting.remove(node)
         visited.add(node)
 

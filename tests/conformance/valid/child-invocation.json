@@ -1,0 +1,21 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "id": "urn:example:invocation:uppercase-hello-child",
+  "annotations": {},
+  "kind": "invocation",
+  "definition": {
+    "id": "urn:example:definition:uppercase",
+    "digest": {
+      "algorithm": "sha256",
+      "value": "fcd8409b400ac9a5c6ac01432d05d4d4aebea24280f429f49f287f9e8a095e01"
+    }
+  },
+  "parent_invocation": {
+    "id": "urn:example:invocation:uppercase-hello"
+  },
+  "parameters": {
+    "chunk": 1
+  },
+  "inputs": {},
+  "requested_outputs": []
+}

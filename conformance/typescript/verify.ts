@@ -70,6 +70,7 @@ for (const entry of manifest.valid) {
 }
 
 assert.equal(derivationGraphRulesHold(recordsByDigest), true);
+assert.equal(invocationHierarchyRulesHold(records, recordsByDigest), true);
 
 for (const fixturePath of manifest.invalid) {
   const record = JSON.parse(
@@ -232,6 +233,43 @@ function derivationGraphRulesHold(recordsByDigest: Map<string, OclpRecord>): boo
     return true;
   };
   return [...adjacency.keys()].every(visit);
+}
+
+function invocationHierarchyRulesHold(
+  recordsById: Map<string, OclpRecord>,
+  recordsByDigest: Map<string, OclpRecord>,
+): boolean {
+  const parents = new Map<string, string>();
+  for (const record of recordsByDigest.values()) {
+    if (record.kind !== "invocation" || !record.parent_invocation) continue;
+    const reference = record.parent_invocation as {
+      id?: unknown;
+      digest?: { value?: unknown };
+    };
+    const parent = typeof reference.digest?.value === "string"
+      ? recordsByDigest.get(reference.digest.value)
+      : typeof reference.id === "string"
+        ? recordsById.get(reference.id)
+        : undefined;
+    if (!parent || parent.kind !== "invocation" || parent.id !== reference.id) {
+      return false;
+    }
+    parents.set(String(record.id), String(parent.id));
+  }
+
+  const visiting = new Set<string>();
+  const visited = new Set<string>();
+  const visit = (id: string): boolean => {
+    if (visiting.has(id)) return false;
+    if (visited.has(id)) return true;
+    visiting.add(id);
+    const parent = parents.get(id);
+    if (parent && !visit(parent)) return false;
+    visiting.delete(id);
+    visited.add(id);
+    return true;
+  };
+  return [...parents.keys()].every(visit);
 }
 
 function addEdge(adjacency: Map<string, Set<string>>, source: string, target: string): void {

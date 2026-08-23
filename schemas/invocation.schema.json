@@ -114,6 +114,17 @@
       "title": "Parameters",
       "type": "object"
     },
+    "parent_invocation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RecordReference"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
     "requested_outputs": {
       "default": [],
       "items": {

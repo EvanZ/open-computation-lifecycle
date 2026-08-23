@@ -175,6 +175,7 @@ class ComputationDefinition(CoreRecord):
 class Invocation(CoreRecord):
     kind: Literal["invocation"] = "invocation"
     definition: RecordReference
+    parent_invocation: RecordReference | None = None
     parameters: dict[str, JsonValue] = Field(default_factory=dict)
     inputs: dict[str, tuple[RecordReference, ...]] = Field(default_factory=dict)
     outputs: dict[str, tuple[RecordReference, ...]] | None = None
@@ -182,6 +183,8 @@ class Invocation(CoreRecord):
 
     @model_validator(mode="after")
     def output_references_are_content_bound(self) -> Invocation:
+        if self.parent_invocation is not None and self.parent_invocation.id == self.id:
+            raise ValueError("an invocation cannot be its own parent")
         for references in (self.outputs or {}).values():
             if any(reference.digest is None for reference in references):
                 raise ValueError("invocation outputs must include record digests")
