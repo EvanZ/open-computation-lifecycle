@@ -9,9 +9,9 @@
       "artifact": {
         "digest": {
           "algorithm": "sha256",
-          "value": "2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"
+        "value": "cd3e37d882123021bdc06767d4f4459d37b7cad67c1f1fd19986d38d59f3dc61"
         },
-        "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        "id": "urn:example:artifact:source-document"
       },
       "name": "source-document",
       "required": true,

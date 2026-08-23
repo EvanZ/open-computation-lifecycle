@@ -108,7 +108,7 @@ portable integrity.
     {
       "name": "date=2026-08-19/part-00000.parquet",
       "artifact": {
-        "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "id": "urn:example:artifact:customer-export-partition",
         "digest": {
           "algorithm": "sha256",
           "value": "2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"

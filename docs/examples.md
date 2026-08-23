@@ -27,7 +27,7 @@ hint; the SHA-256 digest is the content identity.
 {
   "oclp_version": "0.1.0-draft",
   "kind": "artifact",
-  "id": "urn:sha256:6dfad2b52801af0f3b1d6d6a5169d678b6b9606f8d510d2cd7ca0a82f5f47e31",
+  "id": "urn:example:artifact:employee-handbook",
   "annotations": {
     "example.org/role": "source-document"
   },
@@ -66,12 +66,12 @@ outputs requested for an inference run.
   "inputs": {
     "transactions": [
       {
-        "id": "urn:sha256:09a43e5f3ceaaea12f36a22ff8fe264a4f9fe6dbf44ff73d337e8b2bfeadff07"
+        "id": "urn:example:artifact:transactions"
       }
     ],
     "model": [
       {
-        "id": "urn:sha256:44ecef9ea7b8db964eb9da498d4574fdc079ebf050252c6e0e14ca4a89d4a1cd"
+        "id": "urn:example:artifact:risk-model"
       }
     ]
   },
@@ -147,7 +147,7 @@ Evidence records a named contract result against an immutable dataset Artifact.
     "example.org/purpose": "data-quality"
   },
   "subject": {
-    "id": "urn:sha256:5fb7c21a9cb66c2fb03f129afe1b0e2ee6d6495e1f4703570f792f20403fdd7d"
+    "id": "urn:example:artifact:customer-export"
   },
   "contract": {
     "id": "urn:example:contract:required-customer-identifiers",
@@ -186,7 +186,7 @@ This is the profile-defined manifest payload, not a Core record:
     {
       "name": "date=2026-08-19/part-00000.parquet",
       "artifact": {
-        "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "id": "urn:example:artifact:customer-export-partition",
         "digest": {
           "algorithm": "sha256",
           "value": "2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"
@@ -250,7 +250,7 @@ record digest.
     {
       "name": "source-document",
       "artifact": {
-        "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "id": "urn:example:artifact:source-document",
         "digest": {
           "algorithm": "sha256",
           "value": "2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"

@@ -3,7 +3,7 @@
   "definition": {
     "digest": {
       "algorithm": "sha256",
-      "value": "0faa260f2ab085d1a52661100ce256cf6e6808776c25ed01da6e26bd80fea334"
+      "value": "6ef1817bfa6744814b8b3c260e0f3913a602d390926a387e64c82af487b8f034"
     },
     "id": "urn:example:definition:uppercase"
   },
@@ -13,9 +13,9 @@
       {
         "digest": {
           "algorithm": "sha256",
-          "value": "2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"
+          "value": "cd3e37d882123021bdc06767d4f4459d37b7cad67c1f1fd19986d38d59f3dc61"
         },
-        "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        "id": "urn:example:artifact:source-document"
       }
     ]
   },
@@ -26,9 +26,9 @@
       {
         "digest": {
           "algorithm": "sha256",
-          "value": "7d91f71aa1e973ed43d13d1343bf5e802e50d319ec337a9d6a6d80d2dda609df"
+          "value": "363165abee6413ff5e858b3294d3f1f3baef57184435f99eded4b6fb42c51b36"
         },
-        "id": "urn:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        "id": "urn:example:artifact:result-document"
       }
     ]
   },

@@ -75,6 +75,14 @@ class Artifact(CoreRecord):
     locations: tuple[str, ...] = ()
     schema_uri: str | None = None
 
+    @model_validator(mode="after")
+    def identifier_is_independent_of_content_digest(self) -> Artifact:
+        if self.id == f"urn:{self.digest.algorithm}:{self.digest.value}":
+            raise ValueError(
+                "artifact ID must be a logical identifier, not its content digest"
+            )
+        return self
+
 
 class ArtifactSetMember(OclpModel):
     """One immutable Artifact assigned a stable name and semantic role."""

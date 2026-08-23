@@ -183,16 +183,20 @@ inputs, outputs, code packages, manifests, reports, and other durable content.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
+| `id` | required; string | A logical Artifact identifier. It MUST NOT be a content-addressed spelling of this Artifact's `digest`, such as `urn:sha256:<digest-value>`. |
 | `media_type` | required; string | Non-empty media type describing the content bytes, normally an IANA or vendor media type. |
 | `digest` | required; Digest | SHA-256 of the exact content bytes. This, rather than a location, establishes content identity. |
 | `size` | required; integer | Non-negative byte count of the content. It supports retrieval checks without reading all bytes. |
 | `locations` | default; array of strings | Empty array by default. Replaceable retrieval hints such as object-store URLs. They MUST NOT determine identity and MAY become stale. |
 | `schema_uri` | optional; string | Identifies a schema or profile governing the content when applicable. It does not validate the bytes by itself. |
 
-The envelope `kind` MUST be `"artifact"`. Publishing the same bytes under a
-different retrieval location does not create different content. For very large
-or remote data, an Artifact MAY describe an immutable manifest or snapshot
-instead of hashing a whole live service.
+The envelope `kind` MUST be `"artifact"`. The logical `id` names the resource
+across revisions; `digest` identifies the exact bytes of this revision. A
+RecordReference binds both the logical ID and, when required, the digest of the
+Artifact *record*. Publishing the same bytes under a different retrieval
+location does not create different content. For very large or remote data, an
+Artifact MAY describe an immutable manifest or snapshot instead of hashing a
+whole live service.
 
 ### 4.2 ArtifactSet (`kind: "artifact_set"`)
 

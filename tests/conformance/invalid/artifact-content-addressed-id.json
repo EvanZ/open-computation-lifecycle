@@ -1,0 +1,12 @@
+{
+  "annotations": {},
+  "digest": {
+    "algorithm": "sha256",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "kind": "artifact",
+  "media_type": "text/plain",
+  "oclp_version": "0.1.0-draft",
+  "size": 5
+}

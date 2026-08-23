@@ -6,7 +6,7 @@
     "example.org/purpose": "data-quality"
   },
   "subject": {
-    "id": "urn:sha256:5fb7c21a9cb66c2fb03f129afe1b0e2ee6d6495e1f4703570f792f20403fdd7d"
+    "id": "urn:example:artifact:customer-export"
   },
   "contract": {
     "id": "urn:example:contract:required-customer-identifiers",

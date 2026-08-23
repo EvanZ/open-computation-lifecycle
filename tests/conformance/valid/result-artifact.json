@@ -6,7 +6,7 @@
     "algorithm": "sha256",
     "value": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
   },
-  "id": "urn:sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "id": "urn:example:artifact:result-document",
   "kind": "artifact",
   "locations": [
     "https://example.org/result.txt"
