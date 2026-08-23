@@ -10,6 +10,7 @@ common uses:
 | Model inference | [`model-inference-invocation.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/model-inference-invocation.json) | Exact model/data bindings and inference parameters. |
 | Software build | [`software-build-definition.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/software-build-definition.json) | A command implementation with typed input and output ports. |
 | Data quality | [`data-quality-evidence.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/data-quality-evidence.json) | A named contract evaluated against a dataset artifact. |
+| Inference failure | [`model-inference-failed-event.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/model-inference-failed-event.json) | A terminal execution state and portable diagnostic. |
 | Dataset snapshot profile | [Profile specification](profiles/dataset-snapshot.md) | A profile-defined manifest carried by an ordinary Artifact. |
 
 Validate an example locally:
@@ -169,6 +170,35 @@ Evidence records a named contract result against an immutable dataset Artifact.
     ],
     "null_rows": 0,
     "rows_checked": 125000
+  }
+}
+```
+
+## Inference failure
+
+An invocation's execution state is recorded by its terminal Event, rather than
+by an audit Evidence record. `status` is deliberately small and portable;
+`diagnostic` provides a code, concise message, and stage that a generic
+consumer can display. A producer can reference a separate Artifact when a log
+or structured report is needed.
+
+```json
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "event",
+  "id": "urn:example:event:fraud-score-batch-2026-08-19:terminal",
+  "invocation": {
+    "id": "urn:example:invocation:fraud-score-batch-2026-08-19"
+  },
+  "event_type": "invocation-failed",
+  "occurred_at": "2026-08-19T20:03:17Z",
+  "sequence": 4,
+  "attempt_id": "fraud-score-2026-08-19-01",
+  "status": "failed",
+  "diagnostic": {
+    "code": "model-endpoint-unavailable",
+    "message": "The selected model endpoint did not become ready before the deadline.",
+    "stage": "invoke"
   }
 }
 ```

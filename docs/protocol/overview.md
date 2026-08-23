@@ -7,6 +7,11 @@ durable outputs when they are published.
 Artifacts, evidence, and lifecycle events make that request inspectable after
 the fact.
 
+Execution status belongs to a terminal Event, while a contract result belongs
+to Evidence. Both record kinds can carry the same optional portable Diagnostic
+(code, concise message, stage, and an optional detailed-log Artifact reference)
+without forcing consumers to interpret producer-specific JSON detail fields.
+
 ## Core record map
 
 OCLP's six record kinds form a compact vocabulary:

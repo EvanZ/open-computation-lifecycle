@@ -37,6 +37,7 @@ not alter the normative requirements in the preceding sections.
 | Derivation is a DAG, while references and audit facts are not. | Scheduling, cache invalidation, and human lineage views need a topological order. Input and output bindings therefore form an acyclic Artifact-to-Invocation graph; Events, Evidence, annotations, and collections remain flexible overlays rather than hidden derivation edges. |
 | Invocation parentage is explicit and separate from derivation. | A parent flow can orchestrate child Invocations without claiming their outputs as its own. The execution hierarchy supports scheduler and human views while leaving the Artifact-to-Invocation derivation DAG acyclic. |
 | Every Implementation declares an explicit source basis; execution-local checkout facts live on Events. | Consumers must be able to distinguish Git source, a bound package Artifact, a versioned service, and unavailable provenance. A Definition remains portable across machines; a local worktree and dirty state describe one execution attempt. |
+| Diagnostics are a shared typed value, not an application-specific detail shape. | Events describe execution state and Evidence describes contract evaluation; both can carry the same compact code, message, stage, and optional detail Artifact. Consumers can display those fields without learning a producer's private JSON conventions. |
 | ArtifactSet is logical and non-nested in draft 0.1. | Releases need a durable named collection, but archive formats, directory layouts, and recursive collection semantics are storage concerns. A flat, digest-bound member list is simple to traverse and can be composed by publishing another explicit set or profile later. |
 | Profiles compose rather than extend Core records. | Datasets, agents, model services, and MCP tools need richer domain semantics, but not every OCLP consumer should implement them. Explicit profile declarations and dependencies make those layers interoperable without turning Core into a domain framework. |
 
@@ -213,6 +214,24 @@ A ContractReference identifies a rule set evaluated by Evidence.
 | `id` | required; string | Non-empty contract identifier. |
 | `version` | required; string | Non-empty contract version. A version makes an Evidence result interpretable after a rule changes. |
 
+### 3.8 Diagnostic
+
+A Diagnostic is a compact portable explanation attached to an Event or
+Evidence. It does not replace a producer's structured detail data or a full
+log/report Artifact. Its fields let a generic consumer present a useful
+execution or evaluation summary without interpreting application-owned JSON.
+
+| Field | Input status and JSON type | Constraints and use |
+| --- | --- | --- |
+| `code` | optional; string | Non-empty producer-defined machine-readable identifier, such as `"input-unavailable"` or `"validation/duplicate-key"`. Consumers MUST treat it as an opaque identifier unless they implement the producer's vocabulary. |
+| `message` | optional; string | Non-empty concise human-readable explanation. Producers SHOULD omit secrets and large stack traces. |
+| `stage` | optional; string | Non-empty producer-defined execution or evaluation stage, such as `"preflight"`, `"transform"`, or `"validation"`. It is not a workflow language or a globally enumerated vocabulary. |
+| `artifact` | optional; RecordReference | A durable Artifact containing richer diagnostic material, such as a log, traceback, or structured report. Its record digest is REQUIRED. |
+
+At least one Diagnostic field MUST be present. The Diagnostic's `artifact`, if
+present, is a reference to diagnostic content; its own Artifact record and
+payload digest remain the integrity boundary for that content.
+
 ## 5. Core records
 
 ### 4.1 Artifact (`kind: "artifact"`)
@@ -304,8 +323,8 @@ the parent's stable logical ID as an ID-only parent reference.
 ### 4.5 Evidence (`kind: "evidence"`)
 
 Evidence records the result of evaluating a versioned contract against a subject
-record. It keeps protocol-level truth compact while retaining domain-specific
-diagnostics in `details`.
+record. The `outcome` states the contract result; an optional Diagnostic gives
+a compact portable explanation, while `details` retains domain-specific data.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
@@ -313,7 +332,8 @@ diagnostics in `details`.
 | `contract` | required; ContractReference | The named, versioned rule set evaluated. |
 | `outcome` | required; string | `"pass"`, `"fail"`, or `"error"`. `"error"` means the evaluation could not complete or produce a reliable result. |
 | `observed_at` | required; string, `date-time` | Time at which the result was observed. Use an RFC 3339 timestamp with an offset for portable interchange. |
-| `details` | default; object | Empty object by default. JSON diagnostics, including a richer domain status such as a warning, without extending the core outcome vocabulary. |
+| `diagnostic` | optional; Diagnostic | A compact code, message, stage, or rich-detail Artifact reference associated with this contract result. It MUST NOT be used to redefine `outcome`. |
+| `details` | default; object | Empty object by default. Domain-specific evaluation data, including a richer status such as a warning, without extending the core outcome vocabulary. Generic consumers MUST NOT infer portable diagnostic semantics from it. |
 
 ### 4.6 LifecycleEvent (`kind: "event"`)
 
@@ -329,6 +349,8 @@ document their event types and their `data` shape.
 | `sequence` | required; integer | Non-negative sequence number. Events for one Invocation are ordered by this value; producers MUST NOT give two distinct events for an Invocation the same sequence. |
 | `attempt_id` | optional; string | Producer-defined execution-attempt identifier. Omit it for a fact about the Invocation as a whole. |
 | `execution` | optional; ExecutionContext | Execution-local observations. A producer SHOULD attach the checkout observed for an attempt to its attempt-started Event rather than put machine-specific facts in the Definition. |
+| `status` | optional; string | The terminal execution status: `"succeeded"`, `"failed"`, or `"skipped"`. A producer MUST use it only on an Event that reports a terminal Invocation or attempt result. Its absence means the Event does not make a portable terminal-status claim. |
+| `diagnostic` | optional; Diagnostic | A compact code, message, stage, or rich-detail Artifact reference associated with this Event. It commonly explains a failed or skipped terminal event, but MAY also annotate another notable lifecycle observation. |
 | `data` | default; object | Empty object by default. JSON event payload. For an output-publication event, it SHOULD name the published Artifact references. |
 
 `ExecutionContext.git_checkout`, when present, records a Git `worktree`, full
@@ -336,6 +358,12 @@ observed `commit`, and `dirty` state. The worktree is a local URI or locator and
 MAY be omitted when it would disclose sensitive machine layout. It is distinct
 from `GitSource.repository`: the former says where this attempt ran; the latter
 names the portable source project selected by the Definition.
+
+`status` describes execution and belongs on an Event; it is distinct from
+Evidence `outcome`, which describes a contract evaluation. A failed execution
+MAY also publish Evidence, but a consumer MUST NOT require Evidence in order to
+identify the execution state. A producer MAY define its event-type vocabulary
+through a profile; Core does not reserve event-type strings.
 
 ## 6. Lineage and publication invariants
 

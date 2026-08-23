@@ -181,6 +181,23 @@ function semanticRulesHold(record: OclpRecord): boolean {
     }
   }
 
+  if (record.kind === "event" || record.kind === "evidence") {
+    const diagnostic = record.diagnostic;
+    if (diagnostic) {
+      if (
+        !diagnostic.code &&
+        !diagnostic.message &&
+        !diagnostic.stage &&
+        !diagnostic.artifact
+      ) {
+        return false;
+      }
+      if (diagnostic.artifact && !diagnostic.artifact.digest) {
+        return false;
+      }
+    }
+  }
+
   return true;
 }
 

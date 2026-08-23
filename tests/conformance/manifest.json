@@ -33,13 +33,13 @@
     },
     {
       "path": "valid/evidence.json",
-      "canonical_json": "{\"annotations\":{},\"contract\":{\"id\":\"urn:example:contract:uppercase\",\"version\":\"1\"},\"details\":{\"changed\":true,\"input_characters\":5},\"id\":\"urn:example:evidence:uppercase-hello\",\"kind\":\"evidence\",\"observed_at\":\"2026-08-19T20:00:00Z\",\"oclp_version\":\"0.1.0-draft\",\"outcome\":\"pass\",\"subject\":{\"id\":\"urn:example:invocation:uppercase-hello\"}}",
-      "digest": "sha256:f2f77ea3d73f8a5745d7b569b58d0327ab34c96eceed22f7470b392c9e3cc1ec"
+      "canonical_json": "{\"annotations\":{},\"contract\":{\"id\":\"urn:example:contract:uppercase\",\"version\":\"1\"},\"details\":{\"changed\":true,\"input_characters\":5},\"diagnostic\":{\"code\":\"uppercase/changed\",\"stage\":\"validation\"},\"id\":\"urn:example:evidence:uppercase-hello\",\"kind\":\"evidence\",\"observed_at\":\"2026-08-19T20:00:00Z\",\"oclp_version\":\"0.1.0-draft\",\"outcome\":\"pass\",\"subject\":{\"id\":\"urn:example:invocation:uppercase-hello\"}}",
+      "digest": "sha256:714e9182dbecb11548d4dbc70463a7dfb7a8ae8890c505c85d96f3131818d64f"
     },
     {
       "path": "valid/event.json",
-      "canonical_json": "{\"annotations\":{},\"attempt_id\":\"attempt-1\",\"data\":{\"worker\":\"fixture\"},\"event_type\":\"attempt-started\",\"id\":\"urn:example:event:uppercase-hello:0\",\"invocation\":{\"id\":\"urn:example:invocation:uppercase-hello\"},\"kind\":\"event\",\"occurred_at\":\"2026-08-19T20:00:01Z\",\"oclp_version\":\"0.1.0-draft\",\"sequence\":0}",
-      "digest": "sha256:b3aaa26c181437c8ea1d9ddfe0a88dc21060daacb92cfc44a50d8fa592848de6"
+      "canonical_json": "{\"annotations\":{},\"attempt_id\":\"attempt-1\",\"data\":{\"worker\":\"fixture\"},\"diagnostic\":{\"code\":\"input-unavailable\",\"message\":\"Source document was unavailable\",\"stage\":\"preflight\"},\"event_type\":\"invocation-failed\",\"id\":\"urn:example:event:uppercase-hello:0\",\"invocation\":{\"id\":\"urn:example:invocation:uppercase-hello\"},\"kind\":\"event\",\"occurred_at\":\"2026-08-19T20:00:01Z\",\"oclp_version\":\"0.1.0-draft\",\"sequence\":0,\"status\":\"failed\"}",
+      "digest": "sha256:12490362ee228022664a4e5d1d4f7f18a2b2bf346a8b127ef0b0a8ce2eab7b1f"
     }
   ],
   "invalid": [
@@ -47,6 +47,8 @@
     "invalid/artifact-content-addressed-id.json",
     "invalid/artifact-invalid-digest.json",
     "invalid/evidence-invalid-outcome.json",
+    "invalid/event-empty-diagnostic.json",
+    "invalid/event-unbound-diagnostic-artifact.json",
     "invalid/definition-duplicate-port.json",
     "invalid/definition-invalid-git-commit.json",
     "invalid/definition-missing-source.json",

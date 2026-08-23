@@ -105,6 +105,25 @@ class ContractReference(OclpModel):
     version: str = Field(min_length=1)
 
 
+class Diagnostic(OclpModel):
+    """A compact, portable explanation attached to an Event or Evidence record."""
+
+    code: str | None = Field(default=None, min_length=1)
+    message: str | None = Field(default=None, min_length=1)
+    stage: str | None = Field(default=None, min_length=1)
+    artifact: RecordReference | None = None
+
+    @model_validator(mode="after")
+    def has_content_and_binds_detail_artifact(self) -> Diagnostic:
+        if not any((self.code, self.message, self.stage, self.artifact)):
+            raise ValueError(
+                "diagnostics must include code, message, stage, or artifact"
+            )
+        if self.artifact is not None and self.artifact.digest is None:
+            raise ValueError("diagnostic artifacts must include a record digest")
+        return self
+
+
 class CoreRecord(OclpModel):
     oclp_version: Literal["0.1.0-draft"] = OCLP_DRAFT_VERSION
     id: str = Field(min_length=1)
@@ -197,6 +216,7 @@ class Evidence(CoreRecord):
     contract: ContractReference
     outcome: Literal["pass", "fail", "error"]
     observed_at: datetime
+    diagnostic: Diagnostic | None = None
     details: dict[str, JsonValue] = Field(default_factory=dict)
 
 
@@ -223,6 +243,8 @@ class LifecycleEvent(CoreRecord):
     sequence: int = Field(ge=0)
     attempt_id: str | None = None
     execution: ExecutionContext | None = None
+    status: Literal["succeeded", "failed", "skipped"] | None = None
+    diagnostic: Diagnostic | None = None
     data: dict[str, JsonValue] = Field(default_factory=dict)
 
 

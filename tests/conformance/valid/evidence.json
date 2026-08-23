@@ -4,6 +4,10 @@
     "id": "urn:example:contract:uppercase",
     "version": "1"
   },
+  "diagnostic": {
+    "code": "uppercase/changed",
+    "stage": "validation"
+  },
   "details": {
     "changed": true,
     "input_characters": 5

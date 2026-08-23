@@ -1,0 +1,21 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "event",
+  "id": "urn:example:event:fraud-score-batch-2026-08-19:terminal",
+  "annotations": {
+    "example.org/purpose": "batch-inference"
+  },
+  "invocation": {
+    "id": "urn:example:invocation:fraud-score-batch-2026-08-19"
+  },
+  "event_type": "invocation-failed",
+  "occurred_at": "2026-08-19T20:03:17Z",
+  "sequence": 4,
+  "attempt_id": "fraud-score-2026-08-19-01",
+  "status": "failed",
+  "diagnostic": {
+    "code": "model-endpoint-unavailable",
+    "message": "The selected model endpoint did not become ready before the deadline.",
+    "stage": "invoke"
+  }
+}

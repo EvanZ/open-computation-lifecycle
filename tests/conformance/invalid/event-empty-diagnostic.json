@@ -1,0 +1,13 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "event",
+  "id": "event.invalid-empty-diagnostic",
+  "invocation": {
+    "id": "invocation.example"
+  },
+  "event_type": "invocation-failed",
+  "occurred_at": "2026-08-19T20:00:00Z",
+  "sequence": 0,
+  "status": "failed",
+  "diagnostic": {}
+}

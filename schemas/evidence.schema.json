@@ -21,6 +21,64 @@
       "title": "ContractReference",
       "type": "object"
     },
+    "Diagnostic": {
+      "additionalProperties": false,
+      "description": "A compact, portable explanation attached to an Event or Evidence record.",
+      "properties": {
+        "artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "code": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Code"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message"
+        },
+        "stage": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stage"
+        }
+      },
+      "title": "Diagnostic",
+      "type": "object"
+    },
     "Digest": {
       "additionalProperties": false,
       "properties": {
@@ -89,6 +147,17 @@
       },
       "title": "Details",
       "type": "object"
+    },
+    "diagnostic": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Diagnostic"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "id": {
       "minLength": 1,
