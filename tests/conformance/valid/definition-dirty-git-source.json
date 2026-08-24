@@ -1,0 +1,25 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "definition",
+  "id": "urn:example:definition:uppercase-dirty",
+  "annotations": {},
+  "implementation": {
+    "kind": "other",
+    "locator": "example:uppercase",
+    "source": {
+      "kind": "git",
+      "repository": "https://github.com/example/uppercase.git",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "path": "src/example",
+      "overlay": {
+        "id": "urn:example:artifact-set:git-source-overlay",
+        "digest": {
+          "algorithm": "sha256",
+          "value": "15fd3b408e65484987545004f6f7ef5995d14952c7b1b62bdc3790f2b1a5391b"
+        }
+      }
+    }
+  },
+  "input_ports": [],
+  "output_ports": []
+}

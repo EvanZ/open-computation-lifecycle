@@ -50,6 +50,13 @@ class GitSource(OclpModel):
     repository: str = Field(min_length=1)
     commit: str = Field(pattern=r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
     path: str = Field(default=".", min_length=1)
+    overlay: RecordReference | None = None
+
+    @model_validator(mode="after")
+    def overlay_is_content_bound(self) -> GitSource:
+        if self.overlay is not None and self.overlay.digest is None:
+            raise ValueError("git source overlays must include a record digest")
+        return self
 
 
 class ArtifactSource(OclpModel):

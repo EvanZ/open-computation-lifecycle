@@ -70,3 +70,10 @@ def test_site_dataset_snapshot_specification_mirrors_the_canonical_specification
     assert (ROOT / "docs/profiles/dataset-snapshot.md").read_text() == (
         ROOT / "spec/dataset-snapshot.md"
     ).read_text()
+
+
+def test_site_execution_context_specification_mirrors_the_canonical_specification(
+) -> None:
+    assert (ROOT / "docs/profiles/execution-context.md").read_text() == (
+        ROOT / "spec/execution-context.md"
+    ).read_text()

@@ -17,6 +17,21 @@
       "digest": "sha256:fcd8409b400ac9a5c6ac01432d05d4d4aebea24280f429f49f287f9e8a095e01"
     },
     {
+      "path": "valid/overlay-artifact.json",
+      "canonical_json": "{\"annotations\":{\"example.org/role\":\"tracked-source-overlay\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\"},\"id\":\"urn:example:artifact:worktree-overlay-patch\",\"kind\":\"artifact\",\"locations\":[],\"media_type\":\"text/x-diff\",\"oclp_version\":\"0.1.0-draft\",\"size\":32}",
+      "digest": "sha256:7f2eccc8b8a9976642e8c524a8336ce0ba604ad8313a790ecd5f61963f2b3f6e"
+    },
+    {
+      "path": "valid/git-source-overlay.json",
+      "canonical_json": "{\"annotations\":{\"example.org/role\":\"git-source-overlay\"},\"id\":\"urn:example:artifact-set:git-source-overlay\",\"kind\":\"artifact_set\",\"members\":[{\"artifact\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"7f2eccc8b8a9976642e8c524a8336ce0ba604ad8313a790ecd5f61963f2b3f6e\"},\"id\":\"urn:example:artifact:worktree-overlay-patch\"},\"name\":\"tracked.patch\",\"required\":true,\"role\":\"tracked-patch\"}],\"oclp_version\":\"0.1.0-draft\"}",
+      "digest": "sha256:15fd3b408e65484987545004f6f7ef5995d14952c7b1b62bdc3790f2b1a5391b"
+    },
+    {
+      "path": "valid/definition-dirty-git-source.json",
+      "canonical_json": "{\"annotations\":{},\"id\":\"urn:example:definition:uppercase-dirty\",\"implementation\":{\"kind\":\"other\",\"locator\":\"example:uppercase\",\"source\":{\"commit\":\"0123456789abcdef0123456789abcdef01234567\",\"kind\":\"git\",\"overlay\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"15fd3b408e65484987545004f6f7ef5995d14952c7b1b62bdc3790f2b1a5391b\"},\"id\":\"urn:example:artifact-set:git-source-overlay\"},\"path\":\"src/example\",\"repository\":\"https://github.com/example/uppercase.git\"}},\"input_ports\":[],\"kind\":\"definition\",\"oclp_version\":\"0.1.0-draft\",\"output_ports\":[]}",
+      "digest": "sha256:efc7704705ab054bc6e08c342bdc6e1a8ab5316a230dd2871c41249cc171194b"
+    },
+    {
       "path": "valid/result-artifact.json",
       "canonical_json": "{\"annotations\":{\"example.org/source\":\"fixture-result\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"},\"id\":\"urn:example:artifact:result-document\",\"kind\":\"artifact\",\"locations\":[\"https://example.org/result.txt\"],\"media_type\":\"text/plain\",\"oclp_version\":\"0.1.0-draft\",\"size\":5}",
       "digest": "sha256:363165abee6413ff5e858b3294d3f1f3baef57184435f99eded4b6fb42c51b36"
@@ -51,6 +66,7 @@
     "invalid/event-unbound-diagnostic-artifact.json",
     "invalid/definition-duplicate-port.json",
     "invalid/definition-invalid-git-commit.json",
+    "invalid/definition-unbound-git-overlay.json",
     "invalid/definition-missing-source.json",
     "invalid/definition-unbound-implementation-artifact.json",
     "invalid/artifact-set-duplicate-member.json",

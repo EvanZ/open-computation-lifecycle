@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from oclp.canonical import record_digest
-from oclp.models import OCLP_RECORD_ADAPTER, OclpRecord, RecordReference
+from oclp.models import OCLP_RECORD_ADAPTER, GitSource, OclpRecord, RecordReference
 
 
 class DerivationValidationError(ValueError):
@@ -42,22 +42,31 @@ def validate_derivation_graph(records: Iterable[OclpRecord]) -> None:
     adjacency: dict[str, set[str]] = defaultdict(set)
 
     for record in by_digest.values():
-        if record.kind != "definition" or record.implementation.artifact is None:
+        if record.kind != "definition":
             continue
-        artifact_digest = _require_reference(
-            record.implementation.artifact,
-            by_digest,
-            expected_kind="artifact",
-            label=f"Definition {record.id} implementation artifact",
-        )
-        artifact = by_digest[artifact_digest]
-        if (
-            record.implementation.digest is not None
-            and artifact.digest == record.implementation.digest
-        ):
-            raise DerivationValidationError(
-                f"Definition {record.id} must omit implementation.digest when it "
-                "duplicates its implementation Artifact content digest"
+        if record.implementation.artifact is not None:
+            artifact_digest = _require_reference(
+                record.implementation.artifact,
+                by_digest,
+                expected_kind="artifact",
+                label=f"Definition {record.id} implementation artifact",
+            )
+            artifact = by_digest[artifact_digest]
+            if (
+                record.implementation.digest is not None
+                and artifact.digest == record.implementation.digest
+            ):
+                raise DerivationValidationError(
+                    f"Definition {record.id} must omit implementation.digest when it "
+                    "duplicates its implementation Artifact content digest"
+                )
+        source = record.implementation.source
+        if isinstance(source, GitSource) and source.overlay is not None:
+            _require_reference(
+                source.overlay,
+                by_digest,
+                expected_kind="artifact_set",
+                label=f"Definition {record.id} Git source overlay",
             )
 
     for invocation_digest, record in by_digest.items():

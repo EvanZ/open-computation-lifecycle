@@ -14,7 +14,7 @@ from oclp.models import (
     Invocation,
     LifecycleEvent,
 )
-from oclp.profiles import DatasetSnapshotManifest
+from oclp.profiles import DatasetSnapshotManifest, ExecutionContextManifest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = ROOT / "schemas"
@@ -49,6 +49,10 @@ def main() -> None:
     write_schema(
         PROFILE_DIR / "dataset-snapshot.schema.json",
         DatasetSnapshotManifest.model_json_schema(),
+    )
+    write_schema(
+        PROFILE_DIR / "execution-context.schema.json",
+        ExecutionContextManifest.model_json_schema(),
     )
 
 

@@ -56,6 +56,17 @@
           "title": "Kind",
           "type": "string"
         },
+        "overlay": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "path": {
           "default": ".",
           "minLength": 1,

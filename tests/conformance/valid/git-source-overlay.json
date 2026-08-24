@@ -1,0 +1,22 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "artifact_set",
+  "id": "urn:example:artifact-set:git-source-overlay",
+  "annotations": {
+    "example.org/role": "git-source-overlay"
+  },
+  "members": [
+    {
+      "name": "tracked.patch",
+      "artifact": {
+        "id": "urn:example:artifact:worktree-overlay-patch",
+        "digest": {
+          "algorithm": "sha256",
+          "value": "7f2eccc8b8a9976642e8c524a8336ce0ba604ad8313a790ecd5f61963f2b3f6e"
+        }
+      },
+      "role": "tracked-patch",
+      "required": true
+    }
+  ]
+}

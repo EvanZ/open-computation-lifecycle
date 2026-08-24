@@ -17,6 +17,7 @@ nav = [
   {"Examples" = "examples.md"},
   {"Profiles" = [
     {"Dataset snapshot (normative)" = "profiles/dataset-snapshot.md"},
+    {"Execution context (normative)" = "profiles/execution-context.md"},
   ]},
   {"Reference SDK" = "sdk.md"},
 ]

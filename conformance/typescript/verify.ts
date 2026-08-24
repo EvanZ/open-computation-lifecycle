@@ -44,13 +44,21 @@ const manifest = JSON.parse(
 const datasetSchema = JSON.parse(
   await readFile(path.join(root, "profiles/dataset-snapshot.schema.json"), "utf8"),
 );
+const executionFixtures = path.join(root, "tests/profiles/execution-context");
+const executionSchema = JSON.parse(
+  await readFile(path.join(root, "profiles/execution-context.schema.json"), "utf8"),
+);
 const datasetManifest = JSON.parse(
   await readFile(path.join(datasetFixtures, "manifest.json"), "utf8"),
+) as ProfileManifest;
+const executionManifest = JSON.parse(
+  await readFile(path.join(executionFixtures, "manifest.json"), "utf8"),
 ) as ProfileManifest;
 const ajv = new Ajv2020({ strict: false });
 addFormats(ajv);
 const validate = ajv.compile(coreSchema);
 const validateDatasetSnapshot = ajv.compile(datasetSchema);
+const validateExecutionContext = ajv.compile(executionSchema);
 
 const records = new Map<string, OclpRecord>();
 const recordsByDigest = new Map<string, OclpRecord>();
@@ -111,6 +119,34 @@ for (const fixturePath of datasetManifest.invalid) {
   );
 }
 
+for (const entry of executionManifest.valid) {
+  const profile = JSON.parse(
+    await readFile(path.join(executionFixtures, entry.path), "utf8"),
+  ) as OclpRecord;
+  assert.equal(
+    validateExecutionContext(profile),
+    true,
+    validateExecutionContext.errors?.map(String).join("\n"),
+  );
+  assert.equal(executionContextRulesHold(profile), true, entry.path);
+  const canonical = canonicalize(profile);
+  assert.notEqual(canonical, undefined);
+  assert.equal(canonical, entry.canonical_json, entry.path);
+  const digest = createHash("sha256").update(canonical).digest("hex");
+  assert.equal(`sha256:${digest}`, entry.digest, entry.path);
+}
+
+for (const fixturePath of executionManifest.invalid) {
+  const profile = JSON.parse(
+    await readFile(path.join(executionFixtures, fixturePath), "utf8"),
+  ) as OclpRecord;
+  assert.equal(
+    validateExecutionContext(profile) && executionContextRulesHold(profile),
+    false,
+    `${fixturePath} unexpectedly validated`,
+  );
+}
+
 const invocation = records.get(manifest.lineage.invocation_id)!;
 assert.equal(invocation.definition?.id, manifest.lineage.definition_id);
 assert.equal(invocation.inputs?.source?.[0]?.id, manifest.lineage.input_artifact_id);
@@ -127,7 +163,9 @@ assert.equal(
 console.log(
   `Verified ${manifest.valid.length} valid and ${manifest.invalid.length} invalid ` +
     `OCLP fixtures; ${datasetManifest.valid.length} valid and ` +
-    `${datasetManifest.invalid.length} invalid dataset-snapshot fixtures.`,
+    `${datasetManifest.invalid.length} invalid dataset-snapshot fixtures; ` +
+    `${executionManifest.valid.length} valid and ${executionManifest.invalid.length} ` +
+    `invalid execution-context fixtures.`,
 );
 
 function semanticRulesHold(record: OclpRecord): boolean {
@@ -154,6 +192,13 @@ function semanticRulesHold(record: OclpRecord): boolean {
     if (
       record.implementation?.source?.kind === "artifact" &&
       !record.implementation.source.artifact?.digest
+    ) {
+      return false;
+    }
+    if (
+      record.implementation?.source?.kind === "git" &&
+      record.implementation.source.overlay &&
+      !record.implementation.source.overlay.digest
     ) {
       return false;
     }
@@ -216,6 +261,14 @@ function derivationGraphRulesHold(recordsByDigest: Map<string, OclpRecord>): boo
     }
     return digest;
   };
+
+  for (const record of recordsByDigest.values()) {
+    if (record.kind !== "definition") continue;
+    const overlay = record.implementation?.source?.kind === "git"
+      ? record.implementation.source.overlay
+      : undefined;
+    if (overlay && !resolve(overlay, "artifact_set")) return false;
+  }
 
   for (const [invocationDigest, record] of recordsByDigest) {
     if (record.kind !== "invocation") continue;
@@ -312,4 +365,9 @@ function datasetSnapshotRulesHold(snapshot: OclpRecord): boolean {
     return false;
   }
   return !snapshot.parent || Boolean(snapshot.parent.digest);
+}
+
+function executionContextRulesHold(profile: OclpRecord): boolean {
+  if (!profile.runtime?.dependency_lock?.digest) return false;
+  return !profile.configuration || Boolean(profile.configuration.digest);
 }

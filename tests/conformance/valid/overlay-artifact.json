@@ -1,0 +1,15 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "artifact",
+  "id": "urn:example:artifact:worktree-overlay-patch",
+  "annotations": {
+    "example.org/role": "tracked-source-overlay"
+  },
+  "media_type": "text/x-diff",
+  "digest": {
+    "algorithm": "sha256",
+    "value": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "size": 32,
+  "locations": []
+}

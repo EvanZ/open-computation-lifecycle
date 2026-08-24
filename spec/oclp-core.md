@@ -36,7 +36,7 @@ not alter the normative requirements in the preceding sections.
 | A Definition, Invocation, and attempt are distinct. | A reusable computation is not a request to run it, and a request is not one scheduler attempt. Preserving those three concepts lets retries, migrations, and multiple execution systems report facts without overwriting lineage. |
 | Derivation is a DAG, while references and audit facts are not. | Scheduling, cache invalidation, and human lineage views need a topological order. Input and output bindings therefore form an acyclic Artifact-to-Invocation graph; Events, Evidence, annotations, and collections remain flexible overlays rather than hidden derivation edges. |
 | Invocation parentage is explicit and separate from derivation. | A parent flow can orchestrate child Invocations without claiming their outputs as its own. The execution hierarchy supports scheduler and human views while leaving the Artifact-to-Invocation derivation DAG acyclic. |
-| Every Implementation declares an explicit source basis; execution-local checkout facts live on Events. | Consumers must be able to distinguish Git source, a bound package Artifact, a versioned service, and unavailable provenance. A Definition remains portable across machines; a local worktree and dirty state describe one execution attempt. |
+| Every Implementation declares an explicit source basis; a dirty Git overlay is bound to that basis. | Consumers must be able to distinguish Git source, a bound package Artifact, a versioned service, and unavailable provenance. A Git commit is the reviewed baseline; an optional, exact ArtifactSet overlay makes source edits content-addressable without pretending to resolve a whole dependency closure. Machine-local checkout facts remain on Events. |
 | Diagnostics are a shared typed value, not an application-specific detail shape. | Events describe execution state and Evidence describes contract evaluation; both can carry the same compact code, message, stage, and optional detail Artifact. Consumers can display those fields without learning a producer's private JSON conventions. |
 | ArtifactSet is logical and non-nested in draft 0.1. | Releases need a durable named collection, but archive formats, directory layouts, and recursive collection semantics are storage concerns. A flat, digest-bound member list is simple to traverse and can be composed by publishing another explicit set or profile later. |
 | Profiles compose rather than extend Core records. | Datasets, agents, model services, and MCP tools need richer domain semantics, but not every OCLP consumer should implement them. Explicit profile declarations and dependencies make those layers interoperable without turning Core into a domain framework. |
@@ -178,10 +178,18 @@ payload-content digest.
 | `repository` | required; string | Non-empty canonical repository location or identifier selected by the producer. |
 | `commit` | required; string | A complete, lowercase hexadecimal Git object ID: 40 characters for SHA-1 repositories or 64 characters for SHA-256 repositories. A branch, tag, or abbreviated hash is invalid. |
 | `path` | default; string | Repository-relative source or build-context path. Default `"."`. |
+| `overlay` | optional; RecordReference | An exact ArtifactSet describing uncommitted source changes relative to `commit`. Its record digest is REQUIRED. Omit it when the selected source is exactly the Git commit. |
 `repository` identifies the canonical source project, not an execution-local
 checkout path or merely a configured remote name. A Git commit describes the
-reviewed source revision. It does not claim to identify every runtime
-dependency or the checkout used by one execution attempt.
+reviewed source revision. When `overlay` is present, the Git source basis is
+the commit plus that immutable overlay, and therefore produces a distinct
+Definition revision. An overlay is a bounded source delta, not an inferred
+dependency closure: a producer SHOULD include a binary Git patch for tracked
+changes and MAY include selected untracked source files. Ignored/generated
+files and secrets MUST NOT be captured implicitly. Runtime configuration and
+dependencies belong in their own input Artifacts or profiles. A Git source does
+not claim to identify every runtime dependency or the checkout used by one
+execution attempt.
 
 #### ArtifactSource
 
@@ -348,7 +356,7 @@ document their event types and their `data` shape.
 | `occurred_at` | required; string, `date-time` | Time the event fact occurred. Use an RFC 3339 timestamp with an offset for portable interchange. |
 | `sequence` | required; integer | Non-negative sequence number. Events for one Invocation are ordered by this value; producers MUST NOT give two distinct events for an Invocation the same sequence. |
 | `attempt_id` | optional; string | Producer-defined execution-attempt identifier. Omit it for a fact about the Invocation as a whole. |
-| `execution` | optional; ExecutionContext | Execution-local observations. A producer SHOULD attach the checkout observed for an attempt to its attempt-started Event rather than put machine-specific facts in the Definition. |
+| `execution` | optional; ExecutionContext | Execution-local observations. A producer SHOULD attach the checkout observed for an attempt to its attempt-started Event rather than put machine-specific facts in the Definition. A producer that needs portable runtime/configuration provenance SHOULD bind an execution-context profile to the Invocation. |
 | `status` | optional; string | The terminal execution status: `"succeeded"`, `"failed"`, or `"skipped"`. A producer MUST use it only on an Event that reports a terminal Invocation or attempt result. Its absence means the Event does not make a portable terminal-status claim. |
 | `diagnostic` | optional; Diagnostic | A compact code, message, stage, or rich-detail Artifact reference associated with this Event. It commonly explains a failed or skipped terminal event, but MAY also annotate another notable lifecycle observation. |
 | `data` | default; object | Empty object by default. JSON event payload. For an output-publication event, it SHOULD name the published Artifact references. |
@@ -374,8 +382,9 @@ The **derivation graph** contains only Artifact and Invocation nodes:
 Artifact -> consumed by Invocation -> produces Artifact
 ```
 
-The Definition binding, implementation Artifact, Invocation parentage,
-ArtifactSet membership, Evidence, Events, profile content, annotations, and arbitrary Event `data` are
+The Definition binding, implementation Artifact and Git source overlay,
+Invocation parentage, ArtifactSet membership, Evidence, Events, profile
+content, annotations, and arbitrary Event `data` are
 **reference or audit overlays**, not derivation edges. They MAY be traversed by
 consumers, but do not participate in derivation-DAG validation.
 
@@ -455,10 +464,11 @@ validation and integrity rules. A profile consumer MUST reject a record or
 payload that claims the profile but violates its declared schema or semantic
 rules.
 
-The dataset-snapshot profile is the first profile under this framework: it
-defines canonical Artifact content. Future profiles may standardize agent,
-model-service, and MCP event conventions without making those concepts Core
-requirements.
+The dataset-snapshot and execution-context profiles are the first profiles
+under this framework. They define canonical Artifact content and a
+profile-owned Invocation annotation convention, respectively. Future profiles
+may standardize agent, model-service, and MCP event conventions without making
+those concepts Core requirements.
 
 ## 8. Conformance
 
