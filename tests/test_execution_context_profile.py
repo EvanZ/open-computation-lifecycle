@@ -33,18 +33,31 @@ def test_invalid_execution_context_profile_vectors_are_rejected(name: str) -> No
         ExecutionContextManifest.model_validate(value)
 
 
-def test_execution_context_binding_requires_an_exact_profile_reference() -> None:
+def test_execution_context_binding_requires_an_exact_manifest_reference() -> None:
     binding = ExecutionContextBinding.model_validate(
         {
-            "profile": {
+            "version": "0.1.0-draft",
+            "manifest": {
                 "id": "urn:example:artifact:execution-context",
                 "digest": {"value": "a" * 64},
-            }
+            },
         }
     )
 
-    assert binding.profile.digest is not None
+    assert binding.manifest.digest is not None
     with pytest.raises(ValidationError):
         ExecutionContextBinding.model_validate(
-            {"profile": {"id": "urn:example:artifact:execution-context"}}
+            {
+                "version": "0.1.0-draft",
+                "manifest": {"id": "urn:example:artifact:execution-context"},
+            }
+        )
+    with pytest.raises(ValidationError):
+        ExecutionContextBinding.model_validate(
+            {
+                "manifest": {
+                    "id": "urn:example:artifact:execution-context",
+                    "digest": {"value": "a" * 64},
+                }
+            }
         )

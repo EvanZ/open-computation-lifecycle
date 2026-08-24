@@ -18,6 +18,7 @@ nav = [
   {"Profiles" = [
     {"Dataset snapshot (normative)" = "profiles/dataset-snapshot.md"},
     {"Execution context (normative)" = "profiles/execution-context.md"},
+    {"Lifecycle (normative)" = "profiles/lifecycle.md"},
   ]},
   {"Reference SDK" = "sdk.md"},
 ]

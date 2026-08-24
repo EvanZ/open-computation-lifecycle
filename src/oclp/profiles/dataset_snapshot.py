@@ -12,6 +12,12 @@ DATASET_SNAPSHOT_PROFILE = "dataset-snapshot"
 DATASET_SNAPSHOT_PROFILE_VERSION = "0.1.0-draft"
 
 
+class DatasetSnapshotBinding(OclpModel):
+    """The value carried under an Artifact's ``profiles.dataset-snapshot`` key."""
+
+    version: Literal["0.1.0-draft"]
+
+
 class DatasetSnapshotPartition(OclpModel):
     """One named partition bound to an exact Artifact record."""
 

@@ -43,6 +43,25 @@
           "title": "Oclp Version",
           "type": "string"
         },
+        "profiles": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/JsonValue"
+                },
+                "type": "object"
+              },
+              "minProperties": 1,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Profiles"
+        },
         "schema_uri": {
           "anyOf": [
             {
@@ -105,6 +124,25 @@
           "default": "0.1.0-draft",
           "title": "Oclp Version",
           "type": "string"
+        },
+        "profiles": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/JsonValue"
+                },
+                "type": "object"
+              },
+              "minProperties": 1,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Profiles"
         }
       },
       "required": [
@@ -217,6 +255,25 @@
           },
           "title": "Output Ports",
           "type": "array"
+        },
+        "profiles": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/JsonValue"
+                },
+                "type": "object"
+              },
+              "minProperties": 1,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Profiles"
         }
       },
       "required": [
@@ -387,6 +444,25 @@
           ],
           "title": "Outcome",
           "type": "string"
+        },
+        "profiles": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/JsonValue"
+                },
+                "type": "object"
+              },
+              "minProperties": 1,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Profiles"
         },
         "subject": {
           "$ref": "#/$defs/RecordReference"
@@ -650,6 +726,25 @@
           ],
           "default": null
         },
+        "profiles": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/JsonValue"
+                },
+                "type": "object"
+              },
+              "minProperties": 1,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Profiles"
+        },
         "requested_outputs": {
           "default": [],
           "items": {
@@ -747,6 +842,25 @@
           "default": "0.1.0-draft",
           "title": "Oclp Version",
           "type": "string"
+        },
+        "profiles": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/JsonValue"
+                },
+                "type": "object"
+              },
+              "minProperties": 1,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Profiles"
         },
         "sequence": {
           "minimum": 0,

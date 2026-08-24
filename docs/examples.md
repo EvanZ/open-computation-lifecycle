@@ -13,6 +13,7 @@ common uses:
 | Inference failure | [`model-inference-failed-event.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/model-inference-failed-event.json) | A terminal execution state and portable diagnostic. |
 | Dataset snapshot profile | [Profile specification](profiles/dataset-snapshot.md) | A profile-defined manifest carried by an ordinary Artifact. |
 | Execution context profile | [Profile specification](profiles/execution-context.md) | Portable runtime, dependency-lock, and effective-configuration provenance. |
+| Lifecycle profile | [Profile specification](profiles/lifecycle.md) | Portable request, attempt-start, and terminal chronology for an Invocation. |
 
 Validate an example locally:
 

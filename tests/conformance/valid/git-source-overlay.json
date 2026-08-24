@@ -12,11 +12,12 @@
         "id": "urn:example:artifact:worktree-overlay-patch",
         "digest": {
           "algorithm": "sha256",
-          "value": "7f2eccc8b8a9976642e8c524a8336ce0ba604ad8313a790ecd5f61963f2b3f6e"
+          "value": "75d03320e21ab1f79195046cdfb4d6d66c5991d6c116da94529d9bb6397b2300"
         }
       },
       "role": "tracked-patch",
       "required": true
     }
-  ]
+  ],
+  "profiles": null
 }

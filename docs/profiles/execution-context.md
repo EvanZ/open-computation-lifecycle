@@ -33,7 +33,7 @@ unless this profile says otherwise.
 | Profile version | `0.1.0-draft` |
 | Core compatibility | OCLP Core `0.1.0-draft` |
 | Dependencies | None |
-| Extension surfaces | Canonical Artifact content and the `oclp.dev/execution-context` Invocation annotation |
+| Extension surfaces | Canonical Artifact content, the `profiles.execution-context` Artifact binding, and the `profiles.execution-context` Invocation binding |
 | Required Artifact media type | `application/vnd.oclp.execution-context+json` |
 | Required Artifact schema URI | `urn:oclp:profile:execution-context:0.1.0-draft` |
 | Conformance package | This specification, the published JSON Schema, and valid/invalid vectors |
@@ -45,13 +45,28 @@ MUST set its `media_type` to `application/vnd.oclp.execution-context+json` and
 its `schema_uri` to `urn:oclp:profile:execution-context:0.1.0-draft`. The
 Artifact's SHA-256 identifies the exact context manifest.
 
-To bind the profile to an Invocation, a producer MUST place this object in the
-Invocation's `annotations`:
+The profile Artifact MUST claim this profile through its Core `profiles`
+object:
 
 ```json
 {
-  "oclp.dev/execution-context": {
-    "profile": {
+  "execution-context": {
+    "version": "0.1.0-draft"
+  }
+}
+```
+
+This Artifact binding is a closed object. `version` is required and MUST be
+`"0.1.0-draft"`.
+
+To bind the profile to an Invocation, a producer MUST place this object in the
+Invocation's `profiles` object:
+
+```json
+{
+  "execution-context": {
+    "version": "0.1.0-draft",
+    "manifest": {
       "id": "urn:example:artifact:execution-context",
       "digest": {
         "algorithm": "sha256",
@@ -62,9 +77,16 @@ Invocation's `annotations`:
 }
 ```
 
-`profile` MUST include a record digest and resolve to the profile Artifact.
+`manifest` MUST include a record digest and resolve to the profile Artifact.
 This binding is a reference overlay, not a derivation edge. An Invocation MAY
-omit the annotation when the producer does not claim this profile.
+omit the binding when the producer does not claim this profile.
+
+The binding is a closed object:
+
+| Field | Input status and JSON type | Constraints and rationale |
+| --- | --- | --- |
+| `version` | required; string | MUST be `"0.1.0-draft"`. The `execution-context` map key already identifies the profile, so the ID is not repeated. |
+| `manifest` | required; RecordReference | The execution-context profile Artifact. Its record digest is REQUIRED. |
 
 ## 5. Manifest fields
 
@@ -145,6 +167,6 @@ MAY additionally report the execution-local checkout path and dirty state.
 
 A conforming producer MUST emit a manifest that validates against the published
 execution-context JSON Schema and satisfies this specification. A consumer that
-claims this profile MUST also validate the Invocation annotation binding,
-resolve its profile reference to an Artifact, and reproduce the published
+claims this profile MUST also validate the Invocation profile binding,
+resolve its manifest reference to an Artifact, and reproduce the published
 canonical JSON and digest vectors.

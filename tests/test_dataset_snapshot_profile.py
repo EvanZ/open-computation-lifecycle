@@ -9,9 +9,17 @@ import pytest
 from pydantic import ValidationError
 
 from oclp import canonical_json_bytes, record_digest
-from oclp.profiles import DatasetSnapshotManifest
+from oclp.profiles import DatasetSnapshotBinding, DatasetSnapshotManifest
 
 PROFILE_ROOT = Path(__file__).parent / "profiles" / "dataset-snapshot"
+
+
+def test_dataset_snapshot_binding_requires_the_declared_version() -> None:
+    assert DatasetSnapshotBinding.model_validate(
+        {"version": "0.1.0-draft"}
+    ).version == "0.1.0-draft"
+    with pytest.raises(ValidationError):
+        DatasetSnapshotBinding.model_validate({"version": "0.2.0-draft"})
 
 
 def _manifest() -> dict[str, object]:

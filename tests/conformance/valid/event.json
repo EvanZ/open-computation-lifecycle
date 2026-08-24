@@ -18,5 +18,6 @@
   "occurred_at": "2026-08-19T20:00:01Z",
   "oclp_version": "0.1.0-draft",
   "sequence": 0,
-  "status": "failed"
+  "status": "failed",
+  "profiles": null
 }

@@ -1,0 +1,98 @@
+{
+  "$defs": {
+    "LifecycleBinding": {
+      "additionalProperties": false,
+      "description": "The value carried under an Invocation's ``profiles.lifecycle`` key.",
+      "properties": {
+        "version": {
+          "const": "0.1.0-draft",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version"
+      ],
+      "title": "LifecycleBinding",
+      "type": "object"
+    },
+    "LifecycleEventObservation": {
+      "additionalProperties": false,
+      "description": "The profile-relevant subset of an Invocation's Event.",
+      "properties": {
+        "attempt_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attempt Id"
+        },
+        "event_type": {
+          "minLength": 1,
+          "title": "Event Type",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "enum": [
+                "succeeded",
+                "failed",
+                "skipped"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status"
+        }
+      },
+      "required": [
+        "event_type",
+        "occurred_at",
+        "sequence"
+      ],
+      "title": "LifecycleEventObservation",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A conformance-vector representation of Invocation-associated Events.",
+  "properties": {
+    "binding": {
+      "$ref": "#/$defs/LifecycleBinding"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/LifecycleEventObservation"
+      },
+      "title": "Events",
+      "type": "array"
+    }
+  },
+  "required": [
+    "binding",
+    "events"
+  ],
+  "title": "LifecycleTimelineVector",
+  "type": "object"
+}

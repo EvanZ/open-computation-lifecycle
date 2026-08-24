@@ -3,58 +3,63 @@
   "valid": [
     {
       "path": "valid/artifact.json",
-      "canonical_json": "{\"annotations\":{\"example.org/source\":\"fixture\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"id\":\"urn:example:artifact:source-document\",\"kind\":\"artifact\",\"locations\":[\"https://example.org/input.txt\"],\"media_type\":\"text/plain\",\"oclp_version\":\"0.1.0-draft\",\"size\":5}",
-      "digest": "sha256:cd3e37d882123021bdc06767d4f4459d37b7cad67c1f1fd19986d38d59f3dc61"
+      "canonical_json": "{\"annotations\":{\"example.org/source\":\"fixture\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"id\":\"urn:example:artifact:source-document\",\"kind\":\"artifact\",\"locations\":[\"https://example.org/input.txt\"],\"media_type\":\"text/plain\",\"oclp_version\":\"0.1.0-draft\",\"profiles\":null,\"size\":5}",
+      "digest": "sha256:050b7323c84e39032a6b0db4578aa0720e05c658b1f63174b447366bc68bae38"
     },
     {
       "path": "valid/artifact-set.json",
-      "canonical_json": "{\"annotations\":{\"example.org/purpose\":\"release-package\"},\"id\":\"urn:example:artifact-set:release\",\"kind\":\"artifact_set\",\"members\":[{\"artifact\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"cd3e37d882123021bdc06767d4f4459d37b7cad67c1f1fd19986d38d59f3dc61\"},\"id\":\"urn:example:artifact:source-document\"},\"name\":\"source-document\",\"required\":true,\"role\":\"source-document\"}],\"oclp_version\":\"0.1.0-draft\"}",
-      "digest": "sha256:c610e4390d11b47537065cd99b41bf5ff29a207e7d3d46a53d0124ad2aa21839"
+      "canonical_json": "{\"annotations\":{\"example.org/purpose\":\"release-package\"},\"id\":\"urn:example:artifact-set:release\",\"kind\":\"artifact_set\",\"members\":[{\"artifact\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"050b7323c84e39032a6b0db4578aa0720e05c658b1f63174b447366bc68bae38\"},\"id\":\"urn:example:artifact:source-document\"},\"name\":\"source-document\",\"required\":true,\"role\":\"source-document\"}],\"oclp_version\":\"0.1.0-draft\",\"profiles\":null}",
+      "digest": "sha256:b3576146ba04804552a31d9e5bee8a955fd4609e6106b6d8944a3b8cb654adee"
     },
     {
       "path": "valid/definition.json",
-      "canonical_json": "{\"annotations\":{},\"id\":\"urn:example:definition:uppercase\",\"implementation\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"},\"kind\":\"other\",\"locator\":\"example:uppercase\",\"source\":{\"commit\":\"0123456789abcdef0123456789abcdef01234567\",\"kind\":\"git\",\"path\":\"src/example\",\"repository\":\"https://github.com/example/uppercase.git\"}},\"input_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"source\",\"required\":true}],\"kind\":\"definition\",\"oclp_version\":\"0.1.0-draft\",\"output_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"result\",\"required\":true}]}",
-      "digest": "sha256:fcd8409b400ac9a5c6ac01432d05d4d4aebea24280f429f49f287f9e8a095e01"
+      "canonical_json": "{\"annotations\":{},\"id\":\"urn:example:definition:uppercase\",\"implementation\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"},\"kind\":\"other\",\"locator\":\"example:uppercase\",\"source\":{\"commit\":\"0123456789abcdef0123456789abcdef01234567\",\"kind\":\"git\",\"path\":\"src/example\",\"repository\":\"https://github.com/example/uppercase.git\"}},\"input_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"source\",\"required\":true}],\"kind\":\"definition\",\"oclp_version\":\"0.1.0-draft\",\"output_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"result\",\"required\":true}],\"profiles\":null}",
+      "digest": "sha256:fbc0bfdf99b813f3ef6df95e8db7fd2d427afb4fa6bdc94a04b6d186a4379e9d"
     },
     {
       "path": "valid/overlay-artifact.json",
-      "canonical_json": "{\"annotations\":{\"example.org/role\":\"tracked-source-overlay\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\"},\"id\":\"urn:example:artifact:worktree-overlay-patch\",\"kind\":\"artifact\",\"locations\":[],\"media_type\":\"text/x-diff\",\"oclp_version\":\"0.1.0-draft\",\"size\":32}",
-      "digest": "sha256:7f2eccc8b8a9976642e8c524a8336ce0ba604ad8313a790ecd5f61963f2b3f6e"
+      "canonical_json": "{\"annotations\":{\"example.org/role\":\"tracked-source-overlay\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\"},\"id\":\"urn:example:artifact:worktree-overlay-patch\",\"kind\":\"artifact\",\"locations\":[],\"media_type\":\"text/x-diff\",\"oclp_version\":\"0.1.0-draft\",\"profiles\":null,\"size\":32}",
+      "digest": "sha256:75d03320e21ab1f79195046cdfb4d6d66c5991d6c116da94529d9bb6397b2300"
     },
     {
       "path": "valid/git-source-overlay.json",
-      "canonical_json": "{\"annotations\":{\"example.org/role\":\"git-source-overlay\"},\"id\":\"urn:example:artifact-set:git-source-overlay\",\"kind\":\"artifact_set\",\"members\":[{\"artifact\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"7f2eccc8b8a9976642e8c524a8336ce0ba604ad8313a790ecd5f61963f2b3f6e\"},\"id\":\"urn:example:artifact:worktree-overlay-patch\"},\"name\":\"tracked.patch\",\"required\":true,\"role\":\"tracked-patch\"}],\"oclp_version\":\"0.1.0-draft\"}",
-      "digest": "sha256:15fd3b408e65484987545004f6f7ef5995d14952c7b1b62bdc3790f2b1a5391b"
+      "canonical_json": "{\"annotations\":{\"example.org/role\":\"git-source-overlay\"},\"id\":\"urn:example:artifact-set:git-source-overlay\",\"kind\":\"artifact_set\",\"members\":[{\"artifact\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"75d03320e21ab1f79195046cdfb4d6d66c5991d6c116da94529d9bb6397b2300\"},\"id\":\"urn:example:artifact:worktree-overlay-patch\"},\"name\":\"tracked.patch\",\"required\":true,\"role\":\"tracked-patch\"}],\"oclp_version\":\"0.1.0-draft\",\"profiles\":null}",
+      "digest": "sha256:a6e4ccdf0cb6688b9b250dffba1cc75b55b5609b9ea2628b2250944f68cc17cc"
     },
     {
       "path": "valid/definition-dirty-git-source.json",
-      "canonical_json": "{\"annotations\":{},\"id\":\"urn:example:definition:uppercase-dirty\",\"implementation\":{\"kind\":\"other\",\"locator\":\"example:uppercase\",\"source\":{\"commit\":\"0123456789abcdef0123456789abcdef01234567\",\"kind\":\"git\",\"overlay\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"15fd3b408e65484987545004f6f7ef5995d14952c7b1b62bdc3790f2b1a5391b\"},\"id\":\"urn:example:artifact-set:git-source-overlay\"},\"path\":\"src/example\",\"repository\":\"https://github.com/example/uppercase.git\"}},\"input_ports\":[],\"kind\":\"definition\",\"oclp_version\":\"0.1.0-draft\",\"output_ports\":[]}",
-      "digest": "sha256:efc7704705ab054bc6e08c342bdc6e1a8ab5316a230dd2871c41249cc171194b"
+      "canonical_json": "{\"annotations\":{},\"id\":\"urn:example:definition:uppercase-dirty\",\"implementation\":{\"kind\":\"other\",\"locator\":\"example:uppercase\",\"source\":{\"commit\":\"0123456789abcdef0123456789abcdef01234567\",\"kind\":\"git\",\"overlay\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"a6e4ccdf0cb6688b9b250dffba1cc75b55b5609b9ea2628b2250944f68cc17cc\"},\"id\":\"urn:example:artifact-set:git-source-overlay\"},\"path\":\"src/example\",\"repository\":\"https://github.com/example/uppercase.git\"}},\"input_ports\":[],\"kind\":\"definition\",\"oclp_version\":\"0.1.0-draft\",\"output_ports\":[],\"profiles\":null}",
+      "digest": "sha256:ea52db99b38297ba427226b9074c8716e06e13051e645c48a60ac7bb5e5eceba"
     },
     {
       "path": "valid/result-artifact.json",
-      "canonical_json": "{\"annotations\":{\"example.org/source\":\"fixture-result\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"},\"id\":\"urn:example:artifact:result-document\",\"kind\":\"artifact\",\"locations\":[\"https://example.org/result.txt\"],\"media_type\":\"text/plain\",\"oclp_version\":\"0.1.0-draft\",\"size\":5}",
-      "digest": "sha256:363165abee6413ff5e858b3294d3f1f3baef57184435f99eded4b6fb42c51b36"
+      "canonical_json": "{\"annotations\":{\"example.org/source\":\"fixture-result\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"},\"id\":\"urn:example:artifact:result-document\",\"kind\":\"artifact\",\"locations\":[\"https://example.org/result.txt\"],\"media_type\":\"text/plain\",\"oclp_version\":\"0.1.0-draft\",\"profiles\":null,\"size\":5}",
+      "digest": "sha256:e7d27b78960189db66a8da260a3dd98d9e4ff870044022caabf24db14838c0de"
     },
     {
       "path": "valid/invocation.json",
-      "canonical_json": "{\"annotations\":{},\"definition\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"fcd8409b400ac9a5c6ac01432d05d4d4aebea24280f429f49f287f9e8a095e01\"},\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-hello\",\"inputs\":{\"source\":[{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"cd3e37d882123021bdc06767d4f4459d37b7cad67c1f1fd19986d38d59f3dc61\"},\"id\":\"urn:example:artifact:source-document\"}]},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"outputs\":{\"result\":[{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"363165abee6413ff5e858b3294d3f1f3baef57184435f99eded4b6fb42c51b36\"},\"id\":\"urn:example:artifact:result-document\"}]},\"parameters\":{\"locale\":\"en-US\"},\"requested_outputs\":[\"result\"]}",
-      "digest": "sha256:7df9e895c1d45aca50050ea30fcda39411c64fff9c886d3988f9f6a7cb75bb87"
+      "canonical_json": "{\"annotations\":{},\"definition\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"fbc0bfdf99b813f3ef6df95e8db7fd2d427afb4fa6bdc94a04b6d186a4379e9d\"},\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-hello\",\"inputs\":{\"source\":[{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"050b7323c84e39032a6b0db4578aa0720e05c658b1f63174b447366bc68bae38\"},\"id\":\"urn:example:artifact:source-document\"}]},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"outputs\":{\"result\":[{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"e7d27b78960189db66a8da260a3dd98d9e4ff870044022caabf24db14838c0de\"},\"id\":\"urn:example:artifact:result-document\"}]},\"parameters\":{\"locale\":\"en-US\"},\"profiles\":null,\"requested_outputs\":[\"result\"]}",
+      "digest": "sha256:5cd263b1311c96507089a7de267a57e7bdfbce8827b4c7a08f038dfe0bdcba5d"
     },
     {
       "path": "valid/child-invocation.json",
-      "canonical_json": "{\"annotations\":{},\"definition\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"fcd8409b400ac9a5c6ac01432d05d4d4aebea24280f429f49f287f9e8a095e01\"},\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-hello-child\",\"inputs\":{},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"parameters\":{\"chunk\":1},\"parent_invocation\":{\"id\":\"urn:example:invocation:uppercase-hello\"},\"requested_outputs\":[]}",
-      "digest": "sha256:b47f16d7be94a8d8bdfd626b383ce766ac58581f07b3b478cd92429b6a41dfb5"
+      "canonical_json": "{\"annotations\":{},\"definition\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"fbc0bfdf99b813f3ef6df95e8db7fd2d427afb4fa6bdc94a04b6d186a4379e9d\"},\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-hello-child\",\"inputs\":{},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"parameters\":{\"chunk\":1},\"parent_invocation\":{\"id\":\"urn:example:invocation:uppercase-hello\"},\"profiles\":null,\"requested_outputs\":[]}",
+      "digest": "sha256:7763dd17bf9b7578afd8780c76914e11bebdb5d4e5cba5baf25a83e4d8438853"
+    },
+    {
+      "path": "valid/invocation-profiled.json",
+      "canonical_json": "{\"annotations\":{},\"definition\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"fbc0bfdf99b813f3ef6df95e8db7fd2d427afb4fa6bdc94a04b6d186a4379e9d\"},\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-profiled\",\"inputs\":{},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"parameters\":{},\"profiles\":{\"lifecycle\":{\"version\":\"0.1.0-draft\"}},\"requested_outputs\":[]}",
+      "digest": "sha256:e561e01c9ed6fb02639fa4f7455ea6bcb16fdee0ed213e3a7149e7dbd8d73df6"
     },
     {
       "path": "valid/evidence.json",
-      "canonical_json": "{\"annotations\":{},\"contract\":{\"id\":\"urn:example:contract:uppercase\",\"version\":\"1\"},\"details\":{\"changed\":true,\"input_characters\":5},\"diagnostic\":{\"code\":\"uppercase/changed\",\"stage\":\"validation\"},\"id\":\"urn:example:evidence:uppercase-hello\",\"kind\":\"evidence\",\"observed_at\":\"2026-08-19T20:00:00Z\",\"oclp_version\":\"0.1.0-draft\",\"outcome\":\"pass\",\"subject\":{\"id\":\"urn:example:invocation:uppercase-hello\"}}",
-      "digest": "sha256:714e9182dbecb11548d4dbc70463a7dfb7a8ae8890c505c85d96f3131818d64f"
+      "canonical_json": "{\"annotations\":{},\"contract\":{\"id\":\"urn:example:contract:uppercase\",\"version\":\"1\"},\"details\":{\"changed\":true,\"input_characters\":5},\"diagnostic\":{\"code\":\"uppercase/changed\",\"stage\":\"validation\"},\"id\":\"urn:example:evidence:uppercase-hello\",\"kind\":\"evidence\",\"observed_at\":\"2026-08-19T20:00:00Z\",\"oclp_version\":\"0.1.0-draft\",\"outcome\":\"pass\",\"profiles\":null,\"subject\":{\"id\":\"urn:example:invocation:uppercase-hello\"}}",
+      "digest": "sha256:c4ba9b3c7eb62c1824618d24ca4f23df14147a7e87d7969931bcd2c1046dcc18"
     },
     {
       "path": "valid/event.json",
-      "canonical_json": "{\"annotations\":{},\"attempt_id\":\"attempt-1\",\"data\":{\"worker\":\"fixture\"},\"diagnostic\":{\"code\":\"input-unavailable\",\"message\":\"Source document was unavailable\",\"stage\":\"preflight\"},\"event_type\":\"invocation-failed\",\"id\":\"urn:example:event:uppercase-hello:0\",\"invocation\":{\"id\":\"urn:example:invocation:uppercase-hello\"},\"kind\":\"event\",\"occurred_at\":\"2026-08-19T20:00:01Z\",\"oclp_version\":\"0.1.0-draft\",\"sequence\":0,\"status\":\"failed\"}",
-      "digest": "sha256:12490362ee228022664a4e5d1d4f7f18a2b2bf346a8b127ef0b0a8ce2eab7b1f"
+      "canonical_json": "{\"annotations\":{},\"attempt_id\":\"attempt-1\",\"data\":{\"worker\":\"fixture\"},\"diagnostic\":{\"code\":\"input-unavailable\",\"message\":\"Source document was unavailable\",\"stage\":\"preflight\"},\"event_type\":\"invocation-failed\",\"id\":\"urn:example:event:uppercase-hello:0\",\"invocation\":{\"id\":\"urn:example:invocation:uppercase-hello\"},\"kind\":\"event\",\"occurred_at\":\"2026-08-19T20:00:01Z\",\"oclp_version\":\"0.1.0-draft\",\"profiles\":null,\"sequence\":0,\"status\":\"failed\"}",
+      "digest": "sha256:5b8e0e4fe79c31bfbd0aca2be1372d9ffdc5836ada2157683f0283e88f43f941"
     }
   ],
   "invalid": [
@@ -71,7 +76,9 @@
     "invalid/definition-unbound-implementation-artifact.json",
     "invalid/artifact-set-duplicate-member.json",
     "invalid/artifact-set-unbound-member.json",
-    "invalid/invocation-unbound-output.json"
+    "invalid/invocation-unbound-output.json",
+    "invalid/invocation-empty-profiles.json",
+    "invalid/invocation-empty-profile-id.json"
   ],
   "lineage": {
     "definition_id": "urn:example:definition:uppercase",

@@ -19,5 +19,6 @@
   "outcome": "pass",
   "subject": {
     "id": "urn:example:invocation:uppercase-hello"
-  }
+  },
+  "profiles": null
 }

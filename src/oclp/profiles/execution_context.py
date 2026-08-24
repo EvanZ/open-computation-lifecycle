@@ -10,7 +10,6 @@ from oclp.models import OclpModel, RecordReference
 
 EXECUTION_CONTEXT_PROFILE = "execution-context"
 EXECUTION_CONTEXT_PROFILE_VERSION = "0.1.0-draft"
-EXECUTION_CONTEXT_ANNOTATION = "oclp.dev/execution-context"
 
 
 class ExecutionRuntime(OclpModel):
@@ -43,13 +42,20 @@ class ExecutionContextManifest(OclpModel):
         return self
 
 
-class ExecutionContextBinding(OclpModel):
-    """The profile-owned Invocation annotation value."""
+class ExecutionContextArtifactBinding(OclpModel):
+    """The value carried under an Artifact's ``profiles.execution-context`` key."""
 
-    profile: RecordReference
+    version: Literal["0.1.0-draft"]
+
+
+class ExecutionContextBinding(OclpModel):
+    """The value carried under an Invocation's ``profiles.execution-context`` key."""
+
+    version: Literal["0.1.0-draft"]
+    manifest: RecordReference
 
     @model_validator(mode="after")
     def profile_is_content_bound(self) -> ExecutionContextBinding:
-        if self.profile.digest is None:
+        if self.manifest.digest is None:
             raise ValueError("execution context profiles must include a record digest")
         return self

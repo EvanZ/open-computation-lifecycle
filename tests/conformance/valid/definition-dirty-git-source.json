@@ -15,11 +15,12 @@
         "id": "urn:example:artifact-set:git-source-overlay",
         "digest": {
           "algorithm": "sha256",
-          "value": "15fd3b408e65484987545004f6f7ef5995d14952c7b1b62bdc3790f2b1a5391b"
+          "value": "a6e4ccdf0cb6688b9b250dffba1cc75b55b5609b9ea2628b2250944f68cc17cc"
         }
       }
     }
   },
   "input_ports": [],
-  "output_ports": []
+  "output_ports": [],
+  "profiles": null
 }

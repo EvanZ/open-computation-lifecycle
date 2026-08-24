@@ -77,3 +77,9 @@ def test_site_execution_context_specification_mirrors_the_canonical_specificatio
     assert (ROOT / "docs/profiles/execution-context.md").read_text() == (
         ROOT / "spec/execution-context.md"
     ).read_text()
+
+
+def test_site_lifecycle_specification_mirrors_the_canonical_specification() -> None:
+    assert (ROOT / "docs/profiles/lifecycle.md").read_text() == (
+        ROOT / "spec/lifecycle.md"
+    ).read_text()

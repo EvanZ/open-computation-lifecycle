@@ -13,5 +13,6 @@
   ],
   "media_type": "text/plain",
   "oclp_version": "0.1.0-draft",
-  "size": 5
+  "size": 5,
+  "profiles": null
 }

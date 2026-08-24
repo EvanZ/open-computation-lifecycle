@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The value carried under an Artifact's ``profiles.execution-context`` key.",
+  "properties": {
+    "version": {
+      "const": "0.1.0-draft",
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version"
+  ],
+  "title": "ExecutionContextArtifactBinding",
+  "type": "object"
+}

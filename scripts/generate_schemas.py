@@ -14,7 +14,15 @@ from oclp.models import (
     Invocation,
     LifecycleEvent,
 )
-from oclp.profiles import DatasetSnapshotManifest, ExecutionContextManifest
+from oclp.profiles import (
+    DatasetSnapshotBinding,
+    DatasetSnapshotManifest,
+    ExecutionContextArtifactBinding,
+    ExecutionContextBinding,
+    ExecutionContextManifest,
+    LifecycleBinding,
+    LifecycleTimelineVector,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_DIR = ROOT / "schemas"
@@ -51,8 +59,28 @@ def main() -> None:
         DatasetSnapshotManifest.model_json_schema(),
     )
     write_schema(
+        PROFILE_DIR / "dataset-snapshot-binding.schema.json",
+        DatasetSnapshotBinding.model_json_schema(),
+    )
+    write_schema(
         PROFILE_DIR / "execution-context.schema.json",
         ExecutionContextManifest.model_json_schema(),
+    )
+    write_schema(
+        PROFILE_DIR / "execution-context-binding.schema.json",
+        ExecutionContextBinding.model_json_schema(),
+    )
+    write_schema(
+        PROFILE_DIR / "execution-context-artifact-binding.schema.json",
+        ExecutionContextArtifactBinding.model_json_schema(),
+    )
+    write_schema(
+        PROFILE_DIR / "lifecycle-binding.schema.json",
+        LifecycleBinding.model_json_schema(),
+    )
+    write_schema(
+        PROFILE_DIR / "lifecycle-timeline.schema.json",
+        LifecycleTimelineVector.model_json_schema(),
     )
 
 

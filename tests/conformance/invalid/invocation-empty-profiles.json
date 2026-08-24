@@ -1,0 +1,9 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "kind": "invocation",
+  "id": "urn:example:invocation:empty-profiles",
+  "profiles": {},
+  "definition": {
+    "id": "urn:example:definition:uppercase"
+  }
+}

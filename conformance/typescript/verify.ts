@@ -45,8 +45,21 @@ const datasetSchema = JSON.parse(
   await readFile(path.join(root, "profiles/dataset-snapshot.schema.json"), "utf8"),
 );
 const executionFixtures = path.join(root, "tests/profiles/execution-context");
+const lifecycleFixtures = path.join(root, "tests/profiles/lifecycle");
 const executionSchema = JSON.parse(
   await readFile(path.join(root, "profiles/execution-context.schema.json"), "utf8"),
+);
+const executionBindingSchema = JSON.parse(
+  await readFile(
+    path.join(root, "profiles/execution-context-binding.schema.json"),
+    "utf8",
+  ),
+);
+const lifecycleBindingSchema = JSON.parse(
+  await readFile(path.join(root, "profiles/lifecycle-binding.schema.json"), "utf8"),
+);
+const lifecycleTimelineSchema = JSON.parse(
+  await readFile(path.join(root, "profiles/lifecycle-timeline.schema.json"), "utf8"),
 );
 const datasetManifest = JSON.parse(
   await readFile(path.join(datasetFixtures, "manifest.json"), "utf8"),
@@ -54,11 +67,17 @@ const datasetManifest = JSON.parse(
 const executionManifest = JSON.parse(
   await readFile(path.join(executionFixtures, "manifest.json"), "utf8"),
 ) as ProfileManifest;
+const lifecycleManifest = JSON.parse(
+  await readFile(path.join(lifecycleFixtures, "manifest.json"), "utf8"),
+) as ProfileManifest;
 const ajv = new Ajv2020({ strict: false });
 addFormats(ajv);
 const validate = ajv.compile(coreSchema);
 const validateDatasetSnapshot = ajv.compile(datasetSchema);
 const validateExecutionContext = ajv.compile(executionSchema);
+const validateExecutionContextBinding = ajv.compile(executionBindingSchema);
+const validateLifecycleBinding = ajv.compile(lifecycleBindingSchema);
+const validateLifecycleTimeline = ajv.compile(lifecycleTimelineSchema);
 
 const records = new Map<string, OclpRecord>();
 const recordsByDigest = new Map<string, OclpRecord>();
@@ -147,6 +166,61 @@ for (const fixturePath of executionManifest.invalid) {
   );
 }
 
+for (const binding of [
+  {
+    version: "0.1.0-draft",
+    manifest: {
+      id: "urn:example:artifact:execution-context",
+      digest: { algorithm: "sha256", value: "a".repeat(64) },
+    },
+  },
+]) {
+  assert.equal(
+    validateExecutionContextBinding(binding),
+    true,
+    validateExecutionContextBinding.errors?.map(String).join("\n"),
+  );
+}
+assert.equal(validateExecutionContextBinding({
+  manifest: {
+    id: "urn:example:artifact:execution-context",
+    digest: { algorithm: "sha256", value: "a".repeat(64) },
+  },
+}), false);
+
+for (const entry of lifecycleManifest.valid) {
+  const timeline = JSON.parse(
+    await readFile(path.join(lifecycleFixtures, entry.path), "utf8"),
+  ) as OclpRecord;
+  assert.equal(
+    validateLifecycleTimeline(timeline),
+    true,
+    validateLifecycleTimeline.errors?.map(String).join("\n"),
+  );
+  assert.equal(
+    validateLifecycleBinding(timeline.binding),
+    true,
+    validateLifecycleBinding.errors?.map(String).join("\n"),
+  );
+  assert.equal(lifecycleRulesHold(timeline), true, entry.path);
+  const canonical = canonicalize(timeline);
+  assert.notEqual(canonical, undefined);
+  assert.equal(canonical, entry.canonical_json, entry.path);
+  const digest = createHash("sha256").update(canonical).digest("hex");
+  assert.equal(`sha256:${digest}`, entry.digest, entry.path);
+}
+
+for (const fixturePath of lifecycleManifest.invalid) {
+  const timeline = JSON.parse(
+    await readFile(path.join(lifecycleFixtures, fixturePath), "utf8"),
+  ) as OclpRecord;
+  assert.equal(
+    validateLifecycleTimeline(timeline) && lifecycleRulesHold(timeline),
+    false,
+    `${fixturePath} unexpectedly validated`,
+  );
+}
+
 const invocation = records.get(manifest.lineage.invocation_id)!;
 assert.equal(invocation.definition?.id, manifest.lineage.definition_id);
 assert.equal(invocation.inputs?.source?.[0]?.id, manifest.lineage.input_artifact_id);
@@ -165,10 +239,27 @@ console.log(
     `OCLP fixtures; ${datasetManifest.valid.length} valid and ` +
     `${datasetManifest.invalid.length} invalid dataset-snapshot fixtures; ` +
     `${executionManifest.valid.length} valid and ${executionManifest.invalid.length} ` +
-    `invalid execution-context fixtures.`,
+    `invalid execution-context fixtures; ${lifecycleManifest.valid.length} valid and ` +
+    `${lifecycleManifest.invalid.length} invalid lifecycle fixtures.`,
 );
 
 function semanticRulesHold(record: OclpRecord): boolean {
+  if (
+    record.profiles &&
+    (typeof record.profiles !== "object" ||
+      Array.isArray(record.profiles) ||
+      Object.keys(record.profiles).length === 0 ||
+      Object.entries(record.profiles).some(
+        ([profileId, binding]) =>
+          !profileId ||
+          typeof binding !== "object" ||
+          binding === null ||
+          Array.isArray(binding),
+      ))
+  ) {
+    return false;
+  }
+
   if (record.kind === "artifact") {
     const digest = record.digest;
     if (
@@ -370,4 +461,41 @@ function datasetSnapshotRulesHold(snapshot: OclpRecord): boolean {
 function executionContextRulesHold(profile: OclpRecord): boolean {
   if (!profile.runtime?.dependency_lock?.digest) return false;
   return !profile.configuration || Boolean(profile.configuration.digest);
+}
+
+function lifecycleRulesHold(timeline: OclpRecord): boolean {
+  const events = timeline.events as Array<{
+    event_type?: unknown;
+    sequence?: unknown;
+    attempt_id?: unknown;
+    status?: unknown;
+  }>;
+  const requested = events.filter((event) => event.event_type === "invocation-requested");
+  if (requested.length !== 1) return false;
+  const request = requested[0];
+  if (request.sequence !== 0 || request.attempt_id !== undefined || request.status !== undefined) {
+    return false;
+  }
+
+  const started = events.filter((event) => event.event_type === "attempt-started");
+  const attemptIds = started.map((event) => event.attempt_id);
+  if (
+    attemptIds.some((attemptId) => typeof attemptId !== "string") ||
+    new Set(attemptIds).size !== attemptIds.length ||
+    started.some((event) => event.status !== undefined || Number(event.sequence) <= 0)
+  ) {
+    return false;
+  }
+
+  const terminal = events.filter((event) => event.event_type === "invocation-terminal");
+  if (terminal.length > 1) return false;
+  if (!terminal.length) return true;
+  const completion = terminal[0];
+  if (
+    !["succeeded", "failed", "skipped"].includes(String(completion.status)) ||
+    Number(completion.sequence) <= 0
+  ) {
+    return false;
+  }
+  return !started.some((event) => Number(event.sequence) >= Number(completion.sequence));
 }

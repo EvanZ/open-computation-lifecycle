@@ -23,6 +23,12 @@ class OclpModel(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
 
+ProfileBindings = Annotated[
+    dict[str, dict[str, JsonValue]],
+    Field(min_length=1),
+]
+
+
 class Digest(OclpModel):
     algorithm: Literal["sha256"] = "sha256"
     value: str = Field(pattern=r"^[0-9a-f]{64}$")
@@ -134,7 +140,16 @@ class Diagnostic(OclpModel):
 class CoreRecord(OclpModel):
     oclp_version: Literal["0.1.0-draft"] = OCLP_DRAFT_VERSION
     id: str = Field(min_length=1)
+    profiles: ProfileBindings | None = None
     annotations: dict[str, JsonValue] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def profile_names_are_nonempty(self) -> CoreRecord:
+        if self.profiles is not None and any(
+            not profile_id for profile_id in self.profiles
+        ):
+            raise ValueError("profile identifiers must be non-empty")
+        return self
 
 
 class Artifact(CoreRecord):

@@ -37,7 +37,7 @@ normative requirements above.
 | Profile version | `0.1.0-draft` |
 | Core compatibility | OCLP Core `0.1.0-draft` |
 | Dependencies | None |
-| Extension surface | Canonical Artifact content: a dataset-snapshot manifest |
+| Extension surfaces | Canonical Artifact content: a dataset-snapshot manifest; and the `profiles.dataset-snapshot` Artifact binding |
 | Required Artifact media type | `application/vnd.oclp.dataset-snapshot-manifest+json` |
 | Required Artifact schema URI | `urn:oclp:profile:dataset-snapshot:0.1.0-draft` |
 | Conformance package | This specification, the published JSON Schema, and the dataset-snapshot valid/invalid vectors |
@@ -52,6 +52,20 @@ producer MUST set that Artifact's `media_type` to
 `schema_uri` to `urn:oclp:profile:dataset-snapshot:0.1.0-draft`. The Artifact's
 SHA-256 is the immutable identity of the snapshot manifest. Its `dataset_id`
 is a stable logical dataset name, not the version identity.
+
+The Artifact MUST also claim this profile through its Core `profiles` object:
+
+```json
+{
+  "dataset-snapshot": {
+    "version": "0.1.0-draft"
+  }
+}
+```
+
+The binding is a closed object. `version` is required and MUST be
+`"0.1.0-draft"`; the `dataset-snapshot` map key already identifies the
+profile.
 
 Each partition points to an exact Artifact record. This makes a snapshot a
 small, portable graph of immutable metadata and content references rather than

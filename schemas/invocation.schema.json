@@ -125,6 +125,25 @@
       ],
       "default": null
     },
+    "profiles": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "type": "object"
+          },
+          "minProperties": 1,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Profiles"
+    },
     "requested_outputs": {
       "default": [],
       "items": {

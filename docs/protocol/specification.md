@@ -51,6 +51,8 @@ are expected to reveal where their costs outweigh their benefits before 1.0.
 Records use the I-JSON data model. Strings are JSON strings; arrays are ordered;
 objects have string keys; integer values have no fractional component. Values in
 `annotations`, `parameters`, `details`, and `data` MAY be any JSON value.
+`profiles` is always either `null` or a non-empty JSON object whose values are
+JSON objects.
 
 Draft 0.1 uses [RFC 8785 JSON Canonicalization Scheme
 (JCS)](https://www.rfc-editor.org/rfc/rfc8785) to produce canonical record
@@ -129,7 +131,8 @@ Every core record has this envelope. The record-specific table adds its fields.
 | `oclp_version` | default; string | MUST be `"0.1.0-draft"`. It selects the core vocabulary and validation rules. |
 | `kind` | default; string | One of the record-kind constants stated below. It discriminates the record shape. |
 | `id` | required; string | Non-empty stable logical ID. It is a name for the record, not a claim that two records with the same ID have identical content. |
-| `annotations` | default; object | Empty object by default. Producer-defined JSON extension data. Keys SHOULD be namespaced, for example `"example.org/owner"`. |
+| `profiles` | default; `null` or non-empty object | A producer MUST emit `null` when no profile applies. Otherwise keys are non-empty Profile IDs and each value is a profile-owned JSON object. A key claims that the record follows that profile's binding rules. Core validates only this container shape; a profile consumer validates the named value. An empty object is invalid. |
+| `annotations` | default; object | Empty object by default. Producer-defined JSON extension data. Keys SHOULD be namespaced, for example `"example.org/owner"`. Annotations do not claim a normative profile contract. |
 
 Logical identity and content identity are deliberately separate: a stable ID
 supports references and discovery; a digest binds an exact immutable version.
@@ -414,17 +417,24 @@ optional layer of normative specifications that composes with this Core. It
 adds a bounded interoperability contract for one concern—such as dataset
 snapshots or agent execution—without changing the Core record vocabulary.
 
+The Core-owned `profiles` field is the standard claim surface for a profile
+that applies to a Core record. It is `null` when no profile applies and a
+non-empty object otherwise. Its keys are Profile IDs and its values are the
+binding objects defined by those profiles. The key already identifies the
+profile, so a binding object MUST NOT need to repeat that ID. `annotations`
+remain free-form producer metadata and MUST NOT by themselves claim a profile.
+
 ### 7.1 Profile declaration
 
 A published profile specification MUST declare all of the following:
 
 | Declaration | Requirement |
 | --- | --- |
-| Profile ID | A non-empty stable identifier, unique within the profile publisher's namespace. It is the value carried in any profile-defined `oclp_profile` field. |
+| Profile ID | A non-empty stable identifier, unique within the profile publisher's namespace. When a profile binds to a Core record, this is its key in that record's `profiles` object. A profile Artifact MAY also carry it in a profile-defined `oclp_profile` field. |
 | Profile version | A non-empty version identifier. A profile version is independent of the OCLP Core version. |
 | Core compatibility | The OCLP Core version or versions for which the profile is defined. |
 | Dependencies | The exact profile IDs and compatible versions on which it depends, or an explicit declaration that it has none. |
-| Extension surfaces | The Core locations whose content it defines: an Artifact's bytes, a named Event `data` payload, or namespaced keys within an existing JSON extension object. |
+| Extension surfaces | The Core locations whose content it defines: an Artifact's bytes, a named Event `data` payload, a `profiles` binding object, or namespaced keys within an existing JSON extension object. |
 | Conformance package | A normative profile specification, published schema or schemas where applicable, and valid/invalid vectors with canonical bytes and digests whenever the profile defines canonical JSON. |
 
 The normative profile specification is authoritative. Schemas, vectors, and SDK
@@ -434,14 +444,18 @@ bindings are derived conformance artifacts.
 
 A profile MAY define one or more of these surfaces:
 
-1. **Artifact content.** It defines an Artifact payload format and MUST declare
+1. **Profile binding.** It defines the value at `profiles[profile-id]` for one
+   or more Core record kinds. The binding object MUST declare the profile
+   version when the profile has more than one version. A consumer MUST apply
+   that profile only after validating this binding object.
+2. **Artifact content.** It defines an Artifact payload format and MUST declare
    the required `media_type`. It SHOULD declare the required `schema_uri`.
    The profile MUST state whether the Artifact digest hashes the payload bytes,
    a canonical manifest, or another bounded immutable representation.
-2. **Event convention.** It defines one or more `event_type` values and the
+3. **Event convention.** It defines one or more `event_type` values and the
    schema and semantics of their `data` objects. It MUST state whether event
    ordering, attempt binding, or referenced Artifacts are required.
-3. **Extension-object convention.** It defines namespaced keys and value shapes
+4. **Extension-object convention.** It defines namespaced keys and value shapes
    within `annotations`, `parameters`, `details`, or `data`. It MUST NOT
    assign meaning to an unnamespaced key outside a profile-owned object.
 
@@ -464,11 +478,11 @@ validation and integrity rules. A profile consumer MUST reject a record or
 payload that claims the profile but violates its declared schema or semantic
 rules.
 
-The dataset-snapshot and execution-context profiles are the first profiles
-under this framework. They define canonical Artifact content and a
-profile-owned Invocation annotation convention, respectively. Future profiles
-may standardize agent, model-service, and MCP event conventions without making
-those concepts Core requirements.
+The dataset-snapshot, execution-context, and lifecycle profiles are the first
+profiles under this framework. They define canonical Artifact content,
+profile-owned Invocation bindings, and portable Event chronology,
+respectively. Future profiles may standardize agent, model-service, and MCP
+event conventions without making those concepts Core requirements.
 
 ## 8. Conformance
 

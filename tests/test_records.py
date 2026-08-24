@@ -33,6 +33,42 @@ def test_legacy_invocation_omits_absent_outputs_from_canonical_json() -> None:
     assert b'"outputs"' not in canonical_json_bytes(invocation)
 
 
+def test_profiles_are_a_typed_contract_surface_distinct_from_annotations() -> None:
+    invocation = Invocation(
+        id="invocation.example",
+        definition=RecordReference(id="definition.example"),
+        profiles={"lifecycle": {"version": "0.1.0-draft"}},
+        annotations={"example.org/owner": "data-platform"},
+    )
+
+    assert invocation.profiles["lifecycle"]["version"] == "0.1.0-draft"
+    assert invocation.annotations == {"example.org/owner": "data-platform"}
+    assert b'"profiles"' in canonical_json_bytes(invocation)
+    with pytest.raises(ValidationError):
+        Invocation(
+            id="invalid-profile.example",
+            definition=RecordReference(id="definition.example"),
+            profiles={"": {"version": "0.1.0-draft"}},
+        )
+
+
+def test_unprofiled_records_canonically_declare_null_profiles() -> None:
+    invocation = Invocation(
+        id="invocation.example",
+        definition=RecordReference(id="definition.example"),
+    )
+
+    assert invocation.profiles is None
+    assert b'"profiles":null' in canonical_json_bytes(invocation)
+
+    with pytest.raises(ValidationError):
+        Invocation(
+            id="empty-profiles.example",
+            definition=RecordReference(id="definition.example"),
+            profiles={},
+        )
+
+
 def test_valid_conformance_fixtures_are_accepted() -> None:
     for path in (FIXTURES / "valid").glob("*.json"):
         parse_record(json.loads(path.read_text()))

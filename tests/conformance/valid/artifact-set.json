@@ -9,7 +9,7 @@
       "artifact": {
         "digest": {
           "algorithm": "sha256",
-        "value": "cd3e37d882123021bdc06767d4f4459d37b7cad67c1f1fd19986d38d59f3dc61"
+          "value": "050b7323c84e39032a6b0db4578aa0720e05c658b1f63174b447366bc68bae38"
         },
         "id": "urn:example:artifact:source-document"
       },
@@ -18,5 +18,6 @@
       "role": "source-document"
     }
   ],
-  "oclp_version": "0.1.0-draft"
+  "oclp_version": "0.1.0-draft",
+  "profiles": null
 }
