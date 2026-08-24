@@ -170,6 +170,19 @@
       "title": "Kind",
       "type": "string"
     },
+    "name": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Name"
+    },
     "observed_at": {
       "format": "date-time",
       "title": "Observed At",

@@ -24,6 +24,27 @@ def test_canonical_serialization_is_stable() -> None:
     assert str(record_digest(artifact)).startswith("sha256:")
 
 
+def test_record_name_is_optional_human_metadata_not_identity() -> None:
+    artifact = Artifact(
+        id="artifact.example",
+        name="Input document",
+        media_type="application/octet-stream",
+        digest=Digest(value="a" * 64),
+        size=12,
+    )
+
+    assert artifact.name == "Input document"
+    assert b'"name":"Input document"' in canonical_json_bytes(artifact)
+    with pytest.raises(ValidationError):
+        Artifact(
+            id="artifact.example",
+            name="",
+            media_type="application/octet-stream",
+            digest=Digest(value="a" * 64),
+            size=12,
+        )
+
+
 def test_legacy_invocation_omits_absent_outputs_from_canonical_json() -> None:
     invocation = Invocation(
         id="invocation.example",
@@ -31,6 +52,7 @@ def test_legacy_invocation_omits_absent_outputs_from_canonical_json() -> None:
     )
 
     assert b'"outputs"' not in canonical_json_bytes(invocation)
+    assert b'"name"' not in canonical_json_bytes(invocation)
 
 
 def test_profiles_are_a_typed_contract_surface_distinct_from_annotations() -> None:

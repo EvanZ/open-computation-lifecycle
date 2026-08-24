@@ -1,0 +1,19 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "id": "urn:example:artifact:named-source-document",
+  "name": "Source document",
+  "annotations": {
+    "example.org/source": "named-fixture"
+  },
+  "kind": "artifact",
+  "media_type": "text/plain",
+  "digest": {
+    "algorithm": "sha256",
+    "value": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "size": 5,
+  "locations": [
+    "https://example.org/named-input.txt"
+  ],
+  "profiles": null
+}

@@ -1,0 +1,15 @@
+{
+  "oclp_version": "0.1.0-draft",
+  "id": "urn:example:artifact:empty-name",
+  "name": "",
+  "annotations": {},
+  "kind": "artifact",
+  "media_type": "text/plain",
+  "digest": {
+    "algorithm": "sha256",
+    "value": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "size": 5,
+  "locations": [],
+  "profiles": null
+}

@@ -60,6 +60,19 @@
       "title": "Media Type",
       "type": "string"
     },
+    "name": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Name"
+    },
     "oclp_version": {
       "const": "0.1.0-draft",
       "default": "0.1.0-draft",

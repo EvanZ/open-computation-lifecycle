@@ -37,6 +37,19 @@
           "title": "Media Type",
           "type": "string"
         },
+        "name": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
         "oclp_version": {
           "const": "0.1.0-draft",
           "default": "0.1.0-draft",
@@ -118,6 +131,19 @@
           "minItems": 1,
           "title": "Members",
           "type": "array"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
         },
         "oclp_version": {
           "const": "0.1.0-draft",
@@ -241,6 +267,19 @@
           "default": "definition",
           "title": "Kind",
           "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
         },
         "oclp_version": {
           "const": "0.1.0-draft",
@@ -424,6 +463,19 @@
           "default": "evidence",
           "title": "Kind",
           "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
         },
         "observed_at": {
           "format": "date-time",
@@ -684,6 +736,19 @@
           "title": "Kind",
           "type": "string"
         },
+        "name": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
         "oclp_version": {
           "const": "0.1.0-draft",
           "default": "0.1.0-draft",
@@ -831,6 +896,19 @@
           "default": "event",
           "title": "Kind",
           "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
         },
         "occurred_at": {
           "format": "date-time",
