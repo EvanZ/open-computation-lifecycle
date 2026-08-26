@@ -13,7 +13,7 @@ digest for the same record.
 The default derivation view is an acyclic graph derived from immutable bindings:
 
 ```text
-raw Artifact -> Invocation input binding -> processed Artifact
+raw Artifact -> Invocation input binding -> processed Artifact or ArtifactSet
 code Artifact -> Definition implementation binding
 ArtifactSet  -> named, content-bound Artifact members
 Definition   -> Invocation definition binding
@@ -21,8 +21,8 @@ Evidence     -> Invocation, Artifact, ArtifactSet, Definition, or Event
 Event        -> Invocation or attempt
 ```
 
-Only the `Artifact -> Invocation -> Artifact` path participates in DAG
-validation. Definition implementation bindings, ArtifactSet membership,
+The `Artifact -> Invocation -> Artifact or ArtifactSet` path participates in
+DAG validation. Definition implementation bindings, ArtifactSet membership,
 Evidence, and Events are useful reference and audit overlays, but do not alter
 the computation order. An Invocation's `outputs` is the authoritative durable
 publication binding; an Event may report that publication but does not replace

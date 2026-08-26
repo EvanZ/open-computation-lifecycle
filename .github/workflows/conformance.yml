@@ -1,0 +1,33 @@
+name: Conformance
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  typescript:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: conformance/typescript
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v24
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: conformance/typescript/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck verifier
+        run: npm run typecheck
+
+      - name: Verify conformance corpus
+        run: npm run verify

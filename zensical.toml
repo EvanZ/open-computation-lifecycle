@@ -20,7 +20,6 @@ nav = [
     {"Execution context (normative)" = "profiles/execution-context.md"},
     {"Lifecycle (normative)" = "profiles/lifecycle.md"},
   ]},
-  {"Reference SDK" = "sdk.md"},
 ]
 
 [project.theme]

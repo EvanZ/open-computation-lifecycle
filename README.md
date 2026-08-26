@@ -7,8 +7,12 @@ tracing durable computations.
 > OCLP is an experimental pre-1.0 draft. Its records and semantics will change.
 
 This repository contains the evolving protocol specification, JSON Schemas,
-conformance fixtures, and Python reference SDK. Bach is the internal codename
-for this incubation effort.
+conformance fixtures, and independent TypeScript verifier. Bach is the
+internal codename for this incubation effort.
+
+The Python reference SDK lives in the separate
+[`oclp-python`](https://github.com/EvanZ/oclp-python) repository. SDKs
+implement this repository's contract; they do not define it.
 
 ## Scope
 
@@ -27,19 +31,20 @@ data-processing framework.
 ## Development
 
 ```bash
-uv sync --group dev
-uv run pytest
-uv run python scripts/generate_schemas.py
-uv run oclp validate examples/document-transformation-artifact.json
-```
-
-Run the independent TypeScript conformance verifier with:
-
-```bash
 cd conformance/typescript
 npm ci
 npm run typecheck
 npm run verify
+```
+
+The committed JSON Schemas and fixtures are maintained as standard artifacts,
+not generated from any SDK. Run an SDK against this checkout's conformance
+corpus with its own test command, for example:
+
+```bash
+cd ../oclp-python
+OCLP_STANDARD_ROOT=../open-computation-lifecycle \
+  uv run pytest tests/test_standard_conformance.py
 ```
 
 The current draft is in [`spec/oclp-core.md`](spec/oclp-core.md).
@@ -55,8 +60,7 @@ defines a canonical manifest for large immutable logical dataset versions.
 
 ## Documentation
 
-The Zensical site provides a reader-oriented introduction to the protocol and
-reference SDK:
+The Zensical site provides a reader-oriented introduction to the protocol:
 
 <https://evanz.github.io/open-computation-lifecycle/>
 

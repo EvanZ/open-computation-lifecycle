@@ -10,10 +10,13 @@ ArtifactSet fixture covers immutable package membership.
 
 ## Run the verifiers
 
-The Python SDK verifier:
+The Python SDK verifier is maintained with the SDK, and is deliberately run
+against a selected standards checkout:
 
 ```bash
-uv run pytest tests/test_conformance.py
+cd ../oclp-python
+OCLP_STANDARD_ROOT=../open-computation-lifecycle \
+  uv run pytest tests/test_standard_conformance.py
 ```
 
 The independent TypeScript verifier:
@@ -32,8 +35,10 @@ same corpus without invoking the Python package.
 ## Extending the contract
 
 Add only behavior that is defined by the specification. A protocol change must
-update the specification, generated schemas, fixtures, expected canonical
-digests, and both verifiers as one reviewable change.
+update the specification, published schemas, fixtures, expected canonical
+digests, and both verifiers as one reviewable change. No SDK generates the
+standard's schemas; implementations instead verify themselves against this
+contract.
 
 See [`tests/conformance/README.md`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/tests/conformance/README.md)
 for fixture details and the implementer contract.
