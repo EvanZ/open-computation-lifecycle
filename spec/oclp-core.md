@@ -482,11 +482,11 @@ validation and integrity rules. A profile consumer MUST reject a record or
 payload that claims the profile but violates its declared schema or semantic
 rules.
 
-The dataset-snapshot, execution-context, and lifecycle profiles are the first
-profiles under this framework. They define canonical Artifact content,
-profile-owned Invocation bindings, and portable Event chronology,
-respectively. Future profiles may standardize agent, model-service, and MCP
-event conventions without making those concepts Core requirements.
+OCLP Core owns this framework but no domain profile definitions. Profile
+publishers independently own their specifications, schemas, fixtures, and
+semantic verifiers. An OCLP-maintained profile catalog may provide optional
+dataset, execution, or lifecycle profiles without making them Core
+requirements.
 
 ## 8. Conformance
 

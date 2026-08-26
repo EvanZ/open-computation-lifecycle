@@ -4,8 +4,8 @@
   "id": "urn:example:invocation:uppercase-profiled",
   "annotations": {},
   "profiles": {
-    "lifecycle": {
-      "version": "0.1.0-draft"
+    "example.org/operation": {
+      "version": "1"
     }
   },
   "definition": {

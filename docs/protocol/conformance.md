@@ -40,5 +40,9 @@ digests, and both verifiers as one reviewable change. No SDK generates the
 standard's schemas; implementations instead verify themselves against this
 contract.
 
+Optional profiles maintain independent specifications, schemas, fixtures, and
+verifiers. See [OCLP Profiles](https://evanz.github.io/oclp-profiles/conformance/)
+for those conformance packages.
+
 See [`tests/conformance/README.md`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/tests/conformance/README.md)
 for fixture details and the implementer contract.

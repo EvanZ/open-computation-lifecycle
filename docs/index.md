@@ -28,6 +28,6 @@ the [protocol overview](protocol/overview.md) as a reader-oriented guide.
 
 ## Status
 
-OCLP draft 0.1 is experimental. The schema, lifecycle vocabulary, and
-conventions are being tested in real consumer repositories before they are
-stabilized.
+OCLP draft 0.1 is experimental. The core schema and conventions are being
+tested in real consumer repositories before they are stabilized. Optional
+domain profiles are independently versioned outside the Core standard.

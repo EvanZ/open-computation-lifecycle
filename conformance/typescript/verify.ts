@@ -19,17 +19,11 @@ type Manifest = {
   lineage: Record<string, string>;
 };
 
-type ProfileManifest = {
-  valid: ManifestEntry[];
-  invalid: string[];
-};
-
 type OclpRecord = Record<string, any>;
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
 const fixtures = path.join(root, "tests/conformance");
-const datasetFixtures = path.join(root, "tests/profiles/dataset-snapshot");
 const require = createRequire(import.meta.url);
 const canonicalize = require("canonicalize") as (
   input: unknown,
@@ -41,43 +35,9 @@ const coreSchema = JSON.parse(
 const manifest = JSON.parse(
   await readFile(path.join(fixtures, "manifest.json"), "utf8"),
 ) as Manifest;
-const datasetSchema = JSON.parse(
-  await readFile(path.join(root, "profiles/dataset-snapshot.schema.json"), "utf8"),
-);
-const executionFixtures = path.join(root, "tests/profiles/execution-context");
-const lifecycleFixtures = path.join(root, "tests/profiles/lifecycle");
-const executionSchema = JSON.parse(
-  await readFile(path.join(root, "profiles/execution-context.schema.json"), "utf8"),
-);
-const executionBindingSchema = JSON.parse(
-  await readFile(
-    path.join(root, "profiles/execution-context-binding.schema.json"),
-    "utf8",
-  ),
-);
-const lifecycleBindingSchema = JSON.parse(
-  await readFile(path.join(root, "profiles/lifecycle-binding.schema.json"), "utf8"),
-);
-const lifecycleTimelineSchema = JSON.parse(
-  await readFile(path.join(root, "profiles/lifecycle-timeline.schema.json"), "utf8"),
-);
-const datasetManifest = JSON.parse(
-  await readFile(path.join(datasetFixtures, "manifest.json"), "utf8"),
-) as ProfileManifest;
-const executionManifest = JSON.parse(
-  await readFile(path.join(executionFixtures, "manifest.json"), "utf8"),
-) as ProfileManifest;
-const lifecycleManifest = JSON.parse(
-  await readFile(path.join(lifecycleFixtures, "manifest.json"), "utf8"),
-) as ProfileManifest;
 const ajv = new Ajv2020({ strict: false });
 addFormats(ajv);
 const validate = ajv.compile(coreSchema);
-const validateDatasetSnapshot = ajv.compile(datasetSchema);
-const validateExecutionContext = ajv.compile(executionSchema);
-const validateExecutionContextBinding = ajv.compile(executionBindingSchema);
-const validateLifecycleBinding = ajv.compile(lifecycleBindingSchema);
-const validateLifecycleTimeline = ajv.compile(lifecycleTimelineSchema);
 
 const records = new Map<string, OclpRecord>();
 const recordsByDigest = new Map<string, OclpRecord>();
@@ -110,117 +70,6 @@ for (const fixturePath of manifest.invalid) {
   );
 }
 
-for (const entry of datasetManifest.valid) {
-  const snapshot = JSON.parse(
-    await readFile(path.join(datasetFixtures, entry.path), "utf8"),
-  ) as OclpRecord;
-  assert.equal(
-    validateDatasetSnapshot(snapshot),
-    true,
-    validateDatasetSnapshot.errors?.map(String).join("\n"),
-  );
-  assert.equal(datasetSnapshotRulesHold(snapshot), true, entry.path);
-  const canonical = canonicalize(snapshot);
-  assert.notEqual(canonical, undefined);
-  assert.equal(canonical, entry.canonical_json, entry.path);
-  const digest = createHash("sha256").update(canonical).digest("hex");
-  assert.equal(`sha256:${digest}`, entry.digest, entry.path);
-}
-
-for (const fixturePath of datasetManifest.invalid) {
-  const snapshot = JSON.parse(
-    await readFile(path.join(datasetFixtures, fixturePath), "utf8"),
-  ) as OclpRecord;
-  assert.equal(
-    validateDatasetSnapshot(snapshot) && datasetSnapshotRulesHold(snapshot),
-    false,
-    `${fixturePath} unexpectedly validated`,
-  );
-}
-
-for (const entry of executionManifest.valid) {
-  const profile = JSON.parse(
-    await readFile(path.join(executionFixtures, entry.path), "utf8"),
-  ) as OclpRecord;
-  assert.equal(
-    validateExecutionContext(profile),
-    true,
-    validateExecutionContext.errors?.map(String).join("\n"),
-  );
-  assert.equal(executionContextRulesHold(profile), true, entry.path);
-  const canonical = canonicalize(profile);
-  assert.notEqual(canonical, undefined);
-  assert.equal(canonical, entry.canonical_json, entry.path);
-  const digest = createHash("sha256").update(canonical).digest("hex");
-  assert.equal(`sha256:${digest}`, entry.digest, entry.path);
-}
-
-for (const fixturePath of executionManifest.invalid) {
-  const profile = JSON.parse(
-    await readFile(path.join(executionFixtures, fixturePath), "utf8"),
-  ) as OclpRecord;
-  assert.equal(
-    validateExecutionContext(profile) && executionContextRulesHold(profile),
-    false,
-    `${fixturePath} unexpectedly validated`,
-  );
-}
-
-for (const binding of [
-  {
-    version: "0.1.0-draft",
-    manifest: {
-      id: "urn:example:artifact:execution-context",
-      digest: { algorithm: "sha256", value: "a".repeat(64) },
-    },
-  },
-]) {
-  assert.equal(
-    validateExecutionContextBinding(binding),
-    true,
-    validateExecutionContextBinding.errors?.map(String).join("\n"),
-  );
-}
-assert.equal(validateExecutionContextBinding({
-  manifest: {
-    id: "urn:example:artifact:execution-context",
-    digest: { algorithm: "sha256", value: "a".repeat(64) },
-  },
-}), false);
-
-for (const entry of lifecycleManifest.valid) {
-  const timeline = JSON.parse(
-    await readFile(path.join(lifecycleFixtures, entry.path), "utf8"),
-  ) as OclpRecord;
-  assert.equal(
-    validateLifecycleTimeline(timeline),
-    true,
-    validateLifecycleTimeline.errors?.map(String).join("\n"),
-  );
-  assert.equal(
-    validateLifecycleBinding(timeline.binding),
-    true,
-    validateLifecycleBinding.errors?.map(String).join("\n"),
-  );
-  assert.equal(lifecycleRulesHold(timeline), true, entry.path);
-  const canonical = canonicalize(timeline);
-  assert.notEqual(canonical, undefined);
-  assert.equal(canonical, entry.canonical_json, entry.path);
-  const digest = createHash("sha256").update(canonical).digest("hex");
-  assert.equal(`sha256:${digest}`, entry.digest, entry.path);
-}
-
-for (const fixturePath of lifecycleManifest.invalid) {
-  const timeline = JSON.parse(
-    await readFile(path.join(lifecycleFixtures, fixturePath), "utf8"),
-  ) as OclpRecord;
-  assert.equal(
-    validateLifecycleTimeline(timeline) && lifecycleRulesHold(timeline),
-    false,
-    `${fixturePath} unexpectedly validated`,
-  );
-}
-
 const invocation = records.get(manifest.lineage.invocation_id)!;
 assert.equal(invocation.definition?.id, manifest.lineage.definition_id);
 assert.equal(invocation.inputs?.source?.[0]?.id, manifest.lineage.input_artifact_id);
@@ -235,12 +84,7 @@ assert.equal(
 );
 
 console.log(
-  `Verified ${manifest.valid.length} valid and ${manifest.invalid.length} invalid ` +
-    `OCLP fixtures; ${datasetManifest.valid.length} valid and ` +
-    `${datasetManifest.invalid.length} invalid dataset-snapshot fixtures; ` +
-    `${executionManifest.valid.length} valid and ${executionManifest.invalid.length} ` +
-    `invalid execution-context fixtures; ${lifecycleManifest.valid.length} valid and ` +
-    `${lifecycleManifest.invalid.length} invalid lifecycle fixtures.`,
+  `Verified ${manifest.valid.length} valid and ${manifest.invalid.length} invalid OCLP fixtures.`,
 );
 
 function semanticRulesHold(record: OclpRecord): boolean {
@@ -437,65 +281,4 @@ function addEdge(adjacency: Map<string, Set<string>>, source: string, target: st
   const targets = adjacency.get(source) ?? new Set<string>();
   targets.add(target);
   adjacency.set(source, targets);
-}
-
-function datasetSnapshotRulesHold(snapshot: OclpRecord): boolean {
-  const partitions = snapshot.partitions ?? [];
-  const names = partitions.map((partition: { name: string }) => partition.name);
-  if (names.length !== new Set(names).size) {
-    return false;
-  }
-  if (names.join("\0") !== [...names].sort().join("\0")) {
-    return false;
-  }
-  if (
-    partitions.some(
-      (partition: { artifact?: { digest?: unknown } }) => !partition.artifact?.digest,
-    )
-  ) {
-    return false;
-  }
-  return !snapshot.parent || Boolean(snapshot.parent.digest);
-}
-
-function executionContextRulesHold(profile: OclpRecord): boolean {
-  if (!profile.runtime?.dependency_lock?.digest) return false;
-  return !profile.configuration || Boolean(profile.configuration.digest);
-}
-
-function lifecycleRulesHold(timeline: OclpRecord): boolean {
-  const events = timeline.events as Array<{
-    event_type?: unknown;
-    sequence?: unknown;
-    attempt_id?: unknown;
-    status?: unknown;
-  }>;
-  const requested = events.filter((event) => event.event_type === "invocation-requested");
-  if (requested.length !== 1) return false;
-  const request = requested[0];
-  if (request.sequence !== 0 || request.attempt_id !== undefined || request.status !== undefined) {
-    return false;
-  }
-
-  const started = events.filter((event) => event.event_type === "attempt-started");
-  const attemptIds = started.map((event) => event.attempt_id);
-  if (
-    attemptIds.some((attemptId) => typeof attemptId !== "string") ||
-    new Set(attemptIds).size !== attemptIds.length ||
-    started.some((event) => event.status !== undefined || Number(event.sequence) <= 0)
-  ) {
-    return false;
-  }
-
-  const terminal = events.filter((event) => event.event_type === "invocation-terminal");
-  if (terminal.length > 1) return false;
-  if (!terminal.length) return true;
-  const completion = terminal[0];
-  if (
-    !["succeeded", "failed", "skipped"].includes(String(completion.status)) ||
-    Number(completion.sequence) <= 0
-  ) {
-    return false;
-  }
-  return !started.some((event) => Number(event.sequence) >= Number(completion.sequence));
 }

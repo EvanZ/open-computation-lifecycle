@@ -53,8 +53,8 @@
     },
     {
       "path": "valid/invocation-profiled.json",
-      "canonical_json": "{\"annotations\":{},\"definition\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"fbc0bfdf99b813f3ef6df95e8db7fd2d427afb4fa6bdc94a04b6d186a4379e9d\"},\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-profiled\",\"inputs\":{},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"parameters\":{},\"profiles\":{\"lifecycle\":{\"version\":\"0.1.0-draft\"}},\"requested_outputs\":[]}",
-      "digest": "sha256:e561e01c9ed6fb02639fa4f7455ea6bcb16fdee0ed213e3a7149e7dbd8d73df6"
+      "canonical_json": "{\"annotations\":{},\"definition\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"fbc0bfdf99b813f3ef6df95e8db7fd2d427afb4fa6bdc94a04b6d186a4379e9d\"},\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-profiled\",\"inputs\":{},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"parameters\":{},\"profiles\":{\"example.org/operation\":{\"version\":\"1\"}},\"requested_outputs\":[]}",
+      "digest": "sha256:57a2e61fec5098bbf99bf48828299a1a06cb10ded4e0dc4619e1d5824fa15ce3"
     },
     {
       "path": "valid/evidence.json",

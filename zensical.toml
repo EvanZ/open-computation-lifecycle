@@ -15,11 +15,6 @@ nav = [
     {"Cross-language conformance" = "protocol/conformance.md"},
   ]},
   {"Examples" = "examples.md"},
-  {"Profiles" = [
-    {"Dataset snapshot (normative)" = "profiles/dataset-snapshot.md"},
-    {"Execution context (normative)" = "profiles/execution-context.md"},
-    {"Lifecycle (normative)" = "profiles/lifecycle.md"},
-  ]},
 ]
 
 [project.theme]
