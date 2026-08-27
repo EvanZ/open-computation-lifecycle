@@ -318,7 +318,7 @@ MUST NOT replace its identity.
 | `definition` | required; RecordReference | Definition being requested. A digest MAY bind a particular definition revision and is strongly recommended when reproducibility matters. |
 | `parent_invocation` | optional; RecordReference | The Invocation that directly orchestrated this Invocation. It is an execution-hierarchy relationship, not an input, output, or derivation edge. It MUST resolve to an Invocation when the surrounding record collection is resolved. A digest MAY bind one exact parent revision; an ID-only reference is allowed when content-bound parent/child records would otherwise form an immutable reference cycle. Consumers MUST reject an absent or ambiguous ID-only parent during resolution. |
 | `parameters` | default; object | Empty object by default. Producer-defined JSON parameter values. The Definition or a referenced contract gives them domain meaning. |
-| `inputs` | default; object of arrays of RecordReference | Empty object by default. Keys are declared input-port names; each value is an ordered list of references bound at invocation time. Artifact references SHOULD include a digest for reproducibility. |
+| `inputs` | default; object of arrays of RecordReference | Empty object by default. Keys are declared input-port names; each value is an ordered list of direct Artifact or ArtifactSet references bound at invocation time. Every input reference MUST include a record digest, binding the exact consumed bytes or named collection. An ArtifactSet input records use of the exact named package; its members remain a collection overlay rather than individual derivation edges. |
 | `outputs` | optional; object of arrays of RecordReference | Keys are declared output-port names; each value is an ordered list of direct Artifact or ArtifactSet results. Every output reference MUST include a record digest. A producer MUST bind every durable direct result it publishes for the Invocation. An ArtifactSet output records that this Invocation published the exact named package; its member references remain an overlay, not a second derivation path. When absent, `outputs` is omitted from canonical JSON so legacy Invocation record digests remain stable. |
 | `requested_outputs` | default; array of strings | Empty array by default. Names of outputs requested by the caller. It records intent, not proof of publication. |
 
@@ -386,7 +386,7 @@ Lineage is derived from explicit bindings, not from a separate mutable graph.
 The **derivation graph** contains Artifact, ArtifactSet, and Invocation nodes:
 
 ```text
-Artifact -> consumed by Invocation -> produces Artifact or ArtifactSet
+Artifact or ArtifactSet -> consumed by Invocation -> produces Artifact or ArtifactSet
 ```
 
 The Definition binding, implementation Artifact and Git source overlay,

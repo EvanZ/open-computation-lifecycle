@@ -186,12 +186,13 @@ function derivationGraphRulesHold(recordsByDigest: Map<string, OclpRecord>): boo
 
   const resolve = (
     reference: { id?: unknown; digest?: { value?: unknown } },
-    expectedKind: string,
+    expectedKind: string | string[],
   ): string | undefined => {
     const digest = reference.digest?.value;
     if (typeof digest !== "string") return undefined;
     const target = recordsByDigest.get(digest);
-    if (!target || target.kind !== expectedKind || target.id !== reference.id) {
+    const expectedKinds = Array.isArray(expectedKind) ? expectedKind : [expectedKind];
+    if (!target || !expectedKinds.includes(target.kind) || target.id !== reference.id) {
       return undefined;
     }
     return digest;
@@ -210,14 +211,14 @@ function derivationGraphRulesHold(recordsByDigest: Map<string, OclpRecord>): boo
     if (!resolve(record.definition ?? {}, "definition")) return false;
     for (const references of Object.values(record.inputs ?? {})) {
       for (const reference of references as Array<{ id?: unknown; digest?: { value?: unknown } }>) {
-        const inputDigest = resolve(reference, "artifact");
+        const inputDigest = resolve(reference, ["artifact", "artifact_set"]);
         if (!inputDigest) return false;
         addEdge(adjacency, inputDigest, invocationDigest);
       }
     }
     for (const references of Object.values(record.outputs ?? {})) {
       for (const reference of references as Array<{ id?: unknown; digest?: { value?: unknown } }>) {
-        const outputDigest = resolve(reference, "artifact");
+        const outputDigest = resolve(reference, ["artifact", "artifact_set"]);
         if (!outputDigest) return false;
         addEdge(adjacency, invocationDigest, outputDigest);
       }

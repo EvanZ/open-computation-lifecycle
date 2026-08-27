@@ -17,6 +17,11 @@
       "digest": "sha256:b3576146ba04804552a31d9e5bee8a955fd4609e6106b6d8944a3b8cb654adee"
     },
     {
+      "path": "valid/invocation-artifact-set-input.json",
+      "canonical_json": "{\"annotations\":{},\"definition\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"fbc0bfdf99b813f3ef6df95e8db7fd2d427afb4fa6bdc94a04b6d186a4379e9d\"},\"id\":\"urn:example:definition:uppercase\"},\"id\":\"urn:example:invocation:uppercase-release\",\"inputs\":{\"release\":[{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"b3576146ba04804552a31d9e5bee8a955fd4609e6106b6d8944a3b8cb654adee\"},\"id\":\"urn:example:artifact-set:release\"}]},\"kind\":\"invocation\",\"oclp_version\":\"0.1.0-draft\",\"parameters\":{},\"profiles\":null,\"requested_outputs\":[]}",
+      "digest": "sha256:a7ebbac3008f8434abe8cbe1e740c0ead37217967dc3a500feb6054971eeebd9"
+    },
+    {
       "path": "valid/definition.json",
       "canonical_json": "{\"annotations\":{},\"id\":\"urn:example:definition:uppercase\",\"implementation\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"},\"kind\":\"other\",\"locator\":\"example:uppercase\",\"source\":{\"commit\":\"0123456789abcdef0123456789abcdef01234567\",\"kind\":\"git\",\"path\":\"src/example\",\"repository\":\"https://github.com/example/uppercase.git\"}},\"input_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"source\",\"required\":true}],\"kind\":\"definition\",\"oclp_version\":\"0.1.0-draft\",\"output_ports\":[{\"cardinality\":\"one\",\"media_types\":[\"text/plain\"],\"name\":\"result\",\"required\":true}],\"profiles\":null}",
       "digest": "sha256:fbc0bfdf99b813f3ef6df95e8db7fd2d427afb4fa6bdc94a04b6d186a4379e9d"

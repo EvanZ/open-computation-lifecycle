@@ -15,7 +15,8 @@ Lineage comes from immutable, typed records rather than a mutable graph:
 Definition -> Invocation -> produced Artifact
                   ^              |
                   |              v
-          consumed Artifact    Evidence
+    consumed Artifact or ArtifactSet
+                               Evidence
                   |
                   v
                 Events

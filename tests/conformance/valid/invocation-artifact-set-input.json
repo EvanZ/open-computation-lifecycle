@@ -1,0 +1,27 @@
+{
+  "annotations": {},
+  "definition": {
+    "digest": {
+      "algorithm": "sha256",
+      "value": "fbc0bfdf99b813f3ef6df95e8db7fd2d427afb4fa6bdc94a04b6d186a4379e9d"
+    },
+    "id": "urn:example:definition:uppercase"
+  },
+  "id": "urn:example:invocation:uppercase-release",
+  "inputs": {
+    "release": [
+      {
+        "digest": {
+          "algorithm": "sha256",
+          "value": "b3576146ba04804552a31d9e5bee8a955fd4609e6106b6d8944a3b8cb654adee"
+        },
+        "id": "urn:example:artifact-set:release"
+      }
+    ]
+  },
+  "kind": "invocation",
+  "oclp_version": "0.1.0-draft",
+  "parameters": {},
+  "profiles": null,
+  "requested_outputs": []
+}
