@@ -148,7 +148,8 @@ function semanticRulesHold(record: OclpRecord): boolean {
     if (
       record.implementation?.source?.kind === "git" &&
       record.implementation.source.overlay &&
-      !record.implementation.source.overlay.digest
+      (!record.implementation.source.overlay.digest ||
+        record.implementation.source.dirty !== true)
     ) {
       return false;
     }
@@ -218,7 +219,11 @@ function implementationIsBound(implementation: unknown): boolean {
   if (value.source?.kind === "artifact" && !value.source.artifact?.digest) {
     return false;
   }
-  if (value.source?.kind === "git" && value.source.overlay && !value.source.overlay.digest) {
+  if (
+    value.source?.kind === "git" &&
+    value.source.overlay &&
+    (!value.source.overlay.digest || value.source.dirty !== true)
+  ) {
     return false;
   }
   return true;

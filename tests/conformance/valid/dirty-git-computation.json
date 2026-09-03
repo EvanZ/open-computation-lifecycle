@@ -1,0 +1,22 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:computation:dirty-uppercase",
+  "name": "Dirty uppercase document",
+  "profiles": null,
+  "annotations": {},
+  "kind": "computation",
+  "implementation": {
+    "kind": "other",
+    "locator": "example:dirty-uppercase",
+    "source": {
+      "kind": "git",
+      "repository": "https://github.com/example/uppercase.git",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "path": "src/example",
+      "dirty": true
+    }
+  },
+  "input_ports": [],
+  "output_ports": [],
+  "parameter_definitions": []
+}

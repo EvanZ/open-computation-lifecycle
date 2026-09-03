@@ -1,0 +1,28 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:computation:clean-overlay",
+  "name": "Invalid clean source overlay",
+  "profiles": null,
+  "annotations": {},
+  "kind": "computation",
+  "implementation": {
+    "kind": "other",
+    "locator": "example:clean-overlay",
+    "source": {
+      "kind": "git",
+      "repository": "https://github.com/example/uppercase.git",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "dirty": false,
+      "overlay": {
+        "id": "urn:example:artifact-set:source-overlay",
+        "digest": {
+          "algorithm": "sha256",
+          "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    }
+  },
+  "input_ports": [],
+  "output_ports": [],
+  "parameter_definitions": []
+}

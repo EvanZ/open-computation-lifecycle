@@ -740,7 +740,7 @@
     },
     "GitSource": {
       "additionalProperties": false,
-      "description": "An immutable Git source revision selected by an implementation.",
+      "description": "A Git source basis selected by an implementation.",
       "properties": {
         "kind": {
           "const": "git",
@@ -763,6 +763,11 @@
           "minLength": 1,
           "title": "Path",
           "type": "string"
+        },
+        "dirty": {
+          "default": false,
+          "title": "Dirty",
+          "type": "boolean"
         },
         "overlay": {
           "anyOf": [

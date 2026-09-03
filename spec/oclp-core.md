@@ -203,18 +203,22 @@ payload-content digest.
 | `repository` | required; string | Non-empty canonical repository location or identifier selected by the producer. |
 | `commit` | required; string | A complete, lowercase hexadecimal Git object ID: 40 characters for SHA-1 repositories or 64 characters for SHA-256 repositories. A branch, tag, or abbreviated hash is invalid. |
 | `path` | default; string | Repository-relative source or build-context path. Default `"."`. |
+| `dirty` | default; boolean | `true` when the source was observed from a checkout with uncommitted changes relative to `commit`; default `false`. It makes the incomplete source basis explicit rather than forbidding development observations. |
 | `overlay` | optional; RecordReference | An exact ArtifactSet describing uncommitted source changes relative to `commit`. Its record digest is REQUIRED. Omit it when the selected source is exactly the Git commit. |
+
 `repository` identifies the canonical source project, not an execution-local
 checkout path or merely a configured remote name. A Git commit describes the
-reviewed source revision. When `overlay` is present, the Git source basis is
-the commit plus that immutable overlay, and therefore produces a distinct
-Computation revision. An overlay is a bounded source delta, not an inferred
-dependency closure: a producer SHOULD include a binary Git patch for tracked
-changes and MAY include selected untracked source files. Ignored/generated
-files and secrets MUST NOT be captured implicitly. Runtime configuration and
-dependencies belong in their own input Artifacts or profiles. A Git source does
-not claim to identify every runtime dependency or the checkout used by one
-Execution.
+reviewed base revision. A `dirty: true` source is valid provenance: it reports
+that the observed implementation may differ from that base and MUST NOT be
+treated as reproducible from the commit alone. When `overlay` is present,
+`dirty` MUST be `true`; the Git source basis is then the commit plus that
+immutable overlay and produces a distinct Computation revision. An overlay is a
+bounded source delta, not an inferred dependency closure: a producer SHOULD
+include a binary Git patch for tracked changes and MAY include selected
+untracked source files. Ignored/generated files and secrets MUST NOT be
+captured implicitly. Runtime configuration and dependencies belong in their own
+input Artifacts or profiles. A Git source does not claim to identify every
+runtime dependency or the checkout used by one Execution.
 
 #### ArtifactSource
 

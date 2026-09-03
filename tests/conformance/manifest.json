@@ -27,6 +27,11 @@
       "digest": "sha256:a8fb1076ef993faa19a814c86d47795b2e075edbd5c53ec3905bf88b87c2b50d"
     },
     {
+      "path": "valid/dirty-git-computation.json",
+      "canonical_json": "{\"annotations\":{},\"id\":\"urn:example:computation:dirty-uppercase\",\"implementation\":{\"kind\":\"other\",\"locator\":\"example:dirty-uppercase\",\"source\":{\"commit\":\"0123456789abcdef0123456789abcdef01234567\",\"dirty\":true,\"kind\":\"git\",\"path\":\"src/example\",\"repository\":\"https://github.com/example/uppercase.git\"}},\"input_ports\":[],\"kind\":\"computation\",\"name\":\"Dirty uppercase document\",\"oclp_version\":\"0.2.0-draft\",\"output_ports\":[],\"parameter_definitions\":[],\"profiles\":null}",
+      "digest": "sha256:c216d0c8ac0077e49c71c2023ef6efa43d14ad3a5c012e92ea992ea08bd8a0b8"
+    },
+    {
       "path": "valid/execution.json",
       "canonical_json": "{\"annotations\":{},\"computation\":{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"a8fb1076ef993faa19a814c86d47795b2e075edbd5c53ec3905bf88b87c2b50d\"},\"id\":\"urn:example:computation:uppercase\"},\"id\":\"urn:example:execution:uppercase-hello\",\"inputs\":{\"source\":[{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"ce5b501718fb5697cbba5d3d4eaf8536e2d98a01ec1ca6e0875c30098e7a8ff1\"},\"id\":\"urn:example:artifact:source-document\"}]},\"kind\":\"execution\",\"name\":\"Uppercase hello\",\"oclp_version\":\"0.2.0-draft\",\"outputs\":{\"result\":[{\"digest\":{\"algorithm\":\"sha256\",\"value\":\"da668df51680557aadc4f4768fa7d7a818ad45814cb576bc4e9e95202da54b31\"},\"id\":\"urn:example:artifact:result-document\"}]},\"parameters\":{\"locale\":\"en-US\"},\"profiles\":{\"lifecycle\":{\"version\":\"0.2.0-draft\"}},\"requested_outputs\":[\"result\"]}",
       "digest": "sha256:4cc91f8c9c3d6e71469821fc624d54eeb37ca3b1f647c958cf27f2b10b568053"
@@ -67,7 +72,8 @@
     "invalid/event-missing-execution.json",
     "invalid/evidence-invalid-outcome.json",
     "invalid/computation-duplicate-required-evidence.json",
-    "invalid/computation-duplicate-parameter.json"
+    "invalid/computation-duplicate-parameter.json",
+    "invalid/computation-git-overlay-clean.json"
   ],
   "lineage": {
     "computation_id": "urn:example:computation:uppercase",
