@@ -1,0 +1,10 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:execution:bad-profiles",
+  "profiles": {},
+  "annotations": {},
+  "kind": "execution",
+  "computation": {"id": "urn:example:computation:uppercase"},
+  "inputs": {},
+  "requested_outputs": []
+}

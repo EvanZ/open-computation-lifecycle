@@ -23,7 +23,6 @@
     },
     "JsonValue": {}
   },
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
     "annotations": {
@@ -32,6 +31,19 @@
       },
       "title": "Annotations",
       "type": "object"
+    },
+    "created_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Created At"
     },
     "digest": {
       "$ref": "#/$defs/Digest"
@@ -74,8 +86,8 @@
       "title": "Name"
     },
     "oclp_version": {
-      "const": "0.1.0-draft",
-      "default": "0.1.0-draft",
+      "const": "0.2.0-draft",
+      "default": "0.2.0-draft",
       "title": "Oclp Version",
       "type": "string"
     },

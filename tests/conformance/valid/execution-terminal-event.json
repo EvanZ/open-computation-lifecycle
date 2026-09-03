@@ -1,0 +1,19 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:event:uppercase-hello:terminal",
+  "annotations": {},
+  "kind": "event",
+  "execution": {
+    "id": "urn:example:execution:uppercase-hello",
+    "digest": {
+      "algorithm": "sha256",
+        "value": "4cc91f8c9c3d6e71469821fc624d54eeb37ca3b1f647c958cf27f2b10b568053"
+    }
+  },
+  "event_type": "execution-terminal",
+  "occurred_at": "2026-08-30T12:00:03Z",
+  "sequence": 1,
+  "status": "succeeded",
+  "data": {},
+  "profiles": null
+}

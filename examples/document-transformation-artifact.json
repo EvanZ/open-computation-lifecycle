@@ -1,5 +1,5 @@
 {
-  "oclp_version": "0.1.0-draft",
+  "oclp_version": "0.2.0-draft",
   "kind": "artifact",
   "id": "urn:example:artifact:employee-handbook",
   "annotations": {
@@ -11,6 +11,7 @@
     "value": "6dfad2b52801af0f3b1d6d6a5169d678b6b9606f8d510d2cd7ca0a82f5f47e31"
   },
   "size": 348,
+  "created_at": "2026-08-27T05:00:00Z",
   "locations": [
     "https://storage.example.org/documents/handbook-v3.txt"
   ]

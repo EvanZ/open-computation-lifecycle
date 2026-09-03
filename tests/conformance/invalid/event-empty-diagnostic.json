@@ -1,13 +1,22 @@
 {
-  "oclp_version": "0.1.0-draft",
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:event:uppercase-hello:terminal",
+  "name": null,
+  "profiles": null,
+  "annotations": {},
   "kind": "event",
-  "id": "event.invalid-empty-diagnostic",
-  "invocation": {
-    "id": "invocation.example"
+  "execution": {
+    "id": "urn:example:execution:uppercase-hello",
+    "digest": {
+      "algorithm": "sha256",
+      "value": "7f6ad6c061007d770f0f87740f11d9416cca5db068ff979afb0d3a93707b5bc2"
+    }
   },
-  "event_type": "invocation-failed",
-  "occurred_at": "2026-08-19T20:00:00Z",
-  "sequence": 0,
-  "status": "failed",
-  "diagnostic": {}
+  "event_type": "execution-terminal",
+  "occurred_at": "2026-08-30T12:00:03Z",
+  "sequence": 1,
+  "runtime": null,
+  "status": "succeeded",
+  "diagnostic": {},
+  "data": {}
 }

@@ -15,6 +15,7 @@ nav = [
     {"Cross-language conformance" = "protocol/conformance.md"},
   ]},
   {"Examples" = "examples.md"},
+  {"Roadmap" = "roadmap.md"},
 ]
 
 [project.theme]

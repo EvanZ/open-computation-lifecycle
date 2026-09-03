@@ -57,7 +57,9 @@ for (const entry of manifest.valid) {
 }
 
 assert.equal(derivationGraphRulesHold(recordsByDigest), true);
-assert.equal(invocationHierarchyRulesHold(records, recordsByDigest), true);
+assert.equal(executionHierarchyRulesHold(records, recordsByDigest), true);
+assert.equal(executionParameterRulesHold(recordsByDigest), true);
+assert.equal(executionAcceptanceRulesHold(recordsByDigest), true);
 
 for (const fixturePath of manifest.invalid) {
   const record = JSON.parse(
@@ -70,17 +72,17 @@ for (const fixturePath of manifest.invalid) {
   );
 }
 
-const invocation = records.get(manifest.lineage.invocation_id)!;
-assert.equal(invocation.definition?.id, manifest.lineage.definition_id);
-assert.equal(invocation.inputs?.source?.[0]?.id, manifest.lineage.input_artifact_id);
-assert.equal(invocation.outputs?.result?.[0]?.id, manifest.lineage.output_artifact_id);
+const execution = records.get(manifest.lineage.execution_id)!;
+assert.equal(execution.computation?.id, manifest.lineage.computation_id);
+assert.equal(execution.inputs?.source?.[0]?.id, manifest.lineage.input_artifact_id);
+assert.equal(execution.outputs?.result?.[0]?.id, manifest.lineage.output_artifact_id);
 assert.equal(
   records.get(manifest.lineage.evidence_id)?.subject?.id,
-  manifest.lineage.invocation_id,
+  manifest.lineage.execution_id,
 );
 assert.equal(
-  records.get(manifest.lineage.event_id)?.invocation?.id,
-  manifest.lineage.invocation_id,
+  records.get(manifest.lineage.started_event_id)?.execution?.id,
+  manifest.lineage.execution_id,
 );
 
 console.log(
@@ -114,12 +116,25 @@ function semanticRulesHold(record: OclpRecord): boolean {
     }
   }
 
-  if (record.kind === "definition") {
+  if (record.kind === "computation") {
     for (const ports of [record.input_ports ?? [], record.output_ports ?? []]) {
       const names = ports.map((port: { name: string }) => port.name);
       if (names.length !== new Set(names).size) {
         return false;
       }
+    }
+    const parameterDefinitions = record.parameter_definitions ?? [];
+    const parameterNames = parameterDefinitions.map(
+      (parameter: { name: string }) => parameter.name,
+    );
+    if (parameterNames.length !== new Set(parameterNames).size) {
+      return false;
+    }
+    const inputPortNames = new Set(
+      (record.input_ports ?? []).map((port: { name: string }) => port.name),
+    );
+    if (parameterNames.some((name: string) => inputPortNames.has(name))) {
+      return false;
     }
     if (record.implementation?.artifact && !record.implementation.artifact.digest) {
       return false;
@@ -137,6 +152,17 @@ function semanticRulesHold(record: OclpRecord): boolean {
     ) {
       return false;
     }
+    const evaluators = record.required_evidence ?? [];
+    if (evaluators.some((evaluator: OclpRecord) => !implementationIsBound(evaluator))) {
+      return false;
+    }
+    const evaluatorKeys = evaluators.map(implementationKey);
+    if (
+      evaluatorKeys.some((key: string | undefined) => key === undefined) ||
+      evaluatorKeys.length !== new Set(evaluatorKeys).size
+    ) {
+      return false;
+    }
   }
 
   if (record.kind === "artifact_set") {
@@ -149,7 +175,7 @@ function semanticRulesHold(record: OclpRecord): boolean {
     }
   }
 
-  if (record.kind === "invocation") {
+  if (record.kind === "execution") {
     if (
       Object.values(record.outputs ?? {}).some((references: unknown) =>
         !(references as Array<{ digest?: unknown }>).every(
@@ -178,6 +204,129 @@ function semanticRulesHold(record: OclpRecord): boolean {
     }
   }
 
+  if (record.kind === "evidence" && !implementationIsBound(record.evaluator)) {
+    return false;
+  }
+
+  return true;
+}
+
+function implementationIsBound(implementation: unknown): boolean {
+  const value = implementation as OclpRecord | undefined;
+  if (!value || typeof value !== "object") return false;
+  if (value.artifact && !value.artifact.digest) return false;
+  if (value.source?.kind === "artifact" && !value.source.artifact?.digest) {
+    return false;
+  }
+  if (value.source?.kind === "git" && value.source.overlay && !value.source.overlay.digest) {
+    return false;
+  }
+  return true;
+}
+
+function implementationKey(implementation: unknown): string | undefined {
+  return canonicalize(implementation);
+}
+
+function executionParameterRulesHold(
+  recordsByDigest: Map<string, OclpRecord>,
+): boolean {
+  for (const execution of recordsByDigest.values()) {
+    if (execution.kind !== "execution") continue;
+    const computationDigest = execution.computation?.digest?.value;
+    const computation =
+      typeof computationDigest === "string"
+        ? recordsByDigest.get(computationDigest)
+        : undefined;
+    if (
+      !computation ||
+      computation.kind !== "computation" ||
+      computation.id !== execution.computation?.id
+    ) {
+      return false;
+    }
+    const definitions = computation.parameter_definitions ?? [];
+    const byName = new Map(
+      definitions.map((definition: { name: string }) => [definition.name, definition]),
+    );
+    const values = execution.parameters ?? {};
+    if (
+      typeof values !== "object" ||
+      values === null ||
+      Array.isArray(values) ||
+      Object.keys(values).some((name) => !byName.has(name))
+    ) {
+      return false;
+    }
+    for (const definition of definitions as Array<{
+      name: string;
+      required?: boolean;
+      schema: object;
+    }>) {
+      const hasValue = Object.prototype.hasOwnProperty.call(values, definition.name);
+      if (definition.required !== false && !hasValue) return false;
+      if (!hasValue) continue;
+      try {
+        const validatesValue = ajv.compile(definition.schema);
+        if (!validatesValue(values[definition.name])) return false;
+      } catch {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+function executionAcceptanceRulesHold(
+  recordsByDigest: Map<string, OclpRecord>,
+): boolean {
+  const executionCounts = new Map<string, number>();
+  for (const record of recordsByDigest.values()) {
+    if (record.kind === "execution") {
+      executionCounts.set(record.id, (executionCounts.get(record.id) ?? 0) + 1);
+    }
+  }
+
+  const referencesExecution = (
+    reference: { id?: unknown; digest?: { value?: unknown } },
+    execution: OclpRecord,
+    executionDigest: string,
+  ): boolean =>
+    reference.id === execution.id &&
+    (reference.digest?.value === executionDigest ||
+      (!reference.digest && executionCounts.get(execution.id) === 1));
+
+  for (const [executionDigest, execution] of recordsByDigest) {
+    if (execution.kind !== "execution") continue;
+    const computationDigest = execution.computation?.digest?.value;
+    const computation =
+      typeof computationDigest === "string"
+        ? recordsByDigest.get(computationDigest)
+        : undefined;
+    if (!computation || computation.kind !== "computation") return false;
+
+    const successful = [...recordsByDigest.values()].some(
+      (record) =>
+        record.kind === "event" &&
+        record.status === "succeeded" &&
+        referencesExecution(record.execution ?? {}, execution, executionDigest),
+    );
+    if (!successful) continue;
+
+    for (const evaluator of computation.required_evidence ?? []) {
+      const evaluatorKey = implementationKey(evaluator);
+      if (evaluatorKey === undefined) return false;
+      const satisfied = [...recordsByDigest.values()].some(
+        (record) =>
+          record.kind === "evidence" &&
+          record.subject?.id === execution.id &&
+          record.subject?.digest?.value === executionDigest &&
+          implementationKey(record.evaluator) === evaluatorKey &&
+          record.outcome === "pass",
+      );
+      if (!satisfied) return false;
+    }
+  }
   return true;
 }
 
@@ -199,28 +348,28 @@ function derivationGraphRulesHold(recordsByDigest: Map<string, OclpRecord>): boo
   };
 
   for (const record of recordsByDigest.values()) {
-    if (record.kind !== "definition") continue;
+    if (record.kind !== "computation") continue;
     const overlay = record.implementation?.source?.kind === "git"
       ? record.implementation.source.overlay
       : undefined;
     if (overlay && !resolve(overlay, "artifact_set")) return false;
   }
 
-  for (const [invocationDigest, record] of recordsByDigest) {
-    if (record.kind !== "invocation") continue;
-    if (!resolve(record.definition ?? {}, "definition")) return false;
+  for (const [executionDigest, record] of recordsByDigest) {
+    if (record.kind !== "execution") continue;
+    if (!resolve(record.computation ?? {}, "computation")) return false;
     for (const references of Object.values(record.inputs ?? {})) {
       for (const reference of references as Array<{ id?: unknown; digest?: { value?: unknown } }>) {
         const inputDigest = resolve(reference, ["artifact", "artifact_set"]);
         if (!inputDigest) return false;
-        addEdge(adjacency, inputDigest, invocationDigest);
+        addEdge(adjacency, inputDigest, executionDigest);
       }
     }
     for (const references of Object.values(record.outputs ?? {})) {
       for (const reference of references as Array<{ id?: unknown; digest?: { value?: unknown } }>) {
         const outputDigest = resolve(reference, ["artifact", "artifact_set"]);
         if (!outputDigest) return false;
-        addEdge(adjacency, invocationDigest, outputDigest);
+        addEdge(adjacency, executionDigest, outputDigest);
       }
     }
   }
@@ -241,14 +390,14 @@ function derivationGraphRulesHold(recordsByDigest: Map<string, OclpRecord>): boo
   return [...adjacency.keys()].every(visit);
 }
 
-function invocationHierarchyRulesHold(
+function executionHierarchyRulesHold(
   recordsById: Map<string, OclpRecord>,
   recordsByDigest: Map<string, OclpRecord>,
 ): boolean {
   const parents = new Map<string, string>();
   for (const record of recordsByDigest.values()) {
-    if (record.kind !== "invocation" || !record.parent_invocation) continue;
-    const reference = record.parent_invocation as {
+    if (record.kind !== "execution" || !record.parent_execution) continue;
+    const reference = record.parent_execution as {
       id?: unknown;
       digest?: { value?: unknown };
     };
@@ -257,7 +406,7 @@ function invocationHierarchyRulesHold(
       : typeof reference.id === "string"
         ? recordsById.get(reference.id)
         : undefined;
-    if (!parent || parent.kind !== "invocation" || parent.id !== reference.id) {
+    if (!parent || parent.kind !== "execution" || parent.id !== reference.id) {
       return false;
     }
     parents.set(String(record.id), String(parent.id));

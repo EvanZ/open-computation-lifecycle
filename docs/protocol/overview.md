@@ -1,16 +1,18 @@
 # Protocol overview
 
 OCLP records a computation boundary without prescribing how that computation is
-scheduled or implemented. A producer first identifies a reusable computation,
-then creates an invocation binding it to concrete inputs, parameters, and
+scheduled or implemented. A producer first identifies a reusable Computation,
+then records an Execution binding it to concrete inputs, parameters, and
 durable outputs when they are published.
-Artifacts, evidence, and lifecycle events make that request inspectable after
+Artifacts, evidence, and lifecycle events make that execution inspectable after
 the fact.
 
-Execution status belongs to a terminal Event, while a contract result belongs
+Execution status belongs to a terminal Event, while an evaluator result belongs
 to Evidence. Both record kinds can carry the same optional portable Diagnostic
 (code, concise message, stage, and an optional detailed-log Artifact reference)
 without forcing consumers to interpret producer-specific JSON detail fields.
+A Computation may additionally declare exact source-bound Evidence evaluators that must
+pass before one of its Executions can claim success.
 
 ## Core record map
 
@@ -18,12 +20,12 @@ OCLP's six record kinds form a compact vocabulary:
 
 | Record | Purpose |
 | --- | --- |
-| Definition | Names a computation, its implementation, and input/output ports. |
-| Invocation | Binds one Definition to exact inputs, parameters, and direct outputs. |
+| Computation | Names a reusable computation, its implementation, input/output ports, JSON-valued parameter definitions, and optional Evidence evaluators required for success. |
+| Execution | Binds one Computation to exact inputs, parameters, and direct outputs. Each retry or rerun is a distinct Execution. |
 | Artifact | Describes immutable bytes by media type, size, and SHA-256 digest. |
 | ArtifactSet | Names exact Artifacts in one immutable logical collection. |
-| Evidence | Records a versioned contract evaluation against another record. |
-| Event | Records an ordered lifecycle fact about an invocation or attempt. |
+| Evidence | Records one source-bound evaluator result about another record. |
+| Event | Records an ordered lifecycle fact about an Execution. |
 
 References use logical IDs and can carry record digests to bind an exact record.
 Records may also carry an optional human-readable `name`. Generic interfaces
@@ -31,20 +33,21 @@ may display that name, but IDs remain the only portable lookup and reference
 mechanism.
 Every implementation declares its source basis: a Git repository and immutable
 commit, an Artifact, a versioned service, or an explicit opaque reason. A
-machine-specific worktree and dirty state are attempt Event context, not
-Definition data.
+machine-specific worktree and dirty state are Execution Event context, not
+Computation data.
 
 ## What OCLP answers
 
 For a produced file or dataset, a consumer should be able to answer:
 
 1. Which immutable input artifacts were used?
-2. Which computation definition and implementation were selected?
+2. Which Computation and implementation were selected?
 3. Which exact code or runtime package was bound, when the producer records it?
 4. What exact parameters were bound?
-5. Which exact durable Artifacts did the invocation produce?
-6. Which execution attempt produced the durable facts?
+5. Which exact durable Artifacts did the Execution produce?
+6. Which exact Execution produced the durable facts?
 7. What evidence was recorded about the result?
+8. Did the Execution satisfy every required Evidence evaluator?
 
 ## What it intentionally leaves out
 

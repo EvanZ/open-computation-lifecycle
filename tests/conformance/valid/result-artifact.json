@@ -1,18 +1,17 @@
 {
-  "annotations": {
-    "example.org/source": "fixture-result"
-  },
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:artifact:result-document",
+  "name": "Result document",
+  "annotations": {},
+  "kind": "artifact",
+  "media_type": "text/plain",
   "digest": {
     "algorithm": "sha256",
-    "value": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
   },
-  "id": "urn:example:artifact:result-document",
-  "kind": "artifact",
+  "size": 5,
   "locations": [
     "https://example.org/result.txt"
   ],
-  "media_type": "text/plain",
-  "oclp_version": "0.1.0-draft",
-  "size": 5,
   "profiles": null
 }

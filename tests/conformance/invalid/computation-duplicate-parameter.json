@@ -1,0 +1,28 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:computation:duplicate-parameter",
+  "annotations": {},
+  "kind": "computation",
+  "implementation": {
+    "kind": "other",
+    "locator": "example:duplicate-parameter",
+    "source": {
+      "kind": "opaque",
+      "reason": "Fixture only."
+    }
+  },
+  "parameter_definitions": [
+    {
+      "name": "mode",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "mode",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

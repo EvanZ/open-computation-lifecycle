@@ -19,10 +19,10 @@ implement this repository's contract; they do not define it.
 OCLP standardizes the durable boundary between producers and consumers of
 computation metadata:
 
-- computation definitions and exact invocations;
+- reusable Computations and exact Executions;
 - immutable artifacts and their content identities;
-- execution events and attempts;
-- contracts and verification evidence;
+- execution lifecycle Events;
+- source-bound Contracts, verification Evidence, and optional Computation-level success requirements;
 - lineage formed by explicit input and output bindings.
 
 OCLP does not prescribe a scheduler, storage backend, programming language, or

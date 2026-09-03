@@ -1,12 +1,21 @@
 {
-  "annotations": {},
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "name": "Source document",
+  "profiles": null,
+  "annotations": {
+    "example.org/source": "fixture"
+  },
+  "kind": "artifact",
+  "media_type": "text/plain",
   "digest": {
     "algorithm": "sha256",
     "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
-  "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  "kind": "artifact",
-  "media_type": "text/plain",
-  "oclp_version": "0.1.0-draft",
-  "size": 5
+  "size": 5,
+  "created_at": null,
+  "locations": [
+    "https://example.org/input.txt"
+  ],
+  "schema_uri": null
 }

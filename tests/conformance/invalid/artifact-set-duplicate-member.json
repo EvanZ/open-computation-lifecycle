@@ -1,30 +1,11 @@
 {
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:artifact-set:bad-release",
+  "profiles": null,
   "annotations": {},
-  "id": "urn:example:artifact-set:duplicate",
   "kind": "artifact_set",
   "members": [
-    {
-      "artifact": {
-        "digest": {
-          "algorithm": "sha256",
-          "value": "2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"
-        },
-        "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-      },
-      "name": "release.json",
-      "required": true
-    },
-    {
-      "artifact": {
-        "digest": {
-          "algorithm": "sha256",
-          "value": "2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"
-        },
-        "id": "urn:sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-      },
-      "name": "release.json",
-      "required": true
-    }
-  ],
-  "oclp_version": "0.1.0-draft"
+    {"name": "model", "artifact": {"id": "urn:example:artifact:model", "digest": {"algorithm": "sha256", "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}},
+    {"name": "model", "artifact": {"id": "urn:example:artifact:metrics", "digest": {"algorithm": "sha256", "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}}}
+  ]
 }

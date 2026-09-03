@@ -1,0 +1,32 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:computation:uppercase",
+  "name": "Uppercase document",
+  "profiles": null,
+  "annotations": {},
+  "kind": "computation",
+  "implementation": {
+    "kind": "other",
+    "locator": "example:uppercase"
+  },
+  "input_ports": [
+    {
+      "name": "source",
+      "cardinality": "one",
+      "required": true,
+      "media_types": [
+        "text/plain"
+      ]
+    }
+  ],
+  "output_ports": [
+    {
+      "name": "result",
+      "cardinality": "one",
+      "required": true,
+      "media_types": [
+        "text/plain"
+      ]
+    }
+  ]
+}

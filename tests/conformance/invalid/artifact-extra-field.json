@@ -1,12 +1,22 @@
 {
-  "oclp_version": "0.1.0-draft",
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:artifact:source-document",
+  "name": "Source document",
+  "profiles": null,
+  "annotations": {
+    "example.org/source": "fixture"
+  },
   "kind": "artifact",
-  "id": "artifact.invalid",
-  "media_type": "application/octet-stream",
+  "media_type": "text/plain",
   "digest": {
     "algorithm": "sha256",
     "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
-  "size": 12,
-  "unexpected": true
+  "size": 5,
+  "created_at": null,
+  "locations": [
+    "https://example.org/input.txt"
+  ],
+  "schema_uri": null,
+  "extra": true
 }

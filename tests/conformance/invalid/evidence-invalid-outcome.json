@@ -1,14 +1,15 @@
 {
-  "oclp_version": "0.1.0-draft",
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:evidence:bad-outcome",
+  "profiles": null,
+  "annotations": {},
   "kind": "evidence",
-  "id": "evidence.invalid-outcome",
-  "subject": {
-    "id": "subject.example"
-  },
-  "contract": {
-    "id": "contract.example",
-    "version": "1"
+  "subject": {"id": "urn:example:artifact:source"},
+  "evaluator": {
+    "kind": "other",
+    "locator": "example:quality-evidence",
+    "source": {"kind": "opaque", "reason": "invalid fixture"}
   },
   "outcome": "warning",
-  "observed_at": "2026-08-19T20:00:00Z"
+  "observed_at": "2026-08-30T12:00:00Z"
 }

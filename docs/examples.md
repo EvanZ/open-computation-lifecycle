@@ -1,237 +1,98 @@
 # Examples
 
-OCLP is not specific to basketball, machine learning, or software delivery. The
-repository includes four small, independently valid records that illustrate
-common uses:
+OCLP is not specific to basketball, machine learning, or software delivery.
+These small records use ordinary industry scenarios and are independently valid
+against the 0.2 Core schema.
 
 | Scenario | File | Core concept |
 | --- | --- | --- |
 | Document transformation | [`document-transformation-artifact.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/document-transformation-artifact.json) | Immutable source bytes and retrieval hints. |
-| Model inference | [`model-inference-invocation.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/model-inference-invocation.json) | Exact model/data bindings and inference parameters. |
-| Software build | [`software-build-definition.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/software-build-definition.json) | A command implementation with typed input and output ports. |
-| Data quality | [`data-quality-evidence.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/data-quality-evidence.json) | A named contract evaluated against a dataset artifact. |
-| Inference failure | [`model-inference-failed-event.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/model-inference-failed-event.json) | A terminal execution state and portable diagnostic. |
+| Model inference | [`model-inference-execution.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/model-inference-execution.json) | A concrete run with exact model/data inputs and score output. |
+| Software build | [`software-build-computation.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/software-build-computation.json) | A reusable build implementation with typed ports and a Git source basis. |
+| Data quality | [`data-quality-evidence.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/data-quality-evidence.json) | A source-bound evaluator result about a dataset artifact. |
+| Inference failure | [`model-inference-failed-event.json`](https://github.com/EvanZ/open-computation-lifecycle/blob/main/examples/model-inference-failed-event.json) | A terminal execution observation with a portable diagnostic. |
 
-Validate an example locally:
+## Artifact: a retrievable immutable value
 
-```bash
-uv run oclp validate examples/document-transformation-artifact.json
-```
-
-## Document transformation
-
-An Artifact identifies immutable source bytes. Its location is only a retrieval
-hint; the SHA-256 digest is the content identity.
+An Artifact describes immutable bytes. Its digest identifies content; locations
+are replaceable retrieval hints. `created_at` is optional and means the
+producer knows when it created that immutable materialization—not the age of a
+source file or an upload timestamp.
 
 ```json
 {
-  "oclp_version": "0.1.0-draft",
   "kind": "artifact",
   "id": "urn:example:artifact:employee-handbook",
-  "annotations": {
-    "example.org/role": "source-document"
-  },
-  "media_type": "text/plain",
-  "digest": {
-    "algorithm": "sha256",
-    "value": "6dfad2b52801af0f3b1d6d6a5169d678b6b9606f8d510d2cd7ca0a82f5f47e31"
-  },
-  "size": 348,
-  "locations": [
-    "https://storage.example.org/documents/handbook-v3.txt"
-  ]
+  "digest": {"algorithm": "sha256", "value": "6dfad2b5…f5f47e31"},
+  "locations": ["https://storage.example.org/documents/handbook-v3.txt"]
 }
 ```
 
-## Model inference
+## Computation: reusable declared work
 
-An Invocation binds a model and transaction batch to the exact parameters and
-outputs requested for an inference run.
-
-```json
-{
-  "oclp_version": "0.1.0-draft",
-  "kind": "invocation",
-  "id": "urn:example:invocation:fraud-score-batch-2026-08-19",
-  "annotations": {
-    "example.org/purpose": "batch-inference"
-  },
-  "definition": {
-    "id": "urn:example:definition:fraud-score-v4"
-  },
-  "parameters": {
-    "decision_threshold": 0.82,
-    "explanation": true
-  },
-  "inputs": {
-    "transactions": [
-      {
-        "id": "urn:example:artifact:transactions"
-      }
-    ],
-    "model": [
-      {
-        "id": "urn:example:artifact:risk-model"
-      }
-    ]
-  },
-  "requested_outputs": [
-    "scores",
-    "explanations"
-  ]
-}
-```
-
-## Software build
-
-A Definition describes an executable build implementation and its typed ports,
-including the reviewed Git revision that supplies the build context, without
-selecting a scheduler or build service.
+A Computation names the reusable work and binds it to a source basis. It has no
+run-specific data. The build example uses a command locator and an exact Git
+revision. It can also declare the exact Evidence evaluator a successful build must satisfy:
 
 ```json
 {
-  "oclp_version": "0.1.0-draft",
-  "kind": "definition",
-  "id": "urn:example:definition:service-container-build",
-  "annotations": {
-    "example.org/purpose": "software-build"
-  },
+  "kind": "computation",
+  "id": "urn:example:computation:service-container-build",
   "implementation": {
     "kind": "command",
-    "locator": "buildctl build --frontend dockerfile.v0",
-    "source": {
-      "kind": "git",
-      "repository": "https://github.com/example/service.git",
-      "commit": "0123456789abcdef0123456789abcdef01234567",
-      "path": "."
-    },
-    "digest": {
-      "algorithm": "sha256",
-      "value": "87b6c72b5098c78187360864246f421850073e95f934ce17873b4f080d30bb28"
-    }
+    "locator": "docker buildx build --file service/Dockerfile",
+    "source": {"kind": "git", "repository": "…/service.git", "commit": "012345…4567"}
   },
-  "input_ports": [
+  "required_evidence": [
     {
-      "name": "source",
-      "cardinality": "one",
-      "required": true,
-      "media_types": [
-        "application/vnd.git.bundle"
-      ]
-    },
-    {
-      "name": "lockfile",
-      "cardinality": "one",
-      "required": true,
-      "media_types": [
-        "application/json"
-      ]
-    }
-  ],
-  "output_ports": [
-    {
-      "name": "container-image",
-      "cardinality": "one",
-      "required": true,
-      "media_types": [
-        "application/vnd.oci.image.manifest.v1+json"
-      ]
+      "kind": "command",
+      "locator": "scripts/container-smoke-test",
+      "source": {"kind": "git", "repository": "…/service.git", "commit": "012345…4567"}
     }
   ]
 }
 ```
 
-## Data quality
+## Execution: one actual run
 
-Evidence records a named contract result against an immutable dataset Artifact.
+An Execution binds one Computation to concrete parameters, inputs, and outputs.
+It is the data-DAG boundary: Artifact or ArtifactSet → Execution → Artifact or
+ArtifactSet. A retry is another Execution; OCLP does not introduce a second
+Attempt identity beneath it.
 
 ```json
 {
-  "oclp_version": "0.1.0-draft",
-  "kind": "evidence",
-  "id": "urn:example:evidence:customer-export-null-check",
-  "annotations": {
-    "example.org/purpose": "data-quality"
-  },
-  "subject": {
-    "id": "urn:example:artifact:customer-export"
-  },
-  "contract": {
-    "id": "urn:example:contract:required-customer-identifiers",
-    "version": "2"
-  },
-  "outcome": "pass",
-  "observed_at": "2026-08-19T20:00:00Z",
-  "details": {
-    "columns_checked": [
-      "customer_id",
-      "email"
-    ],
-    "null_rows": 0,
-    "rows_checked": 125000
-  }
+  "kind": "execution",
+  "id": "urn:example:execution:fraud-score-batch-2026-08-19",
+  "computation": {"id": "urn:example:computation:fraud-score-v4", "digest": {"algorithm": "sha256", "value": "111111…1111"}},
+  "inputs": {"model": [{"id": "urn:example:artifact-set:fraud-model-v4"}]},
+  "outputs": {"scores": [{"id": "urn:example:artifact:fraud-scores-2026-08-19"}]}
 }
 ```
 
-## Inference failure
+## Evidence and Events: assertions and chronology
 
-An invocation's execution state is recorded by its terminal Event, rather than
-by an audit Evidence record. `status` is deliberately small and portable;
-`diagnostic` provides a code, concise message, and stage that a generic
-consumer can display. A producer can reference a separate Artifact when a log
-or structured report is needed.
+Evidence records the result of one exact evaluator about an Artifact, Execution,
+or another record. An Event observes one Execution. The optional lifecycle profile
+standardizes an `execution-started` Event followed by an optional
+`execution-terminal` Event with its status. An application may also publish
+its own event types and data.
+
+When a Computation declares `required_evidence`, a terminal Event may claim
+`"succeeded"` only after matching Evidence content-binds that exact Execution,
+names each required evaluator, and has `outcome: "pass"`. This distinguishes “the
+runtime completed” from “the declared quality or release gate passed.”
 
 ```json
 {
-  "oclp_version": "0.1.0-draft",
   "kind": "event",
-  "id": "urn:example:event:fraud-score-batch-2026-08-19:terminal",
-  "invocation": {
-    "id": "urn:example:invocation:fraud-score-batch-2026-08-19"
-  },
-  "event_type": "invocation-failed",
-  "occurred_at": "2026-08-19T20:03:17Z",
-  "sequence": 4,
-  "attempt_id": "fraud-score-2026-08-19-01",
+  "event_type": "execution-terminal",
+  "execution": {"id": "urn:example:execution:fraud-score-batch-2026-08-19"},
   "status": "failed",
-  "diagnostic": {
-    "code": "model-endpoint-unavailable",
-    "message": "The selected model endpoint did not become ready before the deadline.",
-    "stage": "invoke"
-  }
+  "diagnostic": {"code": "model-endpoint-unavailable", "stage": "invoke"}
 }
 ```
 
-Examples deliberately focus on one record kind. For a complete, connected
-lineage across the core record kinds, see the
+Examples deliberately focus on one record kind. For a complete connected
+lineage and executable canonicalization tests, see the
 [cross-language conformance](protocol/conformance.md) fixtures.
-
-## Release package
-
-An ArtifactSet expresses a release package without prescribing whether its
-members are stored in a directory, an archive, or an object-store prefix. Each
-member name is unique, and the Artifact reference is content-bound with its
-record digest.
-
-```json
-{
-  "oclp_version": "0.1.0-draft",
-  "kind": "artifact_set",
-  "id": "urn:example:artifact-set:release",
-  "annotations": {"example.org/purpose": "release-package"},
-  "members": [
-    {
-      "name": "source-document",
-      "artifact": {
-        "id": "urn:example:artifact:source-document",
-        "digest": {
-          "algorithm": "sha256",
-          "value": "2c7a438a16eee01e8403cefea2644319e37237039504ae8b2fada4424097cd3d"
-        }
-      },
-      "role": "source-document",
-      "required": true
-    }
-  ]
-}
-```

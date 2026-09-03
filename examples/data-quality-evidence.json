@@ -1,5 +1,5 @@
 {
-  "oclp_version": "0.1.0-draft",
+  "oclp_version": "0.2.0-draft",
   "kind": "evidence",
   "id": "urn:example:evidence:customer-export-null-check",
   "annotations": {
@@ -8,9 +8,15 @@
   "subject": {
     "id": "urn:example:artifact:customer-export"
   },
-  "contract": {
-    "id": "urn:example:contract:required-customer-identifiers",
-    "version": "2"
+  "evaluator": {
+    "kind": "command",
+    "locator": "checks/required-customer-identifiers",
+    "source": {
+      "kind": "git",
+      "repository": "https://github.com/example/customer-quality.git",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "path": "checks"
+    }
   },
   "outcome": "pass",
   "observed_at": "2026-08-19T20:00:00Z",

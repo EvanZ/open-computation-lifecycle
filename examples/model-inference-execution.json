@@ -1,0 +1,21 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:execution:fraud-score-batch-2026-08-19",
+  "name": "Score fraud batch — 2026-08-19",
+  "profiles": null,
+  "annotations": {},
+  "kind": "execution",
+  "computation": {
+    "id": "urn:example:computation:fraud-score-v4",
+    "digest": {"algorithm": "sha256", "value": "1111111111111111111111111111111111111111111111111111111111111111"}
+  },
+  "parameters": {"threshold": 0.82},
+  "inputs": {
+    "model": [{"id": "urn:example:artifact-set:fraud-model-v4", "digest": {"algorithm": "sha256", "value": "2222222222222222222222222222222222222222222222222222222222222222"}}],
+    "transactions": [{"id": "urn:example:artifact:transactions-2026-08-19", "digest": {"algorithm": "sha256", "value": "3333333333333333333333333333333333333333333333333333333333333333"}}]
+  },
+  "outputs": {
+    "scores": [{"id": "urn:example:artifact:fraud-scores-2026-08-19", "digest": {"algorithm": "sha256", "value": "4444444444444444444444444444444444444444444444444444444444444444"}}]
+  },
+  "requested_outputs": ["scores"]
+}

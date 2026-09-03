@@ -1,6 +1,6 @@
 [project]
 name = "open-computation-lifecycle-spec"
-version = "0.1.0a0"
+version = "0.2.0a0"
 description = "Canonical specification and conformance suite for OCLP"
 readme = "README.md"
 requires-python = ">=3.11"

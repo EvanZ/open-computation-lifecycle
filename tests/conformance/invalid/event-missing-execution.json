@@ -1,0 +1,15 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:event:uppercase-hello:terminal",
+  "name": null,
+  "profiles": null,
+  "annotations": {},
+  "kind": "event",
+  "event_type": "execution-terminal",
+  "occurred_at": "2026-08-30T12:00:03Z",
+  "sequence": 1,
+  "runtime": null,
+  "status": "succeeded",
+  "diagnostic": null,
+  "data": {}
+}

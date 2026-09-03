@@ -1,0 +1,39 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:computation:uppercase",
+  "name": "Uppercase document",
+  "profiles": null,
+  "annotations": {},
+  "kind": "computation",
+  "implementation": {
+    "kind": "other",
+    "locator": "example:uppercase",
+    "digest": null,
+    "artifact": null,
+    "source": {
+      "kind": "git",
+      "repository": "https://github.com/example/uppercase.git",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "path": "src/example",
+      "overlay": null
+    }
+  },
+  "input_ports": [
+    {
+      "name": "source"
+    },
+    {
+      "name": "source"
+    }
+  ],
+  "output_ports": [
+    {
+      "name": "result",
+      "cardinality": "one",
+      "required": true,
+      "media_types": [
+        "text/plain"
+      ]
+    }
+  ]
+}

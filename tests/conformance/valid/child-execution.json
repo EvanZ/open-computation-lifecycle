@@ -1,0 +1,22 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:execution:uppercase-hello-child",
+  "annotations": {},
+  "kind": "execution",
+  "computation": {
+    "id": "urn:example:computation:uppercase",
+    "digest": {
+      "algorithm": "sha256",
+        "value": "a8fb1076ef993faa19a814c86d47795b2e075edbd5c53ec3905bf88b87c2b50d"
+    }
+  },
+  "parent_execution": {
+    "id": "urn:example:execution:uppercase-hello"
+  },
+  "parameters": {
+    "chunk": 1
+  },
+  "inputs": {},
+  "requested_outputs": [],
+  "profiles": null
+}

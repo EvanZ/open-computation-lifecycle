@@ -1,11 +1,10 @@
 {
-  "oclp_version": "0.1.0-draft",
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:artifact:bad-digest",
+  "profiles": null,
+  "annotations": {},
   "kind": "artifact",
-  "id": "artifact.invalid-digest",
-  "media_type": "application/octet-stream",
-  "digest": {
-    "algorithm": "sha256",
-    "value": "not-a-sha256-digest"
-  },
-  "size": 12
+  "media_type": "text/plain",
+  "digest": {"algorithm": "sha256", "value": "not-a-sha256"},
+  "size": 1
 }

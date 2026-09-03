@@ -49,8 +49,8 @@
       "type": "object"
     }
   },
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
+  "description": "One concrete run of a Computation with immutable I/O bindings.",
   "properties": {
     "annotations": {
       "additionalProperties": {
@@ -59,7 +59,7 @@
       "title": "Annotations",
       "type": "object"
     },
-    "definition": {
+    "computation": {
       "$ref": "#/$defs/RecordReference"
     },
     "id": {
@@ -78,8 +78,8 @@
       "type": "object"
     },
     "kind": {
-      "const": "invocation",
-      "default": "invocation",
+      "const": "execution",
+      "default": "execution",
       "title": "Kind",
       "type": "string"
     },
@@ -97,8 +97,8 @@
       "title": "Name"
     },
     "oclp_version": {
-      "const": "0.1.0-draft",
-      "default": "0.1.0-draft",
+      "const": "0.2.0-draft",
+      "default": "0.2.0-draft",
       "title": "Oclp Version",
       "type": "string"
     },
@@ -127,7 +127,7 @@
       "title": "Parameters",
       "type": "object"
     },
-    "parent_invocation": {
+    "parent_execution": {
       "anyOf": [
         {
           "$ref": "#/$defs/RecordReference"
@@ -168,8 +168,8 @@
   },
   "required": [
     "id",
-    "definition"
+    "computation"
   ],
-  "title": "Invocation",
+  "title": "Execution",
   "type": "object"
 }

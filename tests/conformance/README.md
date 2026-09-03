@@ -1,4 +1,4 @@
-# OCLP draft-0.1 conformance vectors
+# OCLP draft-0.2 conformance vectors
 
 This directory is the language-neutral executable contract for the OCLP draft.
 It is intentionally made of JSON fixtures and expected strings rather than
@@ -10,7 +10,9 @@ Python objects.
   SHA-256 record digests, invalid records, and a complete lineage fixture.
 - `valid/` contains one record for each core kind.
 - `invalid/` contains records that must be rejected. Some constraints, such as
-  unique Definition port names, are semantic rules in addition to JSON Schema.
+  unique Computation port and parameter names, parameter-to-port separation,
+  and unique required-Evidence evaluator bindings, are semantic rules in addition to
+  JSON Schema.
 
 The expected digest is the SHA-256 hash of the UTF-8 canonical JSON string,
 prefixed with `sha256:`. The trailing newline used by a file transport is not

@@ -1,41 +1,9 @@
 {
   "$defs": {
-    "ContractReference": {
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "minLength": 1,
-          "title": "Id",
-          "type": "string"
-        },
-        "version": {
-          "minLength": 1,
-          "title": "Version",
-          "type": "string"
-        }
-      },
-      "required": [
-        "id",
-        "version"
-      ],
-      "title": "ContractReference",
-      "type": "object"
-    },
     "Diagnostic": {
       "additionalProperties": false,
       "description": "A compact, portable explanation attached to an Event or Evidence record.",
       "properties": {
-        "artifact": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/RecordReference"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
-        },
         "code": {
           "anyOf": [
             {
@@ -74,6 +42,17 @@
           ],
           "default": null,
           "title": "Stage"
+        },
+        "artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "title": "Diagnostic",
@@ -104,6 +83,11 @@
     "RecordReference": {
       "additionalProperties": false,
       "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
         "digest": {
           "anyOf": [
             {
@@ -114,11 +98,6 @@
             }
           ],
           "default": null
-        },
-        "id": {
-          "minLength": 1,
-          "title": "Id",
-          "type": "string"
         }
       },
       "required": [
@@ -128,46 +107,17 @@
       "type": "object"
     }
   },
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
-    "annotations": {
-      "additionalProperties": {
-        "$ref": "#/$defs/JsonValue"
-      },
-      "title": "Annotations",
-      "type": "object"
-    },
-    "contract": {
-      "$ref": "#/$defs/ContractReference"
-    },
-    "details": {
-      "additionalProperties": {
-        "$ref": "#/$defs/JsonValue"
-      },
-      "title": "Details",
-      "type": "object"
-    },
-    "diagnostic": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/Diagnostic"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null
+    "oclp_version": {
+      "const": "0.2.0-draft",
+      "default": "0.2.0-draft",
+      "title": "Oclp Version",
+      "type": "string"
     },
     "id": {
       "minLength": 1,
       "title": "Id",
-      "type": "string"
-    },
-    "kind": {
-      "const": "evidence",
-      "default": "evidence",
-      "title": "Kind",
       "type": "string"
     },
     "name": {
@@ -182,26 +132,6 @@
       ],
       "default": null,
       "title": "Name"
-    },
-    "observed_at": {
-      "format": "date-time",
-      "title": "Observed At",
-      "type": "string"
-    },
-    "oclp_version": {
-      "const": "0.1.0-draft",
-      "default": "0.1.0-draft",
-      "title": "Oclp Version",
-      "type": "string"
-    },
-    "outcome": {
-      "enum": [
-        "pass",
-        "fail",
-        "error"
-      ],
-      "title": "Outcome",
-      "type": "string"
     },
     "profiles": {
       "anyOf": [
@@ -222,14 +152,62 @@
       "default": null,
       "title": "Profiles"
     },
+    "annotations": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Annotations",
+      "type": "object"
+    },
+    "kind": {
+      "const": "evidence",
+      "default": "evidence",
+      "title": "Kind",
+      "type": "string"
+    },
     "subject": {
       "$ref": "#/$defs/RecordReference"
+    },
+    "evaluator": {
+      "$ref": "#/$defs/Implementation"
+    },
+    "outcome": {
+      "enum": [
+        "pass",
+        "fail",
+        "error"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "diagnostic": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Diagnostic"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "details": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Details",
+      "type": "object"
     }
   },
   "required": [
     "id",
     "subject",
-    "contract",
+    "evaluator",
     "outcome",
     "observed_at"
   ],

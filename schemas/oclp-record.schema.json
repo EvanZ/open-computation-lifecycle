@@ -3,38 +3,15 @@
     "Artifact": {
       "additionalProperties": false,
       "properties": {
-        "annotations": {
-          "additionalProperties": {
-            "$ref": "#/$defs/JsonValue"
-          },
-          "title": "Annotations",
-          "type": "object"
-        },
-        "digest": {
-          "$ref": "#/$defs/Digest"
+        "oclp_version": {
+          "const": "0.2.0-draft",
+          "default": "0.2.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
         },
         "id": {
           "minLength": 1,
           "title": "Id",
-          "type": "string"
-        },
-        "kind": {
-          "const": "artifact",
-          "default": "artifact",
-          "title": "Kind",
-          "type": "string"
-        },
-        "locations": {
-          "default": [],
-          "items": {
-            "type": "string"
-          },
-          "title": "Locations",
-          "type": "array"
-        },
-        "media_type": {
-          "minLength": 1,
-          "title": "Media Type",
           "type": "string"
         },
         "name": {
@@ -49,12 +26,6 @@
           ],
           "default": null,
           "title": "Name"
-        },
-        "oclp_version": {
-          "const": "0.1.0-draft",
-          "default": "0.1.0-draft",
-          "title": "Oclp Version",
-          "type": "string"
         },
         "profiles": {
           "anyOf": [
@@ -75,6 +46,53 @@
           "default": null,
           "title": "Profiles"
         },
+        "annotations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Annotations",
+          "type": "object"
+        },
+        "kind": {
+          "const": "artifact",
+          "default": "artifact",
+          "title": "Kind",
+          "type": "string"
+        },
+        "media_type": {
+          "minLength": 1,
+          "title": "Media Type",
+          "type": "string"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "size": {
+          "minimum": 0,
+          "title": "Size",
+          "type": "integer"
+        },
+        "created_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created At"
+        },
+        "locations": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Locations",
+          "type": "array"
+        },
         "schema_uri": {
           "anyOf": [
             {
@@ -86,11 +104,6 @@
           ],
           "default": null,
           "title": "Schema Uri"
-        },
-        "size": {
-          "minimum": 0,
-          "title": "Size",
-          "type": "integer"
         }
       },
       "required": [
@@ -106,17 +119,55 @@
       "additionalProperties": false,
       "description": "An immutable, named collection of exact Artifact references.",
       "properties": {
+        "oclp_version": {
+          "const": "0.2.0-draft",
+          "default": "0.2.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "profiles": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/JsonValue"
+                },
+                "type": "object"
+              },
+              "minProperties": 1,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Profiles"
+        },
         "annotations": {
           "additionalProperties": {
             "$ref": "#/$defs/JsonValue"
           },
           "title": "Annotations",
           "type": "object"
-        },
-        "id": {
-          "minLength": 1,
-          "title": "Id",
-          "type": "string"
         },
         "kind": {
           "const": "artifact_set",
@@ -132,10 +183,10 @@
           "title": "Members",
           "type": "array"
         },
-        "name": {
+        "created_at": {
           "anyOf": [
             {
-              "minLength": 1,
+              "format": "date-time",
               "type": "string"
             },
             {
@@ -143,32 +194,7 @@
             }
           ],
           "default": null,
-          "title": "Name"
-        },
-        "oclp_version": {
-          "const": "0.1.0-draft",
-          "default": "0.1.0-draft",
-          "title": "Oclp Version",
-          "type": "string"
-        },
-        "profiles": {
-          "anyOf": [
-            {
-              "additionalProperties": {
-                "additionalProperties": {
-                  "$ref": "#/$defs/JsonValue"
-                },
-                "type": "object"
-              },
-              "minProperties": 1,
-              "type": "object"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Profiles"
+          "title": "Created At"
         }
       },
       "required": [
@@ -182,18 +208,13 @@
       "additionalProperties": false,
       "description": "One immutable Artifact assigned a stable name and semantic role.",
       "properties": {
-        "artifact": {
-          "$ref": "#/$defs/RecordReference"
-        },
         "name": {
           "minLength": 1,
           "title": "Name",
           "type": "string"
         },
-        "required": {
-          "default": true,
-          "title": "Required",
-          "type": "boolean"
+        "artifact": {
+          "$ref": "#/$defs/RecordReference"
         },
         "role": {
           "anyOf": [
@@ -207,6 +228,11 @@
           ],
           "default": null,
           "title": "Role"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
         }
       },
       "required": [
@@ -220,14 +246,14 @@
       "additionalProperties": false,
       "description": "An immutable Artifact selected as an implementation's source basis.",
       "properties": {
-        "artifact": {
-          "$ref": "#/$defs/RecordReference"
-        },
         "kind": {
           "const": "artifact",
           "default": "artifact",
           "title": "Kind",
           "type": "string"
+        },
+        "artifact": {
+          "$ref": "#/$defs/RecordReference"
         }
       },
       "required": [
@@ -236,36 +262,19 @@
       "title": "ArtifactSource",
       "type": "object"
     },
-    "ComputationDefinition": {
+    "Computation": {
       "additionalProperties": false,
+      "description": "A reusable, source-bound computation interface and implementation.",
       "properties": {
-        "annotations": {
-          "additionalProperties": {
-            "$ref": "#/$defs/JsonValue"
-          },
-          "title": "Annotations",
-          "type": "object"
+        "oclp_version": {
+          "const": "0.2.0-draft",
+          "default": "0.2.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
         },
         "id": {
           "minLength": 1,
           "title": "Id",
-          "type": "string"
-        },
-        "implementation": {
-          "$ref": "#/$defs/Implementation"
-        },
-        "input_ports": {
-          "default": [],
-          "items": {
-            "$ref": "#/$defs/PortDefinition"
-          },
-          "title": "Input Ports",
-          "type": "array"
-        },
-        "kind": {
-          "const": "definition",
-          "default": "definition",
-          "title": "Kind",
           "type": "string"
         },
         "name": {
@@ -280,20 +289,6 @@
           ],
           "default": null,
           "title": "Name"
-        },
-        "oclp_version": {
-          "const": "0.1.0-draft",
-          "default": "0.1.0-draft",
-          "title": "Oclp Version",
-          "type": "string"
-        },
-        "output_ports": {
-          "default": [],
-          "items": {
-            "$ref": "#/$defs/PortDefinition"
-          },
-          "title": "Output Ports",
-          "type": "array"
         },
         "profiles": {
           "anyOf": [
@@ -313,51 +308,76 @@
           ],
           "default": null,
           "title": "Profiles"
+        },
+        "annotations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Annotations",
+          "type": "object"
+        },
+        "kind": {
+          "const": "computation",
+          "default": "computation",
+          "title": "Kind",
+          "type": "string"
+        },
+        "implementation": {
+          "$ref": "#/$defs/Implementation"
+        },
+        "input_ports": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/PortDefinition"
+          },
+          "title": "Input Ports",
+          "type": "array"
+        },
+        "output_ports": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/PortDefinition"
+          },
+          "title": "Output Ports",
+          "type": "array"
+        },
+        "parameter_definitions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ParameterDefinition"
+          },
+          "title": "Parameter Definitions",
+          "type": "array"
+        },
+        "required_evidence": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Implementation"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Required Evidence"
         }
       },
       "required": [
         "id",
         "implementation"
       ],
-      "title": "ComputationDefinition",
-      "type": "object"
-    },
-    "ContractReference": {
-      "additionalProperties": false,
-      "properties": {
-        "id": {
-          "minLength": 1,
-          "title": "Id",
-          "type": "string"
-        },
-        "version": {
-          "minLength": 1,
-          "title": "Version",
-          "type": "string"
-        }
-      },
-      "required": [
-        "id",
-        "version"
-      ],
-      "title": "ContractReference",
+      "title": "Computation",
       "type": "object"
     },
     "Diagnostic": {
       "additionalProperties": false,
       "description": "A compact, portable explanation attached to an Event or Evidence record.",
       "properties": {
-        "artifact": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/RecordReference"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
-        },
         "code": {
           "anyOf": [
             {
@@ -396,6 +416,17 @@
           ],
           "default": null,
           "title": "Stage"
+        },
+        "artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "title": "Diagnostic",
@@ -425,43 +456,15 @@
     "Evidence": {
       "additionalProperties": false,
       "properties": {
-        "annotations": {
-          "additionalProperties": {
-            "$ref": "#/$defs/JsonValue"
-          },
-          "title": "Annotations",
-          "type": "object"
-        },
-        "contract": {
-          "$ref": "#/$defs/ContractReference"
-        },
-        "details": {
-          "additionalProperties": {
-            "$ref": "#/$defs/JsonValue"
-          },
-          "title": "Details",
-          "type": "object"
-        },
-        "diagnostic": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Diagnostic"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
+        "oclp_version": {
+          "const": "0.2.0-draft",
+          "default": "0.2.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
         },
         "id": {
           "minLength": 1,
           "title": "Id",
-          "type": "string"
-        },
-        "kind": {
-          "const": "evidence",
-          "default": "evidence",
-          "title": "Kind",
           "type": "string"
         },
         "name": {
@@ -476,26 +479,6 @@
           ],
           "default": null,
           "title": "Name"
-        },
-        "observed_at": {
-          "format": "date-time",
-          "title": "Observed At",
-          "type": "string"
-        },
-        "oclp_version": {
-          "const": "0.1.0-draft",
-          "default": "0.1.0-draft",
-          "title": "Oclp Version",
-          "type": "string"
-        },
-        "outcome": {
-          "enum": [
-            "pass",
-            "fail",
-            "error"
-          ],
-          "title": "Outcome",
-          "type": "string"
         },
         "profiles": {
           "anyOf": [
@@ -516,23 +499,196 @@
           "default": null,
           "title": "Profiles"
         },
+        "annotations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Annotations",
+          "type": "object"
+        },
+        "kind": {
+          "const": "evidence",
+          "default": "evidence",
+          "title": "Kind",
+          "type": "string"
+        },
         "subject": {
           "$ref": "#/$defs/RecordReference"
+        },
+        "evaluator": {
+          "$ref": "#/$defs/Implementation"
+        },
+        "outcome": {
+          "enum": [
+            "pass",
+            "fail",
+            "error"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "diagnostic": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Diagnostic"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "details": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Details",
+          "type": "object"
         }
       },
       "required": [
         "id",
         "subject",
-        "contract",
+        "evaluator",
         "outcome",
         "observed_at"
       ],
       "title": "Evidence",
       "type": "object"
     },
+    "Execution": {
+      "additionalProperties": false,
+      "description": "One concrete run of a Computation with immutable I/O bindings.",
+      "properties": {
+        "oclp_version": {
+          "const": "0.2.0-draft",
+          "default": "0.2.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "profiles": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "additionalProperties": {
+                  "$ref": "#/$defs/JsonValue"
+                },
+                "type": "object"
+              },
+              "minProperties": 1,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Profiles"
+        },
+        "annotations": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Annotations",
+          "type": "object"
+        },
+        "kind": {
+          "const": "execution",
+          "default": "execution",
+          "title": "Kind",
+          "type": "string"
+        },
+        "computation": {
+          "$ref": "#/$defs/RecordReference"
+        },
+        "parent_execution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "parameters": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "inputs": {
+          "additionalProperties": {
+            "items": {
+              "$ref": "#/$defs/RecordReference"
+            },
+            "type": "array"
+          },
+          "title": "Inputs",
+          "type": "object"
+        },
+        "outputs": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "items": {
+                  "$ref": "#/$defs/RecordReference"
+                },
+                "type": "array"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Outputs"
+        },
+        "requested_outputs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Requested Outputs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "computation"
+      ],
+      "title": "Execution",
+      "type": "object"
+    },
     "ExecutionContext": {
       "additionalProperties": false,
-      "description": "Execution-local context attached to a lifecycle observation.",
+      "description": "Execution-local runtime context attached to a lifecycle observation.",
       "properties": {
         "git_checkout": {
           "anyOf": [
@@ -551,18 +707,8 @@
     },
     "GitCheckout": {
       "additionalProperties": false,
-      "description": "The local Git worktree observed for one execution attempt.",
+      "description": "The local Git worktree observed for one Execution.",
       "properties": {
-        "commit": {
-          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$",
-          "title": "Commit",
-          "type": "string"
-        },
-        "dirty": {
-          "default": false,
-          "title": "Dirty",
-          "type": "boolean"
-        },
         "kind": {
           "const": "git",
           "default": "git",
@@ -573,6 +719,16 @@
           "minLength": 1,
           "title": "Worktree",
           "type": "string"
+        },
+        "commit": {
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$",
+          "title": "Commit",
+          "type": "string"
+        },
+        "dirty": {
+          "default": false,
+          "title": "Dirty",
+          "type": "boolean"
         }
       },
       "required": [
@@ -586,15 +742,26 @@
       "additionalProperties": false,
       "description": "An immutable Git source revision selected by an implementation.",
       "properties": {
+        "kind": {
+          "const": "git",
+          "default": "git",
+          "title": "Kind",
+          "type": "string"
+        },
+        "repository": {
+          "minLength": 1,
+          "title": "Repository",
+          "type": "string"
+        },
         "commit": {
           "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$",
           "title": "Commit",
           "type": "string"
         },
-        "kind": {
-          "const": "git",
-          "default": "git",
-          "title": "Kind",
+        "path": {
+          "default": ".",
+          "minLength": 1,
+          "title": "Path",
           "type": "string"
         },
         "overlay": {
@@ -607,17 +774,6 @@
             }
           ],
           "default": null
-        },
-        "path": {
-          "default": ".",
-          "minLength": 1,
-          "title": "Path",
-          "type": "string"
-        },
-        "repository": {
-          "minLength": 1,
-          "title": "Repository",
-          "type": "string"
         }
       },
       "required": [
@@ -630,28 +786,6 @@
     "Implementation": {
       "additionalProperties": false,
       "properties": {
-        "artifact": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/RecordReference"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
-        },
-        "digest": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Digest"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
-        },
         "kind": {
           "enum": [
             "python-callable",
@@ -666,6 +800,28 @@
           "minLength": 1,
           "title": "Locator",
           "type": "string"
+        },
+        "digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Digest"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecordReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "source": {
           "discriminator": {
@@ -702,38 +858,19 @@
       "title": "Implementation",
       "type": "object"
     },
-    "Invocation": {
+    "JsonValue": {},
+    "Event": {
       "additionalProperties": false,
       "properties": {
-        "annotations": {
-          "additionalProperties": {
-            "$ref": "#/$defs/JsonValue"
-          },
-          "title": "Annotations",
-          "type": "object"
-        },
-        "definition": {
-          "$ref": "#/$defs/RecordReference"
+        "oclp_version": {
+          "const": "0.2.0-draft",
+          "default": "0.2.0-draft",
+          "title": "Oclp Version",
+          "type": "string"
         },
         "id": {
           "minLength": 1,
           "title": "Id",
-          "type": "string"
-        },
-        "inputs": {
-          "additionalProperties": {
-            "items": {
-              "$ref": "#/$defs/RecordReference"
-            },
-            "type": "array"
-          },
-          "title": "Inputs",
-          "type": "object"
-        },
-        "kind": {
-          "const": "invocation",
-          "default": "invocation",
-          "title": "Kind",
           "type": "string"
         },
         "name": {
@@ -748,48 +885,6 @@
           ],
           "default": null,
           "title": "Name"
-        },
-        "oclp_version": {
-          "const": "0.1.0-draft",
-          "default": "0.1.0-draft",
-          "title": "Oclp Version",
-          "type": "string"
-        },
-        "outputs": {
-          "anyOf": [
-            {
-              "additionalProperties": {
-                "items": {
-                  "$ref": "#/$defs/RecordReference"
-                },
-                "type": "array"
-              },
-              "type": "object"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Outputs"
-        },
-        "parameters": {
-          "additionalProperties": {
-            "$ref": "#/$defs/JsonValue"
-          },
-          "title": "Parameters",
-          "type": "object"
-        },
-        "parent_invocation": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/RecordReference"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
         },
         "profiles": {
           "anyOf": [
@@ -810,26 +905,6 @@
           "default": null,
           "title": "Profiles"
         },
-        "requested_outputs": {
-          "default": [],
-          "items": {
-            "type": "string"
-          },
-          "title": "Requested Outputs",
-          "type": "array"
-        }
-      },
-      "required": [
-        "id",
-        "definition"
-      ],
-      "title": "Invocation",
-      "type": "object"
-    },
-    "JsonValue": {},
-    "LifecycleEvent": {
-      "additionalProperties": false,
-      "properties": {
         "annotations": {
           "additionalProperties": {
             "$ref": "#/$defs/JsonValue"
@@ -837,42 +912,31 @@
           "title": "Annotations",
           "type": "object"
         },
-        "attempt_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Attempt Id"
+        "kind": {
+          "const": "event",
+          "default": "event",
+          "title": "Kind",
+          "type": "string"
         },
-        "data": {
-          "additionalProperties": {
-            "$ref": "#/$defs/JsonValue"
-          },
-          "title": "Data",
-          "type": "object"
-        },
-        "diagnostic": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Diagnostic"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
+        "execution": {
+          "$ref": "#/$defs/RecordReference"
         },
         "event_type": {
           "minLength": 1,
           "title": "Event Type",
           "type": "string"
         },
-        "execution": {
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "runtime": {
           "anyOf": [
             {
               "$ref": "#/$defs/ExecutionContext"
@@ -882,68 +946,6 @@
             }
           ],
           "default": null
-        },
-        "id": {
-          "minLength": 1,
-          "title": "Id",
-          "type": "string"
-        },
-        "invocation": {
-          "$ref": "#/$defs/RecordReference"
-        },
-        "kind": {
-          "const": "event",
-          "default": "event",
-          "title": "Kind",
-          "type": "string"
-        },
-        "name": {
-          "anyOf": [
-            {
-              "minLength": 1,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Name"
-        },
-        "occurred_at": {
-          "format": "date-time",
-          "title": "Occurred At",
-          "type": "string"
-        },
-        "oclp_version": {
-          "const": "0.1.0-draft",
-          "default": "0.1.0-draft",
-          "title": "Oclp Version",
-          "type": "string"
-        },
-        "profiles": {
-          "anyOf": [
-            {
-              "additionalProperties": {
-                "additionalProperties": {
-                  "$ref": "#/$defs/JsonValue"
-                },
-                "type": "object"
-              },
-              "minProperties": 1,
-              "type": "object"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Profiles"
-        },
-        "sequence": {
-          "minimum": 0,
-          "title": "Sequence",
-          "type": "integer"
         },
         "status": {
           "anyOf": [
@@ -961,16 +963,34 @@
           ],
           "default": null,
           "title": "Status"
+        },
+        "diagnostic": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Diagnostic"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "data": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Data",
+          "type": "object"
         }
       },
       "required": [
         "id",
-        "invocation",
+        "execution",
         "event_type",
         "occurred_at",
         "sequence"
       ],
-      "title": "LifecycleEvent",
+      "title": "Event",
       "type": "object"
     },
     "OpaqueSource": {
@@ -998,6 +1018,11 @@
     "PortDefinition": {
       "additionalProperties": false,
       "properties": {
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
         "cardinality": {
           "default": "one",
           "enum": [
@@ -1007,6 +1032,11 @@
           "title": "Cardinality",
           "type": "string"
         },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        },
         "media_types": {
           "default": [],
           "items": {
@@ -1014,16 +1044,6 @@
           },
           "title": "Media Types",
           "type": "array"
-        },
-        "name": {
-          "minLength": 1,
-          "title": "Name",
-          "type": "string"
-        },
-        "required": {
-          "default": true,
-          "title": "Required",
-          "type": "boolean"
         }
       },
       "required": [
@@ -1032,9 +1052,40 @@
       "title": "PortDefinition",
       "type": "object"
     },
+    "ParameterDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "schema": {
+          "additionalProperties": true,
+          "title": "Schema",
+          "type": "object"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "schema"
+      ],
+      "title": "ParameterDefinition",
+      "type": "object"
+    },
     "RecordReference": {
       "additionalProperties": false,
       "properties": {
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
         "digest": {
           "anyOf": [
             {
@@ -1045,11 +1096,6 @@
             }
           ],
           "default": null
-        },
-        "id": {
-          "minLength": 1,
-          "title": "Id",
-          "type": "string"
         }
       },
       "required": [
@@ -1087,15 +1133,14 @@
       "type": "object"
     }
   },
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "discriminator": {
     "mapping": {
       "artifact": "#/$defs/Artifact",
       "artifact_set": "#/$defs/ArtifactSet",
-      "definition": "#/$defs/ComputationDefinition",
-      "event": "#/$defs/LifecycleEvent",
+      "computation": "#/$defs/Computation",
+      "event": "#/$defs/Event",
       "evidence": "#/$defs/Evidence",
-      "invocation": "#/$defs/Invocation"
+      "execution": "#/$defs/Execution"
     },
     "propertyName": "kind"
   },
@@ -1107,16 +1152,16 @@
       "$ref": "#/$defs/ArtifactSet"
     },
     {
-      "$ref": "#/$defs/ComputationDefinition"
+      "$ref": "#/$defs/Computation"
     },
     {
-      "$ref": "#/$defs/Invocation"
+      "$ref": "#/$defs/Execution"
     },
     {
       "$ref": "#/$defs/Evidence"
     },
     {
-      "$ref": "#/$defs/LifecycleEvent"
+      "$ref": "#/$defs/Event"
     }
   ]
 }

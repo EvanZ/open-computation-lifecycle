@@ -1,0 +1,67 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:computation:uppercase",
+  "name": "Uppercase document",
+  "annotations": {},
+  "kind": "computation",
+  "implementation": {
+    "kind": "other",
+    "locator": "example:uppercase",
+    "source": {
+      "kind": "git",
+      "repository": "https://github.com/example/uppercase.git",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "path": "src/example"
+    }
+  },
+  "input_ports": [
+    {
+      "name": "source",
+      "cardinality": "one",
+      "required": true,
+      "media_types": [
+        "text/plain"
+      ]
+    }
+  ],
+  "output_ports": [
+    {
+      "name": "result",
+      "cardinality": "one",
+      "required": true,
+      "media_types": [
+        "text/plain"
+      ]
+    }
+  ],
+  "parameter_definitions": [
+    {
+      "name": "locale",
+      "schema": {
+        "type": "string",
+        "default": "en-US"
+      },
+      "required": false
+    },
+    {
+      "name": "chunk",
+      "schema": {
+        "type": "integer"
+      },
+      "required": false
+    }
+  ],
+  "required_evidence": [
+    {
+      "kind": "other",
+      "locator": "example:uppercase-evidence",
+      "source": {
+        "kind": "git",
+        "repository": "https://github.com/example/uppercase.git",
+        "commit": "0123456789abcdef0123456789abcdef01234567",
+        "path": "src/example"
+      }
+    }
+  ],
+  "profiles": null
+}

@@ -1,0 +1,24 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:computation:duplicate-evidence",
+  "annotations": {},
+  "kind": "computation",
+  "implementation": {
+    "kind": "other",
+    "locator": "example:duplicate-evidence",
+    "source": {"kind": "opaque", "reason": "invalid fixture"}
+  },
+  "required_evidence": [
+    {
+      "kind": "other",
+      "locator": "example:quality-evidence",
+      "source": {"kind": "opaque", "reason": "invalid fixture"}
+    },
+    {
+      "kind": "other",
+      "locator": "example:quality-evidence",
+      "source": {"kind": "opaque", "reason": "invalid fixture"}
+    }
+  ],
+  "profiles": null
+}

@@ -1,6 +1,6 @@
 # Identity and lineage
 
-Artifact identity is based on immutable content: draft 0.1 uses a SHA-256
+Artifact identity is based on immutable content: draft 0.2 uses a SHA-256
 digest, media type, and byte size. Locations are retrieval hints only; they do
 not name the content.
 
@@ -13,18 +13,18 @@ digest for the same record.
 The default derivation view is an acyclic graph derived from immutable bindings:
 
 ```text
-Artifact or ArtifactSet -> Invocation input binding -> processed Artifact or ArtifactSet
-code Artifact -> Definition implementation binding
+Artifact or ArtifactSet -> Execution input binding -> processed Artifact or ArtifactSet
+code Artifact -> Computation implementation binding
 ArtifactSet  -> named, content-bound Artifact members
-Definition   -> Invocation definition binding
-Evidence     -> Invocation, Artifact, ArtifactSet, Definition, or Event
-Event        -> Invocation or attempt
+Computation  -> Execution computation binding
+Evidence     -> Execution, Artifact, ArtifactSet, Computation, or Event
+Event        -> Execution
 ```
 
-The `Artifact or ArtifactSet -> Invocation -> Artifact or ArtifactSet` path participates in
-DAG validation. Definition implementation bindings, ArtifactSet membership,
+The `Artifact or ArtifactSet -> Execution -> Artifact or ArtifactSet` path participates in
+DAG validation. Computation implementation bindings, ArtifactSet membership,
 Evidence, and Events are useful reference and audit overlays, but do not alter
-the computation order. An Invocation's `outputs` is the authoritative durable
+the computation order. An Execution's `outputs` is the authoritative durable
 publication binding; an Event may report that publication but does not replace
 it.
 

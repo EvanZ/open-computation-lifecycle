@@ -81,7 +81,7 @@
     },
     "ExecutionContext": {
       "additionalProperties": false,
-      "description": "Execution-local context attached to a lifecycle observation.",
+      "description": "Execution-local runtime context attached to a lifecycle observation.",
       "properties": {
         "git_checkout": {
           "anyOf": [
@@ -100,7 +100,7 @@
     },
     "GitCheckout": {
       "additionalProperties": false,
-      "description": "The local Git worktree observed for one execution attempt.",
+      "description": "The local Git worktree observed for one Execution.",
       "properties": {
         "commit": {
           "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$",
@@ -159,7 +159,6 @@
       "type": "object"
     }
   },
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
     "annotations": {
@@ -168,18 +167,6 @@
       },
       "title": "Annotations",
       "type": "object"
-    },
-    "attempt_id": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "title": "Attempt Id"
     },
     "data": {
       "additionalProperties": {
@@ -205,23 +192,12 @@
       "type": "string"
     },
     "execution": {
-      "anyOf": [
-        {
-          "$ref": "#/$defs/ExecutionContext"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null
+      "$ref": "#/$defs/RecordReference"
     },
     "id": {
       "minLength": 1,
       "title": "Id",
       "type": "string"
-    },
-    "invocation": {
-      "$ref": "#/$defs/RecordReference"
     },
     "kind": {
       "const": "event",
@@ -248,8 +224,8 @@
       "type": "string"
     },
     "oclp_version": {
-      "const": "0.1.0-draft",
-      "default": "0.1.0-draft",
+      "const": "0.2.0-draft",
+      "default": "0.2.0-draft",
       "title": "Oclp Version",
       "type": "string"
     },
@@ -271,6 +247,17 @@
       ],
       "default": null,
       "title": "Profiles"
+    },
+    "runtime": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExecutionContext"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "sequence": {
       "minimum": 0,
@@ -297,11 +284,11 @@
   },
   "required": [
     "id",
-    "invocation",
+    "execution",
     "event_type",
     "occurred_at",
     "sequence"
   ],
-  "title": "LifecycleEvent",
+  "title": "Event",
   "type": "object"
 }

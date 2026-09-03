@@ -1,0 +1,37 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:computation:service-container-build",
+  "name": "Build service container",
+  "profiles": null,
+  "annotations": {},
+  "kind": "computation",
+  "implementation": {
+    "kind": "command",
+    "locator": "docker buildx build --file service/Dockerfile",
+    "source": {
+      "kind": "git",
+      "repository": "https://github.com/example/service.git",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "path": "service"
+    }
+  },
+  "input_ports": [
+    {"name": "source", "media_types": ["application/x-tar"]},
+    {"name": "dependency-lock", "media_types": ["text/plain"]}
+  ],
+  "output_ports": [
+    {"name": "container-image", "media_types": ["application/vnd.oci.image.manifest.v1+json"]}
+  ],
+  "required_evidence": [
+    {
+      "kind": "command",
+      "locator": "scripts/container-smoke-test",
+      "source": {
+        "kind": "git",
+        "repository": "https://github.com/example/service.git",
+        "commit": "0123456789abcdef0123456789abcdef01234567",
+        "path": "service"
+      }
+    }
+  ]
+}

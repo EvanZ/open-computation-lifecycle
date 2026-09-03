@@ -1,0 +1,44 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:execution:uppercase-hello",
+  "name": "Uppercase hello",
+  "profiles": {
+    "lifecycle": {
+      "version": "0.2.0-draft"
+    }
+  },
+  "annotations": {},
+  "kind": "execution",
+  "computation": {
+    "id": "urn:example:computation:uppercase",
+    "digest": {
+      "algorithm": "sha256",
+      "value": "3508ef969c2208e717d32e8fb5aa1945a330f78eef84e4ac5476b371e508108b"
+    }
+  },
+  "parent_execution": null,
+  "parameters": {
+    "locale": "en-US"
+  },
+  "inputs": {
+    "source": [
+      {
+        "id": "urn:example:artifact:source-document",
+        "digest": {
+          "algorithm": "sha256",
+          "value": "ce5b501718fb5697cbba5d3d4eaf8536e2d98a01ec1ca6e0875c30098e7a8ff1"
+        }
+      }
+    ]
+  },
+  "outputs": {
+    "result": [
+      {
+        "id": "urn:example:artifact:result-document"
+      }
+    ]
+  },
+  "requested_outputs": [
+    "result"
+  ]
+}

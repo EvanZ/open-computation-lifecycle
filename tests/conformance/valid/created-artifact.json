@@ -1,0 +1,16 @@
+{
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:artifact:created-report",
+  "name": "Created report",
+  "annotations": {},
+  "kind": "artifact",
+  "media_type": "application/json",
+  "digest": {
+    "algorithm": "sha256",
+    "value": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "size": 17,
+  "created_at": "2026-08-30T12:00:00Z",
+  "locations": ["https://example.org/reports/created.json"],
+  "profiles": null
+}

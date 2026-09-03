@@ -1,9 +1,27 @@
 {
+  "oclp_version": "0.2.0-draft",
+  "id": "urn:example:evidence:uppercase-hello",
   "annotations": {},
-  "contract": {
-    "id": "urn:example:contract:uppercase",
-    "version": "1"
+  "kind": "evidence",
+  "subject": {
+    "id": "urn:example:execution:uppercase-hello",
+    "digest": {
+      "algorithm": "sha256",
+        "value": "4cc91f8c9c3d6e71469821fc624d54eeb37ca3b1f647c958cf27f2b10b568053"
+    }
   },
+  "evaluator": {
+    "kind": "other",
+    "locator": "example:uppercase-evidence",
+    "source": {
+      "kind": "git",
+      "repository": "https://github.com/example/uppercase.git",
+      "commit": "0123456789abcdef0123456789abcdef01234567",
+      "path": "src/example"
+    }
+  },
+  "outcome": "pass",
+  "observed_at": "2026-08-30T12:00:01Z",
   "diagnostic": {
     "code": "uppercase/changed",
     "stage": "validation"
@@ -11,14 +29,6 @@
   "details": {
     "changed": true,
     "input_characters": 5
-  },
-  "id": "urn:example:evidence:uppercase-hello",
-  "kind": "evidence",
-  "observed_at": "2026-08-19T20:00:00Z",
-  "oclp_version": "0.1.0-draft",
-  "outcome": "pass",
-  "subject": {
-    "id": "urn:example:invocation:uppercase-hello"
   },
   "profiles": null
 }
