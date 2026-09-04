@@ -1,4 +1,4 @@
-# OCLP draft-0.2 conformance vectors
+# OCLP draft-0.3 conformance vectors
 
 This directory is the language-neutral executable contract for the OCLP draft.
 It is intentionally made of JSON fixtures and expected strings rather than
@@ -7,7 +7,7 @@ Python objects.
 ## Contents
 
 - `manifest.json` lists valid records, their RFC 8785 canonical JSON, expected
-  SHA-256 record digests, invalid records, and a complete lineage fixture.
+  SHA-256 catalog-integrity digests, invalid records, and a complete lineage fixture.
 - `valid/` contains one record for each core kind.
 - `invalid/` contains records that must be rejected. Some constraints, such as
   unique Computation port and parameter names, parameter-to-port separation,

@@ -1,10 +1,15 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:artifact-set:bad-release",
+  "oclp_version": "0.3.0-draft",
+  "id": "073d904f-9fb4-543c-ad9b-ba80df14ed97",
   "profiles": null,
   "annotations": {},
   "kind": "artifact_set",
   "members": [
-    {"name": "model", "artifact": {"id": "urn:example:artifact:model"}}
+    {
+      "name": "model",
+      "artifact": {
+        "id": "not-a-record-uuid"
+      }
+    }
   ]
 }

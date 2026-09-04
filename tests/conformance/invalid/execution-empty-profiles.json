@@ -1,10 +1,12 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:execution:bad-profiles",
+  "oclp_version": "0.3.0-draft",
+  "id": "0bad2569-a915-5f3f-959c-3918881c4e38",
   "profiles": {},
   "annotations": {},
   "kind": "execution",
-  "computation": {"id": "urn:example:computation:uppercase"},
+  "computation": {
+    "id": "1167f44d-2b53-510b-90b4-bf9fd9b34b4a"
+  },
   "inputs": {},
   "requested_outputs": []
 }

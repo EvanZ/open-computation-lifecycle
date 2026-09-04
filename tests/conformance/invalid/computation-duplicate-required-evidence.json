@@ -1,23 +1,32 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:computation:duplicate-evidence",
+  "oclp_version": "0.3.0-draft",
+  "id": "95a7ada4-be2d-5736-b9cb-98b012475a11",
   "annotations": {},
   "kind": "computation",
   "implementation": {
     "kind": "other",
     "locator": "example:duplicate-evidence",
-    "source": {"kind": "opaque", "reason": "invalid fixture"}
+    "source": {
+      "kind": "opaque",
+      "reason": "invalid fixture"
+    }
   },
   "required_evidence": [
     {
       "kind": "other",
       "locator": "example:quality-evidence",
-      "source": {"kind": "opaque", "reason": "invalid fixture"}
+      "source": {
+        "kind": "opaque",
+        "reason": "invalid fixture"
+      }
     },
     {
       "kind": "other",
       "locator": "example:quality-evidence",
-      "source": {"kind": "opaque", "reason": "invalid fixture"}
+      "source": {
+        "kind": "opaque",
+        "reason": "invalid fixture"
+      }
     }
   ],
   "profiles": null

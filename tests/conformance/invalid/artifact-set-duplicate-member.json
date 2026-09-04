@@ -1,11 +1,21 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:artifact-set:bad-release",
+  "oclp_version": "0.3.0-draft",
+  "id": "073d904f-9fb4-543c-ad9b-ba80df14ed97",
   "profiles": null,
   "annotations": {},
   "kind": "artifact_set",
   "members": [
-    {"name": "model", "artifact": {"id": "urn:example:artifact:model", "digest": {"algorithm": "sha256", "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}},
-    {"name": "model", "artifact": {"id": "urn:example:artifact:metrics", "digest": {"algorithm": "sha256", "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}}}
+    {
+      "name": "model",
+      "artifact": {
+        "id": "8a216723-d6a5-59c2-bb6e-163bd2a09a4a"
+      }
+    },
+    {
+      "name": "model",
+      "artifact": {
+        "id": "efac23fc-37e7-5f7c-87f3-efe4455b8bf3"
+      }
+    }
   ]
 }

@@ -40,7 +40,6 @@ addFormats(ajv);
 const validate = ajv.compile(coreSchema);
 
 const records = new Map<string, OclpRecord>();
-const recordsByDigest = new Map<string, OclpRecord>();
 for (const entry of manifest.valid) {
   const record = JSON.parse(
     await readFile(path.join(fixtures, entry.path), "utf8"),
@@ -52,14 +51,14 @@ for (const entry of manifest.valid) {
   assert.equal(canonical, entry.canonical_json, entry.path);
   const digest = createHash("sha256").update(canonical).digest("hex");
   assert.equal(`sha256:${digest}`, entry.digest, entry.path);
+  assert.equal(records.has(String(record.id)), false, `duplicate record ID in ${entry.path}`);
   records.set(String(record.id), record);
-  recordsByDigest.set(entry.digest.replace(/^sha256:/, ""), record);
 }
 
-assert.equal(derivationGraphRulesHold(recordsByDigest), true);
-assert.equal(executionHierarchyRulesHold(records, recordsByDigest), true);
-assert.equal(executionParameterRulesHold(recordsByDigest), true);
-assert.equal(executionAcceptanceRulesHold(recordsByDigest), true);
+assert.equal(derivationGraphRulesHold(records), true);
+assert.equal(executionHierarchyRulesHold(records), true);
+assert.equal(executionParameterRulesHold(records), true);
+assert.equal(executionAcceptanceRulesHold(records), true);
 
 for (const fixturePath of manifest.invalid) {
   const record = JSON.parse(
@@ -106,16 +105,6 @@ function semanticRulesHold(record: OclpRecord): boolean {
     return false;
   }
 
-  if (record.kind === "artifact") {
-    const digest = record.digest;
-    if (
-      digest &&
-      record.id === `urn:${digest.algorithm ?? "sha256"}:${digest.value}`
-    ) {
-      return false;
-    }
-  }
-
   if (record.kind === "computation") {
     for (const ports of [record.input_ports ?? [], record.output_ports ?? []]) {
       const names = ports.map((port: { name: string }) => port.name);
@@ -136,20 +125,10 @@ function semanticRulesHold(record: OclpRecord): boolean {
     if (parameterNames.some((name: string) => inputPortNames.has(name))) {
       return false;
     }
-    if (record.implementation?.artifact && !record.implementation.artifact.digest) {
-      return false;
-    }
-    if (
-      record.implementation?.source?.kind === "artifact" &&
-      !record.implementation.source.artifact?.digest
-    ) {
-      return false;
-    }
     if (
       record.implementation?.source?.kind === "git" &&
       record.implementation.source.overlay &&
-      (!record.implementation.source.overlay.digest ||
-        record.implementation.source.dirty !== true)
+      record.implementation.source.dirty !== true
     ) {
       return false;
     }
@@ -171,21 +150,6 @@ function semanticRulesHold(record: OclpRecord): boolean {
     if (names.length !== new Set(names).size) {
       return false;
     }
-    if ((record.members ?? []).some((member: { artifact?: { digest?: unknown } }) => !member.artifact?.digest)) {
-      return false;
-    }
-  }
-
-  if (record.kind === "execution") {
-    if (
-      Object.values(record.outputs ?? {}).some((references: unknown) =>
-        !(references as Array<{ digest?: unknown }>).every(
-          (reference) => Boolean(reference.digest),
-        ),
-      )
-    ) {
-      return false;
-    }
   }
 
   if (record.kind === "event" || record.kind === "evidence") {
@@ -197,9 +161,6 @@ function semanticRulesHold(record: OclpRecord): boolean {
         !diagnostic.stage &&
         !diagnostic.artifact
       ) {
-        return false;
-      }
-      if (diagnostic.artifact && !diagnostic.artifact.digest) {
         return false;
       }
     }
@@ -215,14 +176,10 @@ function semanticRulesHold(record: OclpRecord): boolean {
 function implementationIsBound(implementation: unknown): boolean {
   const value = implementation as OclpRecord | undefined;
   if (!value || typeof value !== "object") return false;
-  if (value.artifact && !value.artifact.digest) return false;
-  if (value.source?.kind === "artifact" && !value.source.artifact?.digest) {
-    return false;
-  }
   if (
     value.source?.kind === "git" &&
     value.source.overlay &&
-    (!value.source.overlay.digest || value.source.dirty !== true)
+    value.source.dirty !== true
   ) {
     return false;
   }
@@ -233,20 +190,13 @@ function implementationKey(implementation: unknown): string | undefined {
   return canonicalize(implementation);
 }
 
-function executionParameterRulesHold(
-  recordsByDigest: Map<string, OclpRecord>,
-): boolean {
-  for (const execution of recordsByDigest.values()) {
+function executionParameterRulesHold(records: Map<string, OclpRecord>): boolean {
+  for (const execution of records.values()) {
     if (execution.kind !== "execution") continue;
-    const computationDigest = execution.computation?.digest?.value;
-    const computation =
-      typeof computationDigest === "string"
-        ? recordsByDigest.get(computationDigest)
-        : undefined;
+    const computation = records.get(String(execution.computation?.id));
     if (
       !computation ||
-      computation.kind !== "computation" ||
-      computation.id !== execution.computation?.id
+      computation.kind !== "computation"
     ) {
       return false;
     }
@@ -282,50 +232,32 @@ function executionParameterRulesHold(
   return true;
 }
 
-function executionAcceptanceRulesHold(
-  recordsByDigest: Map<string, OclpRecord>,
-): boolean {
-  const executionCounts = new Map<string, number>();
-  for (const record of recordsByDigest.values()) {
-    if (record.kind === "execution") {
-      executionCounts.set(record.id, (executionCounts.get(record.id) ?? 0) + 1);
-    }
-  }
-
+function executionAcceptanceRulesHold(records: Map<string, OclpRecord>): boolean {
   const referencesExecution = (
-    reference: { id?: unknown; digest?: { value?: unknown } },
+    reference: { id?: unknown },
     execution: OclpRecord,
-    executionDigest: string,
-  ): boolean =>
-    reference.id === execution.id &&
-    (reference.digest?.value === executionDigest ||
-      (!reference.digest && executionCounts.get(execution.id) === 1));
+  ): boolean => reference.id === execution.id;
 
-  for (const [executionDigest, execution] of recordsByDigest) {
+  for (const execution of records.values()) {
     if (execution.kind !== "execution") continue;
-    const computationDigest = execution.computation?.digest?.value;
-    const computation =
-      typeof computationDigest === "string"
-        ? recordsByDigest.get(computationDigest)
-        : undefined;
+    const computation = records.get(String(execution.computation?.id));
     if (!computation || computation.kind !== "computation") return false;
 
-    const successful = [...recordsByDigest.values()].some(
+    const successful = [...records.values()].some(
       (record) =>
         record.kind === "event" &&
         record.status === "succeeded" &&
-        referencesExecution(record.execution ?? {}, execution, executionDigest),
+        referencesExecution(record.execution ?? {}, execution),
     );
     if (!successful) continue;
 
     for (const evaluator of computation.required_evidence ?? []) {
       const evaluatorKey = implementationKey(evaluator);
       if (evaluatorKey === undefined) return false;
-      const satisfied = [...recordsByDigest.values()].some(
+      const satisfied = [...records.values()].some(
         (record) =>
           record.kind === "evidence" &&
           record.subject?.id === execution.id &&
-          record.subject?.digest?.value === executionDigest &&
           implementationKey(record.evaluator) === evaluatorKey &&
           record.outcome === "pass",
       );
@@ -335,24 +267,24 @@ function executionAcceptanceRulesHold(
   return true;
 }
 
-function derivationGraphRulesHold(recordsByDigest: Map<string, OclpRecord>): boolean {
+function derivationGraphRulesHold(records: Map<string, OclpRecord>): boolean {
   const adjacency = new Map<string, Set<string>>();
 
   const resolve = (
-    reference: { id?: unknown; digest?: { value?: unknown } },
+    reference: { id?: unknown },
     expectedKind: string | string[],
   ): string | undefined => {
-    const digest = reference.digest?.value;
-    if (typeof digest !== "string") return undefined;
-    const target = recordsByDigest.get(digest);
+    const id = reference.id;
+    if (typeof id !== "string") return undefined;
+    const target = records.get(id);
     const expectedKinds = Array.isArray(expectedKind) ? expectedKind : [expectedKind];
-    if (!target || !expectedKinds.includes(target.kind) || target.id !== reference.id) {
+    if (!target || !expectedKinds.includes(target.kind)) {
       return undefined;
     }
-    return digest;
+    return id;
   };
 
-  for (const record of recordsByDigest.values()) {
+  for (const record of records.values()) {
     if (record.kind !== "computation") continue;
     const overlay = record.implementation?.source?.kind === "git"
       ? record.implementation.source.overlay
@@ -360,21 +292,21 @@ function derivationGraphRulesHold(recordsByDigest: Map<string, OclpRecord>): boo
     if (overlay && !resolve(overlay, "artifact_set")) return false;
   }
 
-  for (const [executionDigest, record] of recordsByDigest) {
+  for (const record of records.values()) {
     if (record.kind !== "execution") continue;
     if (!resolve(record.computation ?? {}, "computation")) return false;
     for (const references of Object.values(record.inputs ?? {})) {
-      for (const reference of references as Array<{ id?: unknown; digest?: { value?: unknown } }>) {
-        const inputDigest = resolve(reference, ["artifact", "artifact_set"]);
-        if (!inputDigest) return false;
-        addEdge(adjacency, inputDigest, executionDigest);
+      for (const reference of references as Array<{ id?: unknown }>) {
+        const inputId = resolve(reference, ["artifact", "artifact_set"]);
+        if (!inputId) return false;
+        addEdge(adjacency, inputId, String(record.id));
       }
     }
     for (const references of Object.values(record.outputs ?? {})) {
-      for (const reference of references as Array<{ id?: unknown; digest?: { value?: unknown } }>) {
-        const outputDigest = resolve(reference, ["artifact", "artifact_set"]);
-        if (!outputDigest) return false;
-        addEdge(adjacency, executionDigest, outputDigest);
+      for (const reference of references as Array<{ id?: unknown }>) {
+        const outputId = resolve(reference, ["artifact", "artifact_set"]);
+        if (!outputId) return false;
+        addEdge(adjacency, String(record.id), outputId);
       }
     }
   }
@@ -397,21 +329,17 @@ function derivationGraphRulesHold(recordsByDigest: Map<string, OclpRecord>): boo
 
 function executionHierarchyRulesHold(
   recordsById: Map<string, OclpRecord>,
-  recordsByDigest: Map<string, OclpRecord>,
 ): boolean {
   const parents = new Map<string, string>();
-  for (const record of recordsByDigest.values()) {
+  for (const record of recordsById.values()) {
     if (record.kind !== "execution" || !record.parent_execution) continue;
     const reference = record.parent_execution as {
       id?: unknown;
-      digest?: { value?: unknown };
     };
-    const parent = typeof reference.digest?.value === "string"
-      ? recordsByDigest.get(reference.digest.value)
-      : typeof reference.id === "string"
-        ? recordsById.get(reference.id)
-        : undefined;
-    if (!parent || parent.kind !== "execution" || parent.id !== reference.id) {
+    const parent = typeof reference.id === "string"
+      ? recordsById.get(reference.id)
+      : undefined;
+    if (!parent || parent.kind !== "execution") {
       return false;
     }
     parents.set(String(record.id), String(parent.id));

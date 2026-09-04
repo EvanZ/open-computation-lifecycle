@@ -18,7 +18,7 @@ begins.
 
 ## Conformance
 
-A draft-0.2 producer validates every emitted core record against the published
+A draft-0.3 producer validates every emitted core record against the published
 JSON Schemas. A conforming consumer accepts valid fixtures and rejects invalid
 ones. Runtime behavior is intentionally outside the current conformance scope.
 

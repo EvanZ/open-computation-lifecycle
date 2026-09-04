@@ -1,7 +1,7 @@
 {
-  "oclp_version": "0.2.0-draft",
+  "oclp_version": "0.3.0-draft",
   "kind": "artifact",
-  "id": "urn:example:artifact:employee-handbook",
+  "id": "5c18c76c-43c5-4011-9807-f2a7e4689310",
   "annotations": {
     "example.org/role": "source-document"
   },

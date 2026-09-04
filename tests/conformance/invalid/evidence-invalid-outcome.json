@@ -1,14 +1,19 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:evidence:bad-outcome",
+  "oclp_version": "0.3.0-draft",
+  "id": "12b7f00e-d851-55ac-8b70-cff4e1acbdc6",
   "profiles": null,
   "annotations": {},
   "kind": "evidence",
-  "subject": {"id": "urn:example:artifact:source"},
+  "subject": {
+    "id": "80e24c91-2a0c-52c8-9406-a607192e48e5"
+  },
   "evaluator": {
     "kind": "other",
     "locator": "example:quality-evidence",
-    "source": {"kind": "opaque", "reason": "invalid fixture"}
+    "source": {
+      "kind": "opaque",
+      "reason": "invalid fixture"
+    }
   },
   "outcome": "warning",
   "observed_at": "2026-08-30T12:00:00Z"

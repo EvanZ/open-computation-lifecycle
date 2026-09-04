@@ -1,0 +1,18 @@
+{
+  "oclp_version": "0.3.0-draft",
+  "id": "245cef35-7391-5504-b5fc-6791a7d6c092",
+  "name": "Uppercase hello",
+  "profiles": null,
+  "annotations": {},
+  "kind": "execution",
+  "computation": {
+    "id": "1167f44d-2b53-510b-90b4-bf9fd9b34b4a",
+    "digest": {
+      "algorithm": "sha256",
+      "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "parameters": {},
+  "inputs": {},
+  "requested_outputs": []
+}

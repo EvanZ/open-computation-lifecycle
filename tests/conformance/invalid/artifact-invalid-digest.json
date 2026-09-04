@@ -1,10 +1,13 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:artifact:bad-digest",
+  "oclp_version": "0.3.0-draft",
+  "id": "f2cd879e-df49-593b-b7a8-4edfdb467be9",
   "profiles": null,
   "annotations": {},
   "kind": "artifact",
   "media_type": "text/plain",
-  "digest": {"algorithm": "sha256", "value": "not-a-sha256"},
+  "digest": {
+    "algorithm": "sha256",
+    "value": "not-a-sha256"
+  },
   "size": 1
 }

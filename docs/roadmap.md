@@ -20,15 +20,15 @@ streaming, operations, or analysis.
 | --- | --- | --- |
 | File store | Durable local store | Portable JSON records for fixtures, local runs, inspection, and Git-adjacent workflows. |
 | DuckDB store | Local store and index | Fast local lookup, query, and graph exploration. |
-| S3-compatible store | Durable shared archive | Immutable, content-addressed record history for teams and long-running projects. |
+| S3-compatible store | Durable shared archive | Immutable UUID-addressed record history with canonical-JSON integrity checks for teams and long-running projects. |
 | Kafka exporter | Streaming delivery sink | Delivers records to downstream data and platform systems; consumers deduplicate by record identity. |
 | OTLP exporter | Observability delivery sink | Projects selected OCLP lifecycle and diagnostic facts into an OpenTelemetry Collector and existing observability backends. |
 
 ### File store
 
 A file-backed store is the most direct reference implementation: one canonical
-JSON document per record, arranged under a predictable content-addressed
-layout. It should be easy to inspect, copy, include in a test fixture, or put
+JSON document per record, indexed by its UUID and optionally arranged under a
+canonical-JSON integrity-hash layout. It should be easy to inspect, copy, include in a test fixture, or put
 behind a static artifact server. A lightweight manifest or index may accelerate
 enumeration, but the records remain authoritative.
 
@@ -41,9 +41,9 @@ source of truth and be rebuilt from immutable records.
 
 ### S3-compatible store
 
-An object store should preserve the same logical record layout as a file store
+An object store should preserve the same UUID record layout as a file store
 while adding shared durability and scale. Writers should use conditional,
-create-once writes for content-bound records so duplicate publication is safe.
+create-once writes for immutable records so duplicate publication is safe.
 An implementation can maintain a separate mutable index for discovery, but
 must not overwrite an accepted record to update that index.
 
@@ -105,6 +105,24 @@ of release order.
 - Publish a compatibility and deprecation policy for Core schemas.
 - Expand cross-language conformance fixtures and independent verifiers beyond
   the current implementations.
+
+### Optional persistent lifecycle association
+
+OCLP currently treats a **run** as one materialization: producers may assign
+its `profiles.run.run_id` when the run begins, and that identity is a fresh
+UUID for that materialization. It deliberately requires no registry or other
+persistent lifecycle store.
+
+A future optional lifecycle association may let an application explicitly
+identify a durable product, service, or long-lived workflow and associate
+multiple independent runs with it. For example, a model-training run and later
+inference-service runs could opt into the same lifecycle identity. The
+application would supply that stable identity; SDKs must not silently create or
+persist one.
+
+This association would be organizational rather than causal. It must not
+replace actual Artifact, ArtifactSet, Execution, and Event references when
+constructing lineage, and records without it must remain fully conformant.
 
 ### Portable exchange and trust
 

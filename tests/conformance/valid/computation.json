@@ -1,6 +1,6 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:computation:uppercase",
+  "oclp_version": "0.3.0-draft",
+  "id": "1167f44d-2b53-510b-90b4-bf9fd9b34b4a",
   "name": "Uppercase document",
   "annotations": {},
   "kind": "computation",

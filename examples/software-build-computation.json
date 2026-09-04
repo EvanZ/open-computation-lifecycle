@@ -1,6 +1,6 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:computation:service-container-build",
+  "oclp_version": "0.3.0-draft",
+  "id": "26d9aea1-9a6d-4405-b1ad-a4520abd5e92",
   "name": "Build service container",
   "profiles": null,
   "annotations": {},
@@ -16,11 +16,26 @@
     }
   },
   "input_ports": [
-    {"name": "source", "media_types": ["application/x-tar"]},
-    {"name": "dependency-lock", "media_types": ["text/plain"]}
+    {
+      "name": "source",
+      "media_types": [
+        "application/x-tar"
+      ]
+    },
+    {
+      "name": "dependency-lock",
+      "media_types": [
+        "text/plain"
+      ]
+    }
   ],
   "output_ports": [
-    {"name": "container-image", "media_types": ["application/vnd.oci.image.manifest.v1+json"]}
+    {
+      "name": "container-image",
+      "media_types": [
+        "application/vnd.oci.image.manifest.v1+json"
+      ]
+    }
   ],
   "required_evidence": [
     {

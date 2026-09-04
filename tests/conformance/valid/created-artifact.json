@@ -1,6 +1,6 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:artifact:created-report",
+  "oclp_version": "0.3.0-draft",
+  "id": "ea32e9f3-4a02-5b94-878c-d822922d3493",
   "name": "Created report",
   "annotations": {},
   "kind": "artifact",
@@ -11,6 +11,8 @@
   },
   "size": 17,
   "created_at": "2026-08-30T12:00:00Z",
-  "locations": ["https://example.org/reports/created.json"],
+  "locations": [
+    "https://example.org/reports/created.json"
+  ],
   "profiles": null
 }

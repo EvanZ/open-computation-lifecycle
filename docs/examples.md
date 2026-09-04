@@ -2,7 +2,7 @@
 
 OCLP is not specific to basketball, machine learning, or software delivery.
 These small records use ordinary industry scenarios and are independently valid
-against the 0.2 Core schema.
+against the 0.3 Core schema.
 
 | Scenario | File | Core concept |
 | --- | --- | --- |
@@ -22,7 +22,7 @@ source file or an upload timestamp.
 ```json
 {
   "kind": "artifact",
-  "id": "urn:example:artifact:employee-handbook",
+  "id": "4e890e52-cb6f-5b48-afca-833ca29e5d0a",
   "digest": {"algorithm": "sha256", "value": "6dfad2b5…f5f47e31"},
   "locations": ["https://storage.example.org/documents/handbook-v3.txt"]
 }
@@ -37,7 +37,7 @@ revision. It can also declare the exact Evidence evaluator a successful build mu
 ```json
 {
   "kind": "computation",
-  "id": "urn:example:computation:service-container-build",
+  "id": "d654b04c-63f4-5b43-9ca2-a39ea776ae44",
   "implementation": {
     "kind": "command",
     "locator": "docker buildx build --file service/Dockerfile",
@@ -63,10 +63,10 @@ Attempt identity beneath it.
 ```json
 {
   "kind": "execution",
-  "id": "urn:example:execution:fraud-score-batch-2026-08-19",
-  "computation": {"id": "urn:example:computation:fraud-score-v4", "digest": {"algorithm": "sha256", "value": "111111…1111"}},
-  "inputs": {"model": [{"id": "urn:example:artifact-set:fraud-model-v4"}]},
-  "outputs": {"scores": [{"id": "urn:example:artifact:fraud-scores-2026-08-19"}]}
+  "id": "23d5a1d7-d167-5473-9e4c-9fd305f3ee34",
+  "computation": {"id": "991ec7eb-b824-500c-8e19-0b7e0f4a9066"},
+  "inputs": {"model": [{"id": "4e890e52-cb6f-5b48-afca-833ca29e5d0a"}]},
+  "outputs": {"scores": [{"id": "3c91d6b3-9902-587a-9641-4d6f84cad2f4"}]}
 }
 ```
 
@@ -79,7 +79,7 @@ standardizes an `execution-started` Event followed by an optional
 its own event types and data.
 
 When a Computation declares `required_evidence`, a terminal Event may claim
-`"succeeded"` only after matching Evidence content-binds that exact Execution,
+`"succeeded"` only after matching Evidence references that exact Execution,
 names each required evaluator, and has `outcome: "pass"`. This distinguishes “the
 runtime completed” from “the declared quality or release gate passed.”
 
@@ -87,7 +87,7 @@ runtime completed” from “the declared quality or release gate passed.”
 {
   "kind": "event",
   "event_type": "execution-terminal",
-  "execution": {"id": "urn:example:execution:fraud-score-batch-2026-08-19"},
+  "execution": {"id": "23d5a1d7-d167-5473-9e4c-9fd305f3ee34"},
   "status": "failed",
   "diagnostic": {"code": "model-endpoint-unavailable", "stage": "invoke"}
 }

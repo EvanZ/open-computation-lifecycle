@@ -1,14 +1,10 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:evidence:uppercase-hello",
+  "oclp_version": "0.3.0-draft",
+  "id": "1c35170a-1435-57bb-bd0c-f6514c9d957e",
   "annotations": {},
   "kind": "evidence",
   "subject": {
-    "id": "urn:example:execution:uppercase-hello",
-    "digest": {
-      "algorithm": "sha256",
-        "value": "4cc91f8c9c3d6e71469821fc624d54eeb37ca3b1f647c958cf27f2b10b568053"
-    }
+    "id": "245cef35-7391-5504-b5fc-6791a7d6c092"
   },
   "evaluator": {
     "kind": "other",

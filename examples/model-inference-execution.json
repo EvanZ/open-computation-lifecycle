@@ -1,21 +1,36 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:execution:fraud-score-batch-2026-08-19",
+  "oclp_version": "0.3.0-draft",
+  "id": "699b6dfc-0711-4eb2-b4b7-3f7dde77df87",
   "name": "Score fraud batch — 2026-08-19",
   "profiles": null,
   "annotations": {},
   "kind": "execution",
   "computation": {
-    "id": "urn:example:computation:fraud-score-v4",
-    "digest": {"algorithm": "sha256", "value": "1111111111111111111111111111111111111111111111111111111111111111"}
+    "id": "d3b32d5f-0d54-4ce2-91ba-fa1b8a6cd3dd"
   },
-  "parameters": {"threshold": 0.82},
+  "parameters": {
+    "threshold": 0.82
+  },
   "inputs": {
-    "model": [{"id": "urn:example:artifact-set:fraud-model-v4", "digest": {"algorithm": "sha256", "value": "2222222222222222222222222222222222222222222222222222222222222222"}}],
-    "transactions": [{"id": "urn:example:artifact:transactions-2026-08-19", "digest": {"algorithm": "sha256", "value": "3333333333333333333333333333333333333333333333333333333333333333"}}]
+    "model": [
+      {
+        "id": "f7c30634-ad2e-43d9-bdd1-ed9b89182c97"
+      }
+    ],
+    "transactions": [
+      {
+        "id": "854e0740-dd51-48d0-9de4-03a219d17804"
+      }
+    ]
   },
   "outputs": {
-    "scores": [{"id": "urn:example:artifact:fraud-scores-2026-08-19", "digest": {"algorithm": "sha256", "value": "4444444444444444444444444444444444444444444444444444444444444444"}}]
+    "scores": [
+      {
+        "id": "aabcc8ec-d9f8-474e-b53e-8c2f9ba83ae7"
+      }
+    ]
   },
-  "requested_outputs": ["scores"]
+  "requested_outputs": [
+    "scores"
+  ]
 }

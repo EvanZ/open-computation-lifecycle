@@ -1,10 +1,10 @@
 # OCLP Core Specification
 
-Status: Experimental draft 0.2 (`0.2.0-draft`).
+Status: Experimental draft 0.3 (`0.3.0-draft`).
 
 ## 1. Purpose and conformance language
 
-OCLP specifies a durable, typed, content-addressed description of a computation
+OCLP specifies a durable, typed description of a computation
 and its lifecycle. It lets a producer describe a reusable computation, each
 concrete execution of it, the selected implementation, inputs and outputs, and checks performed on those
 records. It does not define a workflow language, scheduler, storage service,
@@ -14,8 +14,8 @@ The key words **MUST**, **MUST NOT**, **SHOULD**, and **MAY** in this document
 are normative. A core record is one of `artifact`, `artifact_set`,
 `computation`, `execution`, `evidence`, or `event`. Producers MUST emit
 records that satisfy the applicable rules below. Consumers MUST reject unknown
-fields and invalid values, and MUST preserve the distinction between a logical
-ID and a content digest.
+fields and invalid values, and MUST preserve the distinction between an opaque
+record UUID, an Artifact payload digest, and catalog-local integrity metadata.
 
 The published JSON Schemas and cross-language conformance vectors are derived,
 executable conformance artifacts. They do not replace the field semantics
@@ -30,8 +30,8 @@ not alter the normative requirements in the preceding sections.
 
 | Decision | Rationale and consequence |
 | --- | --- |
-| Logical IDs and content digests are separate. | A stable name supports discovery, references, and a continuing business concept; a digest binds the exact bytes or record revision. Conflating them makes either mutable names unsafe or immutable content impossible to refer to conveniently. |
-| Artifact content identity uses SHA-256; record identity uses JCS canonical bytes. | Content and metadata change independently. A file can remain identical while its retrieval locations change; conversely, a record's annotations or bindings can change without changing its described payload. An optional producer-created timestamp is part of the immutable record revision, not mutable catalog state. RFC 8785 gives implementations in different languages one reproducible record-byte representation. |
+| Core UUIDs and Artifact payload digests are separate. | Each Core record receives one opaque UUID and never has revisions under that identity. Artifact payload SHA-256 identifies described bytes independently of record metadata. Names and annotations carry producer semantics rather than becoming reference keys. |
+| Canonical record hashes are catalog integrity data. | RFC 8785 gives implementations a reproducible byte representation that a catalog or bundle can verify. That hash is not embedded in parent-record references, avoiding a second identity layer and reference/cycle confusion. |
 | Core objects are closed and extension data is bounded. | Permissive top-level fields make independently produced records ambiguous and difficult to validate. Namespaced extension objects retain local flexibility while keeping the portable core legible. |
 | A Computation and Execution are distinct; an Execution is one actual run. | A reusable computation is not a particular run with concrete inputs. Every retry, migration, or re-run is a new Execution. OCLP therefore does not create a second Attempt identity beneath Execution; producers preserve retry relationships through parentage, annotations, or producer-defined Events when needed. |
 | Evidence carries its source-bound evaluator directly. | A clean runtime exit and an evaluated quality or release gate are different claims. A Computation declares the evaluator implementations required for success, while Evidence records each evaluator's actual outcome. This avoids a separate naming record for a fact that Evidence already represents. Core validates the binding and outcome, not the evaluator's domain logic. |
@@ -39,7 +39,7 @@ not alter the normative requirements in the preceding sections.
 | Execution parentage is explicit and separate from derivation. | A parent flow can orchestrate child Executions without claiming their outputs as its own. The execution hierarchy supports scheduler and human views while leaving the Artifact/ArtifactSet-to-Execution derivation DAG acyclic. |
 | Every Implementation declares an explicit source basis; a dirty Git overlay is bound to that basis. | Consumers must be able to distinguish Git source, a bound package Artifact, a versioned service, and unavailable provenance. A Git commit is the reviewed baseline; an optional, exact ArtifactSet overlay makes source edits content-addressable without pretending to resolve a whole dependency closure. Machine-local checkout facts remain on Events. |
 | Diagnostics are a shared typed value, not an application-specific detail shape. | Events describe execution state and Evidence describes evaluator results; both can carry the same compact code, message, stage, and optional detail Artifact. Consumers can display those fields without learning a producer's private JSON conventions. |
-| ArtifactSet is logical and non-nested in draft 0.2. | Releases need a durable named collection, but archive formats, directory layouts, and recursive collection semantics are storage concerns. A flat, digest-bound member list is simple to traverse and can be composed by publishing another explicit set or profile later. |
+| ArtifactSet is logical and non-nested in draft 0.3. | Releases need a durable named collection, but archive formats, directory layouts, and recursive collection semantics are storage concerns. A flat UUID-member list is simple to traverse and can be composed by publishing another explicit set or profile later. |
 | Profiles compose rather than extend Core records. | Datasets, agents, model services, and MCP tools need richer domain semantics, but not every OCLP consumer should implement them. Explicit profile declarations and dependencies make those layers interoperable without turning Core into a domain framework. |
 
 These choices favor durable auditability and cross-language traversal over
@@ -55,7 +55,7 @@ objects have string keys; integer values have no fractional component. Values in
 `profiles` is always either `null` or a non-empty JSON object whose values are
 JSON objects.
 
-Draft 0.2 uses [RFC 8785 JSON Canonicalization Scheme
+Draft 0.3 uses [RFC 8785 JSON Canonicalization Scheme
 (JCS)](https://www.rfc-editor.org/rfc/rfc8785) to produce canonical record
 bytes. YAML MAY be an authoring format, but it MUST first be converted to JSON
 before validation or hashing. Protocol Buffer bindings, if introduced, are not
@@ -79,16 +79,16 @@ profile or later draft defines a field.
 
 ### 4.1 Digest
 
-A Digest identifies immutable bytes or canonical record bytes.
+A Digest identifies immutable Artifact payload bytes.
 
 | Field | Input status and JSON type | Constraints and use |
 | --- | --- | --- |
 | `algorithm` | default; string | MUST be `"sha256"`. Its explicit label leaves room for a future algorithm migration. |
 | `value` | required; string | Exactly 64 lowercase hexadecimal characters: the SHA-256 digest, without an algorithm prefix. |
 
-An Artifact's `digest` hashes the Artifact's described content bytes. A record
-digest hashes the record's JCS canonical bytes. These are different objects and
-MUST NOT be confused.
+An Artifact's `digest` hashes its described content bytes. Implementations MAY
+also hash canonical Core-record bytes for catalog integrity, but that hash is
+not a Core field or a reference target.
 
 ### 4.2 RecordReference
 
@@ -96,12 +96,10 @@ A RecordReference names another OCLP record.
 
 | Field | Input status and JSON type | Constraints and use |
 | --- | --- | --- |
-| `id` | required; string | Non-empty logical record ID. It enables a human-meaningful or registry lookup. |
-| `digest` | optional; Digest | When supplied, it binds the reference to one exact canonical record and protects against a mutable or ambiguous logical ID. |
+| `id` | required; UUID string | The opaque UUID of one Core record. It is the only Core-record lookup and reference key. |
 
-Individual fields below state when `digest` is mandatory. A consumer that
-resolves a reference with a digest MUST treat a resolved record whose canonical
-digest differs as an integrity failure.
+References do not carry canonical-record hashes. A storage implementation MAY
+verify its local canonical bytes independently before returning a record.
 
 ### 4.3 Record resolution
 
@@ -109,13 +107,10 @@ Core records are portable descriptions, not a storage API. An implementation
 MAY provide a record resolver, registry, bundle reader, or other lookup service
 for `RecordReference` values. Such a service does not change record meaning.
 
-A resolver receiving a reference with a `digest` MUST resolve the exact
-canonical record whose digest equals that value, verify the digest after parsing
-and canonicalizing, and reject a record whose `id` differs from the reference.
-A resolver receiving an ID-only reference MUST reject an absent or ambiguous
-match; it MUST NOT silently select an arbitrary revision. A resolver MAY expose
-an explicit producer-defined revision-selection operation separately from Core
-reference resolution.
+A resolver MUST resolve the UUID to exactly one Core record and reject an
+absent, malformed, or duplicate binding. A resolver MAY verify a catalog-local
+canonical-record hash after parsing, but that integrity mechanism does not
+alter the protocol reference.
 
 Resolving an Artifact record is distinct from retrieving its content bytes. A
 resolver MAY maintain current storage-location hints indexed by an Artifact's
@@ -129,17 +124,16 @@ Every core record has this envelope. The record-specific table adds its fields.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
-| `oclp_version` | default; string | MUST be `"0.2.0-draft"`. It selects the core vocabulary and validation rules. |
+| `oclp_version` | default; string | MUST be `"0.3.0-draft"`. It selects the core vocabulary and validation rules. |
 | `kind` | default; string | One of the record-kind constants stated below. It discriminates the record shape. |
-| `id` | required; string | Non-empty stable logical ID. It is a name for the record, not a claim that two records with the same ID have identical content. |
-| `name` | optional; string | Non-empty, producer-supplied human-readable name. It is not an identity, unique key, or reference target. A consumer MAY display it, but MUST use `id` and an optional record digest for lookup and integrity. Because it is part of the immutable record bytes, changing it produces a new record revision. |
+| `id` | required; UUID string | Opaque, globally unique identity for this one immutable record. A changed record MUST receive a fresh UUID. |
+| `name` | optional; string | Non-empty, producer-supplied concise human-readable label. It is not an identity, unique key, or reference target. A consumer MAY display it. |
 | `profiles` | default; `null` or non-empty object | A producer MUST emit `null` when no profile applies. Otherwise keys are non-empty Profile IDs and each value is a profile-owned JSON object. A key claims that the record follows that profile's binding rules. Core validates only this container shape; a profile consumer validates the named value. An empty object is invalid. |
 | `annotations` | default; object | Empty object by default. Producer-defined JSON extension data. Keys SHOULD be namespaced, for example `"example.org/owner"`. Annotations do not claim a normative profile contract. |
 
-Logical identity and content identity are deliberately separate: a stable ID
-supports references and discovery; a digest binds an exact immutable version.
-A record `name`, when present, is a concise human-facing description. It is
-portable metadata, not a mutable registry alias or a substitute for identity.
+Core-record identity and Artifact payload identity are deliberately separate.
+A record `name`, when present, is a concise human-facing description, not a
+mutable registry alias or a substitute for identity.
 
 ### 4.5 PortDefinition
 
@@ -182,7 +176,7 @@ or execute it.
 | `locator` | required; string | Non-empty runtime-specific location, such as an import target, image name, or command identifier. It is not itself immutable. |
 | `source` | required; ImplementationSource | The declared basis for this implementation. It is a discriminated `GitSource`, `ArtifactSource`, `ServiceSource`, or `OpaqueSource`; it MUST NOT be omitted. |
 | `digest` | optional; Digest | A runtime fingerprint, such as an image digest or implementation hash. Its exact semantics are declared by the producer. A producer MUST omit it when it would merely restate the linked Artifact's content digest. |
-| `artifact` | optional; RecordReference | An Artifact representing code or a runtime package, such as a source bundle, wheel, or container manifest. If present, its record digest is REQUIRED. |
+| `artifact` | optional; RecordReference | An Artifact representing code or a runtime package, such as a source bundle, wheel, or container manifest. |
 
 `source`, `digest`, and `artifact` identify distinct concerns. `source`
 declares where the implementation comes from; `digest` is a producer-defined
@@ -191,9 +185,8 @@ runtime bytes available as an ordinary Artifact. Producers MUST NOT represent
 an ad-hoc selected-file hash as a source bundle merely to approximate dependency
 closure. If the runtime fingerprint is simply the linked Artifact's content
 digest, producers MUST omit `digest`; consumers resolve the Artifact record to
-obtain that content identity. The `RecordReference.digest` inside `artifact`
-still binds the exact Artifact *record*, which is distinct from the Artifact's
-payload-content digest.
+obtain that content identity. The Artifact record is selected by its UUID,
+which is distinct from the Artifact's payload-content digest.
 
 #### GitSource
 
@@ -204,7 +197,7 @@ payload-content digest.
 | `commit` | required; string | A complete, lowercase hexadecimal Git object ID: 40 characters for SHA-1 repositories or 64 characters for SHA-256 repositories. A branch, tag, or abbreviated hash is invalid. |
 | `path` | default; string | Repository-relative source or build-context path. Default `"."`. |
 | `dirty` | default; boolean | `true` when the source was observed from a checkout with uncommitted changes relative to `commit`; default `false`. It makes the incomplete source basis explicit rather than forbidding development observations. |
-| `overlay` | optional; RecordReference | An exact ArtifactSet describing uncommitted source changes relative to `commit`. Its record digest is REQUIRED. Omit it when the selected source is exactly the Git commit. |
+| `overlay` | optional; RecordReference | An exact ArtifactSet describing uncommitted source changes relative to `commit`. Omit it when the selected source is exactly the Git commit. |
 
 `repository` identifies the canonical source project, not an execution-local
 checkout path or merely a configured remote name. A Git commit describes the
@@ -225,7 +218,7 @@ runtime dependency or the checkout used by one Execution.
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
 | `kind` | default; string | MUST be `"artifact"`. |
-| `artifact` | required; RecordReference | An Artifact such as a wheel, container manifest, or intentional source archive. Its record digest is REQUIRED. |
+| `artifact` | required; RecordReference | An Artifact such as a wheel, container manifest, or intentional source archive. |
 
 #### ServiceSource
 
@@ -254,7 +247,7 @@ execution or evaluation summary without interpreting application-owned JSON.
 | `code` | optional; string | Non-empty producer-defined machine-readable identifier, such as `"input-unavailable"` or `"validation/duplicate-key"`. Consumers MUST treat it as an opaque identifier unless they implement the producer's vocabulary. |
 | `message` | optional; string | Non-empty concise human-readable explanation. Producers SHOULD omit secrets and large stack traces. |
 | `stage` | optional; string | Non-empty producer-defined execution or evaluation stage, such as `"preflight"`, `"transform"`, or `"validation"`. It is not a workflow language or a globally enumerated vocabulary. |
-| `artifact` | optional; RecordReference | A durable Artifact containing richer diagnostic material, such as a log, traceback, or structured report. Its record digest is REQUIRED. |
+| `artifact` | optional; RecordReference | A durable Artifact containing richer diagnostic material, such as a log, traceback, or structured report. |
 
 At least one Diagnostic field MUST be present. The Diagnostic's `artifact`, if
 present, is a reference to diagnostic content; its own Artifact record and
@@ -269,7 +262,7 @@ inputs, outputs, code packages, manifests, reports, and other durable content.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
-| `id` | required; string | A logical Artifact identifier. It MUST NOT be a content-addressed spelling of this Artifact's `digest`, such as `urn:sha256:<digest-value>`. |
+| `id` | required; UUID string | Opaque identity of this immutable Artifact record. It has no payload or domain semantics. |
 | `media_type` | required; string | Non-empty media type describing the content bytes, normally an IANA or vendor media type. |
 | `digest` | required; Digest | SHA-256 of the exact content bytes. This, rather than a location, establishes content identity. |
 | `size` | required; integer | Non-negative byte count of the content. It supports retrieval checks without reading all bytes. |
@@ -277,11 +270,10 @@ inputs, outputs, code packages, manifests, reports, and other durable content.
 | `locations` | default; array of strings | Empty array by default. Replaceable retrieval hints such as object-store URLs. They MUST NOT determine identity and MAY become stale. |
 | `schema_uri` | optional; string | Identifies a schema or profile governing the content when applicable. It does not validate the bytes by itself. |
 
-The envelope `kind` MUST be `"artifact"`. The logical `id` names the resource
-across revisions; `digest` identifies the exact bytes of this revision. A
-RecordReference binds both the logical ID and, when required, the digest of the
-Artifact *record*. Publishing the same bytes under a different retrieval
-location does not create different content. For very large or remote data, an
+The envelope `kind` MUST be `"artifact"`. Its UUID identifies this immutable
+Artifact record; `digest` identifies its exact payload bytes. Publishing the
+same bytes under another UUID or retrieval location does not create different
+content. For very large or remote data, an
 Artifact MAY describe an immutable manifest or snapshot instead of hashing a
 whole live service.
 
@@ -297,11 +289,11 @@ records instead.
 An ArtifactSet is an immutable, named logical collection of exact Artifacts. It
 is suitable for a release containing a schema, configuration, metrics, and
 other independently retrievable files. It does not imply an archive, directory,
-or retrieval layout and it does not nest sets in draft 0.2.
+or retrieval layout and it does not nest sets in draft 0.3.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
-| `members` | required; non-empty array of ArtifactSetMember | The ordered collection. Member names MUST be unique; each member MUST reference an Artifact with a record digest. |
+| `members` | required; non-empty array of ArtifactSetMember | The ordered collection. Member names MUST be unique; each member MUST reference an Artifact. |
 | `created_at` | optional; string (`date-time`) | RFC 3339 timestamp with an explicit UTC offset at which the producer created this immutable named collection. It is part of the record revision when supplied. |
 
 Each `ArtifactSetMember` has:
@@ -309,7 +301,7 @@ Each `ArtifactSetMember` has:
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
 | `name` | required; string | Non-empty stable member name within the set. It makes a logical release navigable independent of storage layout. |
-| `artifact` | required; RecordReference | Reference to an Artifact. The reference digest is REQUIRED, binding the set to one exact Artifact record. |
+| `artifact` | required; RecordReference | Reference to an Artifact by its UUID. |
 | `role` | optional; string | Non-empty semantic role such as `"schema"`, `"configuration"`, or `"metrics"`. |
 | `required` | default; boolean | Default `true`. It states whether a consumer needs this member to use the set for its intended purpose. |
 
@@ -332,9 +324,8 @@ executed; it is not a concrete execution.
 | `required_evidence` | optional; array of Implementation | One or more distinct source-bound evaluator implementations that must each produce passing Evidence before an Execution can claim `status: "succeeded"`. Omit it when the Computation has no Core-level acceptance requirements. |
 
 The same port name MAY appear once among inputs and once among outputs because
-the directions are separate namespaces. A Computation's logical ID names the
-computation across revisions; its record digest binds the particular
-implementation and source basis. Port and parameter declarations express the
+the directions are separate namespaces. A Computation UUID identifies one
+immutable interface and source basis. Port and parameter declarations express the
 intended interface. In a resolved record collection, an Execution's parameter
 keys MUST be declared by its selected Computation; every required declared
 parameter MUST be present and its value MUST validate against the declared JSON
@@ -363,11 +354,11 @@ Execution; OCLP does not define a nested Attempt record.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
-| `computation` | required; RecordReference | Computation being executed. A digest MAY bind a particular Computation revision and is strongly recommended when reproducibility matters. |
-| `parent_execution` | optional; RecordReference | The Execution that directly orchestrated this Execution. It is an execution-hierarchy relationship, not an input, output, or derivation edge. It MUST resolve to an Execution when the surrounding record collection is resolved. A digest MAY bind one exact parent revision; an ID-only reference is allowed when content-bound parent/child records would otherwise form an immutable reference cycle. Consumers MUST reject an absent or ambiguous ID-only parent during resolution. |
+| `computation` | required; RecordReference | Computation being executed. Its UUID identifies one immutable Computation record. |
+| `parent_execution` | optional; RecordReference | The Execution that directly orchestrated this Execution. It is an execution-hierarchy relationship, not an input, output, or derivation edge. It MUST resolve to an Execution when the surrounding record collection is resolved. |
 | `parameters` | default; object | Empty object by default. Concrete JSON values bound by name to the selected Computation's `parameter_definitions`. Parameter keys MUST be declared, required definitions MUST be present, and values MUST validate against their declared JSON Schema when the referenced Computation is resolved. |
-| `inputs` | default; object of arrays of RecordReference | Empty object by default. Keys are declared input-port names; each value is an ordered list of direct Artifact or ArtifactSet references bound at execution time. Every input reference MUST include a record digest, binding the exact consumed bytes or named collection. An ArtifactSet input records use of the exact named package; its members remain a collection overlay rather than individual derivation edges. |
-| `outputs` | optional; object of arrays of RecordReference | Keys are declared output-port names; each value is an ordered list of direct Artifact or ArtifactSet results. Every output reference MUST include a record digest. A producer MUST bind every durable direct result it publishes for the Execution. An ArtifactSet output records that this Execution published the exact named package; its member references remain an overlay, not a second derivation path. |
+| `inputs` | default; object of arrays of RecordReference | Empty object by default. Keys are declared input-port names; each value is an ordered list of direct Artifact or ArtifactSet references bound at execution time. An ArtifactSet input records use of the exact named package; its members remain a collection overlay rather than individual derivation edges. |
+| `outputs` | optional; object of arrays of RecordReference | Keys are declared output-port names; each value is an ordered list of direct Artifact or ArtifactSet results. A producer MUST bind every durable direct result it publishes for the Execution. An ArtifactSet output records that this Execution published the exact named package; its member references remain an overlay, not a second derivation path. |
 | `requested_outputs` | default; array of strings | Empty array by default. Names of outputs requested by the caller. It records intent, not proof of publication. |
 
 `outputs` is the durable derivation binding; it is distinct from
@@ -380,8 +371,8 @@ ArtifactSet.
 one direct parent; a parent may have many children. A resolved hierarchy MUST
 be acyclic. Parentage MUST NOT be interpreted as a data-production claim or be
 included in derivation-DAG validation. This permits a parent to publish a
-manifest Artifact whose content binds exact child records while each child uses
-the parent's stable logical ID as an ID-only parent reference.
+manifest Artifact containing child records while each child uses the parent's
+UUID reference.
 
 ### 5.5 Evidence (`kind: "evidence"`)
 
@@ -391,7 +382,7 @@ a compact portable explanation, while `details` retains domain-specific data.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
-| `subject` | required; RecordReference | Record checked by the evaluator. A digest MAY bind an exact subject revision and is recommended for immutable audit evidence. |
+| `subject` | required; RecordReference | Record checked by the evaluator. Its UUID identifies one immutable subject record. |
 | `evaluator` | required; Implementation | The exact evaluator realization and required source basis. Its locator identifies an executable evaluator, command, service, or another implementation form; Core does not impose the evaluator's input or result DSL. |
 | `outcome` | required; string | `"pass"`, `"fail"`, or `"error"`. `"error"` means the evaluation could not complete or produce a reliable result. |
 | `observed_at` | required; string, `date-time` | Time at which the result was observed. Use an RFC 3339 timestamp with an offset for portable interchange. |
@@ -411,7 +402,7 @@ document their event types and their `data` shape.
 
 | Field | Input status and JSON type | Constraints and rationale |
 | --- | --- | --- |
-| `execution` | required; RecordReference | Execution to which the fact belongs. A digest MAY bind the precise Execution revision. |
+| `execution` | required; RecordReference | Execution to which the fact belongs. |
 | `event_type` | required; string | Non-empty producer-defined event name, such as `"outputs-published"`. It identifies the meaning of `data`. |
 | `occurred_at` | required; string, `date-time` | Time the event fact occurred. Use an RFC 3339 timestamp with an offset for portable interchange. |
 | `sequence` | required; integer | Non-negative sequence number. Events for one Execution are ordered by this value; producers MUST NOT give two distinct Events for an Execution the same sequence. |
@@ -450,17 +441,17 @@ content, annotations, and arbitrary Event `data` are
 **reference or audit overlays**, not derivation edges. They MAY be traversed by
 consumers, but do not participate in derivation-DAG validation.
 
-Draft 0.2 establishes these invariants:
+Draft 0.3 establishes these invariants:
 
 1. Published Artifacts and ArtifactSets are immutable.
 2. Execution input bindings do not change after execution begins.
 3. Execution output bindings do not change after publication.
-4. In a resolved record collection, every Execution Computation, input, and output reference used for derivation MUST include a record digest and resolve to the stated record ID. Inputs MUST resolve to Artifacts or ArtifactSets. Outputs MUST resolve to Artifacts or ArtifactSets.
+4. In a resolved record collection, every Execution Computation, input, and output reference used for derivation MUST resolve by UUID. Inputs MUST resolve to Artifacts or ArtifactSets. Outputs MUST resolve to Artifacts or ArtifactSets.
 5. The derivation graph MUST be acyclic. A consumer validating a resolved record collection MUST reject a missing binding, a wrong-kind binding, or a cycle.
 6. Each retry, migration, or rerun is a distinct Execution; an Execution has no separate Attempt identity.
 7. A terminal Event that claims `status: "succeeded"` for an Execution whose
    Computation declares `required_evidence` MUST be accompanied in the resolved
-   record collection by Evidence that content-binds the exact Execution, names
+   record collection by Evidence that references the exact Execution UUID, names
    every declared evaluator, and has `outcome: "pass"`. A
    producer SHOULD publish that Evidence before the successful terminal Event.
 8. Mutable names such as `latest` or `current` are retrieval references, never artifact identities.
@@ -553,9 +544,9 @@ requirements.
 
 ## 8. Conformance
 
-A draft-0.2 producer is conformant when its emitted core records validate
+A draft-0.3 producer is conformant when its emitted core records validate
 against the published core JSON Schema and satisfy this specification. A
 consumer is conformant when it accepts every valid fixture, rejects every
-invalid fixture, and reproduces published JCS canonical JSON and record digests
-for the digest vectors. Runtime behavior and scheduler interoperability are
-intentionally outside draft-0.2 conformance.
+invalid fixture, and reproduces published JCS canonical JSON and catalog
+integrity digests for the digest vectors. Runtime behavior and scheduler
+interoperability are intentionally outside draft-0.3 conformance.

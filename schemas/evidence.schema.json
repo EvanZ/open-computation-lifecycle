@@ -86,18 +86,9 @@
         "id": {
           "minLength": 1,
           "title": "Id",
-          "type": "string"
-        },
-        "digest": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/Digest"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
         }
       },
       "required": [
@@ -110,15 +101,17 @@
   "additionalProperties": false,
   "properties": {
     "oclp_version": {
-      "const": "0.2.0-draft",
-      "default": "0.2.0-draft",
+      "const": "0.3.0-draft",
+      "default": "0.3.0-draft",
       "title": "Oclp Version",
       "type": "string"
     },
     "id": {
       "minLength": 1,
       "title": "Id",
-      "type": "string"
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
     },
     "name": {
       "anyOf": [

@@ -1,6 +1,6 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:artifact:source-document",
+  "oclp_version": "0.3.0-draft",
+  "id": "c0be094b-d4f3-5afd-a5d5-941a6c2f63c4",
   "name": "Source document",
   "profiles": null,
   "annotations": {

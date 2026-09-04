@@ -1,6 +1,6 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:computation:dirty-uppercase",
+  "oclp_version": "0.3.0-draft",
+  "id": "8298e549-d528-5bce-919d-ce5085728203",
   "name": "Dirty uppercase document",
   "profiles": null,
   "annotations": {},

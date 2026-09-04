@@ -51,7 +51,9 @@
     "id": {
       "minLength": 1,
       "title": "Id",
-      "type": "string"
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
     },
     "kind": {
       "const": "artifact",
@@ -86,8 +88,8 @@
       "title": "Name"
     },
     "oclp_version": {
-      "const": "0.2.0-draft",
-      "default": "0.2.0-draft",
+      "const": "0.3.0-draft",
+      "default": "0.3.0-draft",
       "title": "Oclp Version",
       "type": "string"
     },

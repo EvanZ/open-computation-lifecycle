@@ -1,10 +1,10 @@
 # Cross-language conformance
 
 OCLP's specification must not depend on Pydantic or Python behavior. The
-language-neutral fixture corpus is the executable contract for draft 0.2.
+language-neutral fixture corpus is the executable contract for draft 0.3.
 
 Each valid fixture provides its JSON record, exact RFC 8785 canonical JSON, and
-expected SHA-256 record digest. Invalid fixtures capture schema and semantic
+expected SHA-256 catalog-integrity digest. Invalid fixtures capture schema and semantic
 rules. The lineage fixture connects the primary execution record kinds; the
 ArtifactSet fixture covers immutable package membership.
 

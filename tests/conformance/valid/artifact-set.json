@@ -1,6 +1,6 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:artifact-set:release",
+  "oclp_version": "0.3.0-draft",
+  "id": "66940758-97c9-53b9-9c53-86d73bdff740",
   "name": "Source release",
   "annotations": {},
   "kind": "artifact_set",
@@ -8,11 +8,7 @@
     {
       "name": "source-document",
       "artifact": {
-        "id": "urn:example:artifact:source-document",
-        "digest": {
-          "algorithm": "sha256",
-          "value": "ce5b501718fb5697cbba5d3d4eaf8536e2d98a01ec1ca6e0875c30098e7a8ff1"
-        }
+        "id": "c0be094b-d4f3-5afd-a5d5-941a6c2f63c4"
       },
       "required": true
     }

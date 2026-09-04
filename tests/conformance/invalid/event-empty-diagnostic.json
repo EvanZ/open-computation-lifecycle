@@ -1,16 +1,12 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:event:uppercase-hello:terminal",
+  "oclp_version": "0.3.0-draft",
+  "id": "32be1b75-7a58-5d1f-a068-2e09f445ab57",
   "name": null,
   "profiles": null,
   "annotations": {},
   "kind": "event",
   "execution": {
-    "id": "urn:example:execution:uppercase-hello",
-    "digest": {
-      "algorithm": "sha256",
-      "value": "7f6ad6c061007d770f0f87740f11d9416cca5db068ff979afb0d3a93707b5bc2"
-    }
+    "id": "245cef35-7391-5504-b5fc-6791a7d6c092"
   },
   "event_type": "execution-terminal",
   "occurred_at": "2026-08-30T12:00:03Z",

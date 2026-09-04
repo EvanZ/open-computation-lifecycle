@@ -1,20 +1,16 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:execution:uppercase-hello",
+  "oclp_version": "0.3.0-draft",
+  "id": "245cef35-7391-5504-b5fc-6791a7d6c092",
   "name": "Uppercase hello",
   "profiles": {
     "lifecycle": {
-      "version": "0.2.0-draft"
+      "version": "0.3.0-draft"
     }
   },
   "annotations": {},
   "kind": "execution",
   "computation": {
-    "id": "urn:example:computation:uppercase",
-    "digest": {
-      "algorithm": "sha256",
-        "value": "a8fb1076ef993faa19a814c86d47795b2e075edbd5c53ec3905bf88b87c2b50d"
-    }
+    "id": "1167f44d-2b53-510b-90b4-bf9fd9b34b4a"
   },
   "parameters": {
     "locale": "en-US"
@@ -22,22 +18,14 @@
   "inputs": {
     "source": [
       {
-        "id": "urn:example:artifact:source-document",
-        "digest": {
-          "algorithm": "sha256",
-          "value": "ce5b501718fb5697cbba5d3d4eaf8536e2d98a01ec1ca6e0875c30098e7a8ff1"
-        }
+        "id": "c0be094b-d4f3-5afd-a5d5-941a6c2f63c4"
       }
     ]
   },
   "outputs": {
     "result": [
       {
-        "id": "urn:example:artifact:result-document",
-        "digest": {
-          "algorithm": "sha256",
-          "value": "da668df51680557aadc4f4768fa7d7a818ad45814cb576bc4e9e95202da54b31"
-        }
+        "id": "ca19d1ec-4a57-5134-af57-f33bdfee637b"
       }
     ]
   },

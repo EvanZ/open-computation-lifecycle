@@ -1,6 +1,6 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:computation:clean-overlay",
+  "oclp_version": "0.3.0-draft",
+  "id": "bd118ae1-3fd2-5223-941c-74ddaf0c266b",
   "name": "Invalid clean source overlay",
   "profiles": null,
   "annotations": {},
@@ -14,11 +14,7 @@
       "commit": "0123456789abcdef0123456789abcdef01234567",
       "dirty": false,
       "overlay": {
-        "id": "urn:example:artifact-set:source-overlay",
-        "digest": {
-          "algorithm": "sha256",
-          "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        }
+        "id": "d88ab49e-0f3f-5632-9181-313cca4a22c3"
       }
     }
   },

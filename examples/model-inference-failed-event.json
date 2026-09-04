@@ -1,12 +1,12 @@
 {
-  "oclp_version": "0.2.0-draft",
+  "oclp_version": "0.3.0-draft",
   "kind": "event",
-  "id": "urn:example:event:fraud-score-batch-2026-08-19:terminal",
+  "id": "ca1ceb2a-6b80-4c08-b165-99ba4c149c87",
   "annotations": {
     "example.org/purpose": "batch-inference"
   },
   "execution": {
-    "id": "urn:example:execution:fraud-score-batch-2026-08-19"
+    "id": "699b6dfc-0711-4eb2-b4b7-3f7dde77df87"
   },
   "event_type": "execution-terminal",
   "occurred_at": "2026-08-19T20:03:17Z",

@@ -1,12 +1,12 @@
 {
-  "oclp_version": "0.2.0-draft",
+  "oclp_version": "0.3.0-draft",
   "kind": "evidence",
-  "id": "urn:example:evidence:customer-export-null-check",
+  "id": "aa423d5e-ea3a-4fae-b57b-b28fa2b98035",
   "annotations": {
     "example.org/purpose": "data-quality"
   },
   "subject": {
-    "id": "urn:example:artifact:customer-export"
+    "id": "5a8ae55f-2177-49a5-93d5-3818ad26fef8"
   },
   "evaluator": {
     "kind": "command",

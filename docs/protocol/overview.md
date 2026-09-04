@@ -27,10 +27,11 @@ OCLP's six record kinds form a compact vocabulary:
 | Evidence | Records one source-bound evaluator result about another record. |
 | Event | Records an ordered lifecycle fact about an Execution. |
 
-References use logical IDs and can carry record digests to bind an exact record.
-Records may also carry an optional human-readable `name`. Generic interfaces
-may display that name, but IDs remain the only portable lookup and reference
-mechanism.
+References use the opaque UUID of one immutable Core record. Catalogs may
+verify canonical-record hashes locally, while Artifact payloads retain their
+own SHA-256 digest. Records may also carry an optional human-readable `name`;
+generic interfaces may display it, but UUIDs remain the portable lookup and
+reference mechanism.
 Every implementation declares its source basis: a Git repository and immutable
 commit, an Artifact, a versioned service, or an explicit opaque reason. A
 machine-specific worktree and dirty state are Execution Event context, not

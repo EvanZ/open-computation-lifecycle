@@ -1,12 +1,13 @@
 # Identity and lineage
 
-Artifact identity is based on immutable content: draft 0.2 uses a SHA-256
+Artifact payload identity is based on immutable content: draft 0.3 uses a SHA-256
 digest, media type, and byte size. Locations are retrieval hints only; they do
 not name the content.
 
-Record digests use the I-JSON data model and RFC 8785 JSON Canonicalization
-Scheme (JCS). This gives compatible producers the same canonical bytes and
-digest for the same record.
+Catalogs may hash canonical Core records using the I-JSON data model and RFC
+8785 JSON Canonicalization Scheme (JCS). This gives compatible implementations
+the same local integrity check without making the hash a second Core identity.
+Every Core record is instead identified and referenced by one opaque UUID.
 
 ## Traversal
 
@@ -15,7 +16,7 @@ The default derivation view is an acyclic graph derived from immutable bindings:
 ```text
 Artifact or ArtifactSet -> Execution input binding -> processed Artifact or ArtifactSet
 code Artifact -> Computation implementation binding
-ArtifactSet  -> named, content-bound Artifact members
+ArtifactSet  -> named Artifact members
 Computation  -> Execution computation binding
 Evidence     -> Execution, Artifact, ArtifactSet, Computation, or Event
 Event        -> Execution

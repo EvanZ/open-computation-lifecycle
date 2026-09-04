@@ -1,6 +1,6 @@
 {
-  "oclp_version": "0.2.0-draft",
-  "id": "urn:example:computation:duplicate-parameter",
+  "oclp_version": "0.3.0-draft",
+  "id": "dacafcdf-e02c-503b-8a02-b4d7bce31e55",
   "annotations": {},
   "kind": "computation",
   "implementation": {

@@ -1,6 +1,6 @@
 # OCLP examples
 
-Each file is an independently valid draft-0.2 record that uses a generic
+Each file is an independently valid draft-0.3 record that uses a generic
 industry scenario. Validate one with `uv run oclp validate <path>`.
 
 | Example | Primary record | What it illustrates |
