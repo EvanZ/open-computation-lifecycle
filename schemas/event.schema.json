@@ -211,6 +211,19 @@
       "default": null,
       "title": "Name"
     },
+    "description": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
     "occurred_at": {
       "format": "date-time",
       "title": "Occurred At",

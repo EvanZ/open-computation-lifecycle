@@ -29,9 +29,10 @@ OCLP's six record kinds form a compact vocabulary:
 
 References use the opaque UUID of one immutable Core record. Catalogs may
 verify canonical-record hashes locally, while Artifact payloads retain their
-own SHA-256 digest. Records may also carry an optional human-readable `name`;
-generic interfaces may display it, but UUIDs remain the portable lookup and
-reference mechanism.
+own SHA-256 digest. Records may also carry an optional concise `name` and a
+longer plain-text `description`; generic interfaces may display either, but
+UUIDs remain the portable lookup and reference mechanism. Application-specific
+structured meaning belongs in `annotations`, not in either display field.
 Every implementation declares its source basis: a Git repository and immutable
 commit, an Artifact, a versioned service, or an explicit opaque reason. A
 machine-specific worktree and dirty state are Execution Event context, not

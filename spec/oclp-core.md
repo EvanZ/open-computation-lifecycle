@@ -133,13 +133,16 @@ Every core record has this envelope. The record-specific table adds its fields.
 | `kind` | default; string | One of the record-kind constants stated below. It discriminates the record shape. |
 | `id` | required; string | Non-empty stable logical ID. It is a name for the record, not a claim that two records with the same ID have identical content. |
 | `name` | optional; string | Non-empty, producer-supplied human-readable name. It is not an identity, unique key, or reference target. A consumer MAY display it, but MUST use `id` and an optional record digest for lookup and integrity. Because it is part of the immutable record bytes, changing it produces a new record revision. |
+| `description` | optional; string | Non-empty plain-text human-readable explanation of the record's purpose, interpretation, or intended use. It is longer-form metadata than `name`, not a markup-rendering contract, identity, unique key, or reference target. Because it is part of the immutable record bytes, changing it produces a new record revision. |
 | `profiles` | default; `null` or non-empty object | A producer MUST emit `null` when no profile applies. Otherwise keys are non-empty Profile IDs and each value is a profile-owned JSON object. A key claims that the record follows that profile's binding rules. Core validates only this container shape; a profile consumer validates the named value. An empty object is invalid. |
 | `annotations` | default; object | Empty object by default. Producer-defined JSON extension data. Keys SHOULD be namespaced, for example `"example.org/owner"`. Annotations do not claim a normative profile contract. |
 
 Logical identity and content identity are deliberately separate: a stable ID
 supports references and discovery; a digest binds an exact immutable version.
-A record `name`, when present, is a concise human-facing description. It is
-portable metadata, not a mutable registry alias or a substitute for identity.
+A record `name`, when present, is a concise human-facing label; `description`
+is longer-form plain-text explanation; and `annotations` carry producer-defined
+structured semantics. All are portable immutable metadata, not mutable registry
+aliases or substitutes for identity.
 
 ### 4.5 PortDefinition
 

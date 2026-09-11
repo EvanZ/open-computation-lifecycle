@@ -3,8 +3,8 @@
   "valid": [
     {
       "path": "valid/artifact.json",
-      "canonical_json": "{\"annotations\":{\"example.org/source\":\"fixture\"},\"digest\":{\"algorithm\":\"sha256\",\"value\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"id\":\"c0be094b-d4f3-5afd-a5d5-941a6c2f63c4\",\"kind\":\"artifact\",\"locations\":[\"https://example.org/input.txt\"],\"media_type\":\"text/plain\",\"name\":\"Source document\",\"oclp_version\":\"0.3.0-draft\",\"profiles\":null,\"size\":5}",
-      "digest": "sha256:f61cfe1655609832b69b0ed74ab4ef21013786ee9838f6a4218cc84dcb1792c4"
+      "canonical_json": "{\"annotations\":{\"example.org/source\":\"fixture\"},\"description\":\"Raw source document selected as input for the transformation.\",\"digest\":{\"algorithm\":\"sha256\",\"value\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"id\":\"c0be094b-d4f3-5afd-a5d5-941a6c2f63c4\",\"kind\":\"artifact\",\"locations\":[\"https://example.org/input.txt\"],\"media_type\":\"text/plain\",\"name\":\"Source document\",\"oclp_version\":\"0.3.0-draft\",\"profiles\":null,\"size\":5}",
+      "digest": "sha256:f21d4b4752e9647ff344085f761d14862c3665235926ccccfd0f7a6925dda98f"
     },
     {
       "path": "valid/result-artifact.json",
@@ -61,6 +61,7 @@
     "invalid/artifact-extra-field.json",
     "invalid/artifact-content-addressed-id.json",
     "invalid/artifact-empty-name.json",
+    "invalid/artifact-empty-description.json",
     "invalid/artifact-invalid-digest.json",
     "invalid/artifact-set-duplicate-member.json",
     "invalid/artifact-set-unbound-member.json",

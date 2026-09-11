@@ -29,6 +29,19 @@
           "default": null,
           "title": "Name"
         },
+        "description": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
         "profiles": {
           "anyOf": [
             {
@@ -146,6 +159,19 @@
           ],
           "default": null,
           "title": "Name"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
         },
         "profiles": {
           "anyOf": [
@@ -295,6 +321,19 @@
           ],
           "default": null,
           "title": "Name"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
         },
         "profiles": {
           "anyOf": [
@@ -488,6 +527,19 @@
           "default": null,
           "title": "Name"
         },
+        "description": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
         "profiles": {
           "anyOf": [
             {
@@ -598,6 +650,19 @@
           ],
           "default": null,
           "title": "Name"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
         },
         "profiles": {
           "anyOf": [
@@ -902,6 +967,19 @@
           ],
           "default": null,
           "title": "Name"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
         },
         "profiles": {
           "anyOf": [

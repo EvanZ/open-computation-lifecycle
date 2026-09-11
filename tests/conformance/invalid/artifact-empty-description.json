@@ -1,0 +1,15 @@
+{
+  "oclp_version": "0.3.0-draft",
+  "id": "e29f4968-840a-5c13-b576-a608e64fa000",
+  "name": "Source document",
+  "description": "",
+  "profiles": null,
+  "annotations": {},
+  "kind": "artifact",
+  "media_type": "text/plain",
+  "digest": {
+    "algorithm": "sha256",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "size": 1
+}

@@ -23,6 +23,8 @@ source file or an upload timestamp.
 {
   "kind": "artifact",
   "id": "4e890e52-cb6f-5b48-afca-833ca29e5d0a",
+  "name": "Employee handbook",
+  "description": "Approved employee handbook used as the source document for onboarding.",
   "digest": {"algorithm": "sha256", "value": "6dfad2b5…f5f47e31"},
   "locations": ["https://storage.example.org/documents/handbook-v3.txt"]
 }

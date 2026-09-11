@@ -89,6 +89,19 @@
       "default": null,
       "title": "Name"
     },
+    "description": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
     "oclp_version": {
       "const": "0.3.0-draft",
       "default": "0.3.0-draft",

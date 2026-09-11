@@ -128,12 +128,17 @@ Every core record has this envelope. The record-specific table adds its fields.
 | `kind` | default; string | One of the record-kind constants stated below. It discriminates the record shape. |
 | `id` | required; UUID string | Opaque, globally unique identity for this one immutable record. A changed record MUST receive a fresh UUID. |
 | `name` | optional; string | Non-empty, producer-supplied concise human-readable label. It is not an identity, unique key, or reference target. A consumer MAY display it. |
+| `description` | optional; string | Non-empty plain-text human-readable explanation of the record's purpose, interpretation, or intended use. It is longer-form metadata than `name`, not a markup-rendering contract, identity, unique key, or reference target. |
 | `profiles` | default; `null` or non-empty object | A producer MUST emit `null` when no profile applies. Otherwise keys are non-empty Profile IDs and each value is a profile-owned JSON object. A key claims that the record follows that profile's binding rules. Core validates only this container shape; a profile consumer validates the named value. An empty object is invalid. |
 | `annotations` | default; object | Empty object by default. Producer-defined JSON extension data. Keys SHOULD be namespaced, for example `"example.org/owner"`. Annotations do not claim a normative profile contract. |
 
 Core-record identity and Artifact payload identity are deliberately separate.
-A record `name`, when present, is a concise human-facing description, not a
-mutable registry alias or a substitute for identity.
+A record `name`, when present, is a concise human-facing label; `description`
+is longer-form plain-text explanation; and `annotations` carry producer-defined
+structured semantics. They are immutable metadata, not mutable registry aliases
+or substitutes for identity. A supplied `description` participates in canonical
+record bytes; changing it creates a distinct immutable record that MUST receive
+a fresh UUID.
 
 ### 4.5 PortDefinition
 
